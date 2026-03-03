@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEXIS LAW — Client Login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+<!-- Clerk Script -->
+<script src="https://cdn.clerk.com/v1.8.6/clerk.js" data-clerk-publishable-key="pk_test_your_publishable_key"></script>
+
+<!-- Convex Client -->
+<script type="module" src="https://cdn.jsdelivr.net/npm/convex@1.32.0/dist/browser/convex-client.js"></script>
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:   #0A0A0A;
+    --red:     #E63329;
+    --red-dark:#8A1A16;
+    --green:   #2DB34A;
+    --grey:    #8A8A8A;
+    --lgrey:   #1E1E1E;
+    --dgrey:   #141414;
+    --white:   #F0EDE8;
+    --border:  2px solid #2E2E2E;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'Courier Prime', monospace;
+  }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .login-container {
+    width: 100%;
+    max-width: 440px;
+    background: var(--lgrey);
+    border: var(--border);
+    padding: 48px;
+    position: relative;
+  }
+
+  .login-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--red);
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 48px;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .logo span:first-child { color: var(--white); }
+  .logo span:last-child { color: var(--red); }
+
+  .title {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .clerk-container {
+    min-height: 200px;
+    margin-bottom: 24px;
+  }
+
+  .clerk-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+    color: var(--grey);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  .clerk-divider::before,
+  .clerk-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .alternative {
+    text-align: center;
+    color: var(--grey);
+    font-size: 13px;
+  }
+
+  .alternative a {
+    color: var(--red);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .back-link {
+    display: block;
+    text-align: center;
+    margin-top: 24px;
+    color: var(--grey);
+    font-size: 12px;
+  }
+
+  .back-link a {
+    color: var(--grey);
+    text-decoration: none;
+  }
+
+  .back-link a:hover {
+    color: var(--white);
+  }
+
+  .error-message {
+    background: rgba(230, 51, 41, 0.1);
+    border: 1px solid var(--red);
+    color: var(--red);
+    padding: 12px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    display: none;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 20px;
+    color: var(--grey);
+  }
+
+  /* Clerk overrides */
+  .cl-user-button {
+    margin: 0 auto !important;
+  }
+</style>
+</head>
+<body>
+
+<div class="login-container">
+  <div class="logo"><span>LEXIS</span><span>LAW</span></div>
+  <p class="title">Client Portal Login</p>
+
+  <div id="errorMessage" class="error-message"></div>
+  <div id="loading" class="loading">Loading...</div>
+  
+  <div id="clerk-sign-in" class="clerk-container"></div>
+  
+  <div class="clerk-divider">OR</div>
+
+  <div class="alternative">
+    <p>New client? <a id="sign-up-link">Create an account</a></p>
+  </div>
+
+  <p class="back-link">
+    <a href="/">← Back to Lexis Law</a>
+  </p>
+</div>
+
+<script>
+// Convex configuration
+const CONVEX_URL = "https://your-deployment.convex.cloud"; // Replace with your deployment
+let convexClient = null;
+
+// Initialize Convex client
+async function initConvex() {
+  try {
+    const { ConvexHttpClient } = await import('https://cdn.jsdelivr.net/npm/convex@1.32.0/+esm');
+    convexClient = new ConvexHttpClient(CONVEX_URL);
+    console.log('✓ Convex client initialized');
+    return convexClient;
+  } catch (e) {
+    console.error('Failed to initialize Convex:', e);
+    return null;
+  }
+}
+
+// Sync Clerk user with Convex
+async function syncUserToConvex(clerkUser) {
+  if (!convexClient) {
+    console.log('Convex not initialized, skipping sync');
+    return null;
+  }
+
+  try {
+    // Call the syncClerkUser mutation
+    const response = await convexClient.mutation('syncClerkUser', {
+      clerk_id: clerkUser.id,
+      email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
+      name: clerkUser.fullName || clerkUser.firstName || 'Client',
+      phone: clerkUser.phoneNumbers?.[0]?.phoneNumber || null
+    });
+    
+    console.log('✓ User synced to Convex:', response);
+    return response;
+  } catch (e) {
+    console.error('Failed to sync user:', e.message);
+    return null;
+  }
+}
+
+// Initialize app
+async function init() {
+  const loadingEl = document.getElementById('loading');
+  const clerkDiv = document.getElementById('clerk-sign-in');
+  const errorEl = document.getElementById('errorMessage');
+  
+  // Initialize Convex
+  await initConvex();
+
+  // Wait for Clerk to load
+  if (!window.Clerk) {
+    loadingEl.textContent = 'Loading authentication...';
+    setTimeout(init, 100);
+    return;
+  }
+
+  loadingEl.style.display = 'none';
+
+  // Configure Clerk
+  try {
+    Clerk.configureClerk(window.__Clerk);
+  } catch (e) {
+    console.warn('Clerk configuration warning:', e.message);
+  }
+
+  // Render sign-in
+  Clerk.createClerkClient({
+    publishableKey: 'pk_test_your_publishable_key'
+  });
+
+  if (clerkDiv) {
+    Clerk.SignIn.render({
+      element: clerkDiv,
+      appearance: {
+        elements: {
+          rootBox: { width: '100%' },
+          card: { background: '#1E1E1E', border: '2px solid #2E2E2E' },
+          headerTitle: { color: '#F0EDE8', fontFamily: 'Space Grotesk, sans-serif' },
+          headerSubtitle: { color: '#8A8A8A' },
+          socialButtonsBlockButton: { background: '#141414', border: '1px solid #2E2E2E', color: '#F0EDE8' },
+          formFieldInput: { background: '#0A0A0A', border: '2px solid #2E2E2E', color: '#F0EDE8' },
+          formButtonPrimary: { background: '#E63329', color: '#FFFFFF' },
+        },
+      },
+    });
+  }
+
+  // Handle sign-up link
+  document.getElementById('sign-up-link')?.addEventListener('click', () => {
+    Clerk.SignUp.render({
+      element: document.getElementById('clerk-sign-in'),
+      appearance: {
+        elements: {
+          rootBox: { width: '100%' },
+          card: { background: '#1E1E1E', border: '2px solid #2E2E2E' },
+          formFieldInput: { background: '#0A0A0A', border: '2px solid #2E2E2E', color: '#F0EDE8' },
+          formButtonPrimary: { background: '#E63329', color: '#FFFFFF' },
+        },
+      },
+    });
+  });
+
+  // Handle successful auth
+  Clerk.addListener('clerk:user', async (session) => {
+    const user = Clerk.user;
+    if (user) {
+      try {
+        // Store Clerk token
+        sessionStorage.setItem('clerk_token', user.id);
+        
+        // Sync user to Convex
+        await syncUserToConvex(user);
+        
+        // Redirect to portal
+        window.location.href = '/portal.html';
+      } catch (e) {
+        console.error('Login error:', e);
+        errorEl.textContent = 'Login failed. Please try again.';
+        errorEl.style.display = 'block';
+      }
+    }
+  });
+
+  // Check if already signed in
+  Clerk.addListener('clerk:loaded', () => {
+    if (Clerk.isSignedIn()) {
+      const user = Clerk.user;
+      if (user) {
+        sessionStorage.setItem('clerk_token', user.id);
+        syncUserToConvex(user).then(() => {
+          window.location.href = '/portal.html';
+        });
+      }
+    }
+  });
+}
+
+// Start
+init();
+</script>
+
+</body>
+</html>

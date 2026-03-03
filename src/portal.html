@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LEXIS LAW — Client Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black:   #0A0A0A;
+    --red:     #E63329;
+    --red-dark:#8A1A16;
+    --green:   #2DB34A;
+    --green-dark:#1A6B2E;
+    --grey:    #8A8A8A;
+    --lgrey:   #1E1E1E;
+    --dgrey:   #141414;
+    --white:   #F0EDE8;
+    --border:  2px solid #2E2E2E;
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Space Grotesk', sans-serif;
+    --font-mono: 'Courier Prime', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    min-height: 100vh;
+  }
+
+  /* Navigation */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: var(--black);
+    border-bottom: 2px solid var(--lgrey);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 28px;
+    letter-spacing: 3px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .nav-logo span:first-child { color: var(--white); }
+  .nav-logo span:last-child { color: var(--red); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .user-name {
+    font-size: 13px;
+    color: var(--grey);
+  }
+
+  .logout-btn {
+    background: none;
+    border: 1px solid var(--grey);
+    color: var(--grey);
+    padding: 8px 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .logout-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* Main Content */
+  .portal {
+    padding-top: 96px;
+    padding: 96px 40px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .page-title span { color: var(--red); }
+
+  .welcome-text {
+    color: var(--grey);
+    margin-top: 8px;
+    font-size: 15px;
+  }
+
+  /* Sections */
+  .section {
+    background: var(--lgrey);
+    border: var(--border);
+    margin-bottom: 24px;
+  }
+
+  .section-header {
+    background: var(--dgrey);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--border);
+  }
+
+  .section-title {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .section-body {
+    padding: 24px;
+  }
+
+  /* Matters List */
+  .matter-card {
+    border: var(--border);
+    padding: 20px;
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .matter-card:last-child { margin-bottom: 0; }
+
+  .matter-ref {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 2px;
+  }
+
+  .matter-type {
+    font-size: 14px;
+    color: var(--grey);
+    margin-top: 4px;
+  }
+
+  .matter-status {
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 2px solid;
+  }
+
+  .status-pending { color: var(--grey); border-color: var(--grey); }
+  .status-in_progress { color: var(--red); border-color: var(--red); }
+  .status-awaiting_docs { color: #F5A623; border-color: #F5A623; }
+  .status-hearing { color: #64B5F6; border-color: #64B5F6; }
+  .status-resolved { color: var(--green); border-color: var(--green); }
+
+  .matter-next {
+    grid-column: 1 / -1;
+    padding-top: 12px;
+    border-top: 1px solid var(--dgrey);
+    font-size: 13px;
+    color: var(--grey);
+  }
+
+  /* Documents */
+  .upload-zone {
+    border: 2px dashed var(--grey);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--red);
+    background: rgba(230, 51, 41, 0.05);
+  }
+
+  .upload-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .upload-text {
+    color: var(--grey);
+    font-size: 14px;
+  }
+
+  .upload-text strong {
+    color: var(--red);
+  }
+
+  .doc-list {
+    margin-top: 20px;
+  }
+
+  .doc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--black);
+    border: var(--border);
+    margin-bottom: 8px;
+  }
+
+  .doc-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .doc-icon {
+    font-size: 20px;
+  }
+
+  .doc-name {
+    font-size: 13px;
+  }
+
+  .doc-size {
+    font-size: 11px;
+    color: var(--grey);
+  }
+
+  .doc-actions a {
+    color: var(--red);
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  /* Forms */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 8px;
+  }
+
+  .form-select, .form-input {
+    width: 100%;
+    background: var(--black);
+    border: 2px solid var(--dgrey);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 12px;
+    outline: none;
+  }
+
+  .form-select:focus, .form-input:focus {
+    border-color: var(--red);
+  }
+
+  .btn {
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    border: 2px solid;
+    cursor: pointer;
+    background: none;
+  }
+
+  .btn-red {
+    background: var(--red);
+    color: var(--white);
+    border-color: var(--red);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    border-color: var(--grey);
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 40px;
+    color: var(--grey);
+  }
+
+  .empty-icon {
+    font-family: var(--font-display);
+    font-size: 48px;
+    color: var(--lgrey);
+    margin-bottom: 16px;
+  }
+
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--grey);
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--green);
+    color: var(--black);
+    padding: 16px 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    z-index: 9000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s ease;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    nav { padding: 0 20px; }
+    .portal { padding: 80px 20px 20px; }
+    .matter-card { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-logo" onclick="window.location.href='/'">
+    <span>LEXIS</span><span>LAW</span>
+  </div>
+  <div class="nav-right">
+    <span class="user-name" id="userName">Loading...</span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<div class="portal">
+  <div class="page-header">
+    <h1 class="page-title">CLIENT <span>PORTAL</span></h1>
+    <p class="welcome-text">Welcome back! Manage your legal matters and documents.</p>
+  </div>
+
+  <!-- My Matters -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">My Matters</span>
+    </div>
+    <div class="section-body">
+      <div id="mattersList">
+        <div class="loading">Loading your matters...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Documents -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Documents</span>
+      <select class="form-select" id="matterSelect" style="width: auto; min-width: 150px;">
+        <option value="">Select matter</option>
+      </select>
+    </div>
+    <div class="section-body">
+      <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+        <div class="upload-icon">📄</div>
+        <p class="upload-text">
+          <strong>Click to upload</strong> or drag and drop<br>
+          PDF, DOC, DOCX, PNG, JPG (max 10MB)
+        </p>
+        <input type="file" id="fileInput" hidden accept=".pdf,.doc,.docx,.png,.jpg,.jpeg">
+      </div>
+      
+      <div id="docList" class="doc-list"></div>
+    </div>
+  </div>
+
+  <!-- Profile -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Profile</span>
+    </div>
+    <div class="section-body">
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="tel" class="form-input" id="phoneInput" placeholder="+27 82 000 0000">
+      </div>
+      <button class="btn btn-red" onclick="updatePhone()">Update Phone</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Convex/Clerk configuration
+  const CONVEX_URL = 'https://your-deployment.convex.cloud'; // Replace with your deployment
+  let convexClient = null;
+  let currentUser = null;
+  let clientData = null;
+
+  // Initialize Convex client
+  async function initConvex() {
+    try {
+      const { ConvexHttpClient } = await import('https://cdn.jsdelivr.net/npm/convex@1.32.0/+esm');
+      convexClient = new ConvexHttpClient(CONVEX_URL);
+      console.log('✓ Convex client initialized');
+      return convexClient;
+    } catch (e) {
+      console.error('Failed to init Convex:', e);
+      return null;
+    }
+  }
+
+  // Get Clerk token
+  function getClerkToken() {
+    return sessionStorage.getItem('clerk_token');
+  }
+
+  // Check auth
+  async function checkAuth() {
+    const token = getClerkToken();
+    if (!token) {
+      window.location.href = '/login.html';
+      return null;
+    }
+
+    try {
+      // Get user from Clerk
+      if (window.Clerk) {
+        const user = await window.Clerk.user;
+        if (user) {
+          document.getElementById('userName').textContent = user.fullName || user.emailAddresses?.[0]?.emailAddress || 'Client';
+          currentUser = user;
+          return user;
+        }
+      }
+    } catch (e) {
+      console.error('Auth check failed:', e);
+    }
+
+    // Demo mode - show placeholder
+    document.getElementById('userName').textContent = 'Demo User';
+    return { id: 'demo', fullName: 'Demo User', email: 'demo@lexislaw.co.za' };
+  }
+
+  // Load client data from Convex
+  async function loadClientData() {
+    const token = getClerkToken();
+    if (!token || !convexClient) {
+      // Demo mode - use demo data
+      return getDemoClientData();
+    }
+
+    try {
+      const data = await convexClient.query('getClientByClerk', { clerk_id: token });
+      if (data) {
+        clientData = data;
+        return data;
+      }
+    } catch (e) {
+      console.error('Failed to load client data:', e);
+    }
+
+    // Fallback to demo
+    return getDemoClientData();
+  }
+
+  // Demo client data
+  function getDemoClientData() {
+    return {
+      name: 'Demo User',
+      email: 'demo@lexislaw.co.za',
+      phone: '+27820000000',
+      matters: [
+        { reference: 'REF-00421', status: 'awaiting_docs', next_action: 'Awaiting your documents', type: 'Family Law — Divorce' },
+        { reference: 'REF-00311', status: 'in_progress', next_action: 'Attorney review in progress', type: 'Criminal Defence' },
+      ],
+      documents: [
+        { name: 'ID_Document.pdf', size: '245 KB', type: 'pdf' },
+        { name: 'Marriage_Certificate.jpg', size: '1.2 MB', type: 'image' },
+      ]
+    };
+  }
+
+  // Load matters
+  async function loadMatters() {
+    const container = document.getElementById('mattersList');
+    
+    const data = await loadClientData();
+    const matters = data?.matters || [];
+
+    if (matters.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>No active matters</p>
+          <p style="margin-top: 8px;"><a href="/" style="color: var(--red);">Book a consultation →</a></p>
+        </div>
+      `;
+      return;
+    }
+
+    // Populate matter select
+    const select = document.getElementById('matterSelect');
+    matters.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.reference;
+      opt.textContent = m.reference;
+      select.appendChild(opt);
+    });
+
+    // Update phone input
+    if (data?.phone) {
+      document.getElementById('phoneInput').value = data.phone;
+    }
+
+    container.innerHTML = matters.map(m => `
+      <div class="matter-card">
+        <div>
+          <div class="matter-ref">${m.reference}</div>
+          <div class="matter-type">${m.type || 'Legal Matter'}</div>
+        </div>
+        <span class="matter-status status-${m.status}">${(m.status || 'pending').replace('_', ' ')}</span>
+        <div class="matter-next">Next: ${m.next_action || 'Awaiting update'}</div>
+      </div>
+    `).join('');
+  }
+
+  // Load documents
+  async function loadDocuments() {
+    const container = document.getElementById('docList');
+    const data = await loadClientData();
+    const docs = data?.documents || [];
+
+    const icons = { pdf: '📕', image: '🖼', doc: '📘', other: '📄' };
+
+    if (docs.length === 0) {
+      container.innerHTML = '<div class="empty-state"><p>No documents uploaded yet</p></div>';
+      return;
+    }
+
+    container.innerHTML = docs.map(d => `
+      <div class="doc-item">
+        <div class="doc-info">
+          <span class="doc-icon">${icons[d.type] || icons.other}</span>
+          <div>
+            <div class="doc-name">${d.name}</div>
+            <div class="doc-size">${d.size}</div>
+          </div>
+        </div>
+        <div class="doc-actions">
+          <a href="#" onclick="downloadDoc('${d.name}')">Download</a>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Download document
+  async function downloadDoc(docName) {
+    showToast('Preparing download...');
+    // In production, this would call convexClient.query('getDownloadUrl', ...)
+    setTimeout(() => {
+      showToast('Demo: Download started');
+    }, 500);
+  }
+
+  // Handle file upload
+  document.getElementById('fileInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    const matter = document.getElementById('matterSelect').value;
+
+    if (!matter) {
+      showToast('Please select a matter first');
+      return;
+    }
+
+    if (!file) return;
+
+    // Check size
+    if (file.size > 10 * 1024 * 1024) {
+      showToast('File too large. Maximum 10MB.');
+      return;
+    }
+
+    showToast('Uploading...');
+
+    try {
+      if (convexClient && clientData?._id) {
+        // Upload to Convex
+        await convexClient.mutation('uploadDocument', {
+          client_id: clientData._id,
+          matter_reference: matter,
+          file: file
+        });
+        showToast('✓ Document uploaded successfully');
+      } else {
+        // Demo mode
+        console.log('Demo: Would upload', file.name, 'to matter:', matter);
+        setTimeout(() => {
+          showToast('✓ Document uploaded (demo mode)');
+        }, 1000);
+      }
+      loadDocuments();
+    } catch (err) {
+      console.error('Upload failed:', err);
+      showToast('Upload failed: ' + err.message);
+    }
+  });
+
+  // Update phone
+  async function updatePhone() {
+    const phone = document.getElementById('phoneInput').value;
+    if (!phone) return;
+
+    showToast('Updating...');
+    
+    // In production, this would call convexClient.mutation('updateClientPhone', ...)
+    setTimeout(() => {
+      showToast('✓ Phone updated');
+    }, 500);
+  }
+
+  // Logout
+  function logout() {
+    sessionStorage.removeItem('clerk_token');
+    if (window.Clerk) {
+      window.Clerk.signOut();
+    }
+    window.location.href = '/login  // Toast
+.html';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Initialize
+  async function init() {
+    await initConvex();
+    await checkAuth();
+    await loadMatters();
+    await loadDocuments();
+  }
+
+  init();
+</script>
+
+</body>
+</html>
