@@ -1,137 +1,214 @@
-// LexisLaw Clerk Authentication for Convex
-// Uses Clerk for authentication, syncs users to Convex
+// LexisLaw Custom Authentication for Convex
+// Implements register, login (JWT), and getCurrentUser queries/mutations.
 
-import { query } from "./_generated/server";
-import { mutation } from "./_generated/server";
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { hash, compare } from "bcryptjs";
+import { sign, verify } from "jsonwebtoken";
 
-// Clerk webhook handler - syncs Clerk users to Convex
-export const syncClerkUser = mutation({
+const JWT_SECRET = process.env.JWT_SECRET || "SUPER_SECRET_DEFAULT_FALLBACK_KEY";
+const TOKEN_EXPIRY = "1h";
+
+// --- HELPERS ---
+
+function generateToken(userId, role) {
+  return sign({ sub: userId, role: role }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
+}
+
+// --- MUTATIONS ---
+
+/**
+ * Register a new client user.
+ */
+export const register = mutation({
   args: {
-    clerk_id: v.string(),
-    email: v.string(),
     name: v.string(),
-    phone: v.optional(v.string()),
+    email: v.string(),
+    password: v.string(),
+    phone: v.string(),
+    whatsapp_consent: v.boolean(),
+    popia_consent: v.boolean(),
   },
   handler: async (ctx, args) => {
-    // Check if client with this clerk_id exists
-    const existing = await ctx.db
-      .query("clients")
-      .withIndex("by_clerk_id", (q) => q.eq("clerk_id", args.clerk_id))
-      .collect();
-
-    if (existing.length > 0) {
-      // Update existing client
-      await ctx.db.patch(existing[0]._id, {
-        name: args.name,
-        email: args.email,
-        phone: args.phone || existing[0].phone,
-      });
-      return { success: true, client_id: existing[0]._id, is_new: false };
+    // 1. Validate email format (basic check)
+    if (!args.email.includes('@')) {
+      throw new Error("Invalid email format.");
+    }
+    
+    // 2. Validate password strength (minimum 8 chars)
+    if (args.password.length < 8) {
+      throw new Error("Password must be at least 8 characters long.");
     }
 
-    // Check if client with this email exists
-    const byEmail = await ctx.db
-      .query("clients")
+    // 3. Check if email or phone already exists in users table
+    const existingUser = await ctx.db
+      .query("users")
       .filter((q) => q.eq(q.field("email"), args.email))
-      .collect();
+      .first();
 
-    if (byEmail.length > 0) {
-      // Link existing client to Clerk
-      await ctx.db.patch(byEmail[0]._id, {
-        clerk_id: args.clerk_id,
-      });
-      return { success: true, client_id: byEmail[0]._id, is_new: false };
+    if (existingUser) {
+      throw new Error("User with this email already exists.");
     }
 
-    // Create new client
-    const clientId = await ctx.db.insert("clients", {
-      name: args.name,
-      phone: args.phone || "+27",
+    // 4. Create client record (Phase 1 table)
+    const normalizedPhone = args.phone.replace(/\s/g, "").replace(/^0/, "+27");
+    let client = await ctx.db
+      .query("clients")
+      .filter((q) => q.eq(q.field("phone"), normalizedPhone))
+      .first();
+      
+    let clientId;
+
+    if (!client) {
+      clientId = await ctx.db.insert("clients", {
+        name: args.name,
+        phone: normalizedPhone,
+        email: args.email,
+        whatsapp_consent: args.whatsapp_consent,
+        popia_consent: args.popia_consent,
+      });
+    } else {
+        clientId = client._id;
+    }
+    
+    // 5. Hash password
+    const password_hash = await hash(args.password, 10);
+
+    // 6. Create user record
+    const userId = await ctx.db.insert("users", {
       email: args.email,
-      clerk_id: args.clerk_id,
-      whatsapp_consent: false,
-      popia_consent: true,
+      password_hash: password_hash,
+      client_id: clientId,
+      role: "client",
+      created_at: Date.now(),
     });
 
-    return { success: true, client_id: clientId, is_new: true };
-  },
-});
+    // 7. Generate token
+    const token = generateToken(userId, "client");
 
-// Get client by Clerk ID
-export const getClientByClerk = query({
-  args: {
-    clerk_id: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const clients = await ctx.db
-      .query("clients")
-      .withIndex("by_clerk_id", (q) => q.eq("clerk_id", args.clerk_id))
-      .collect();
-
-    if (clients.length === 0) {
-      return null;
-    }
-
-    const client = clients[0];
-
-    // Get their matters
-    const matters = await ctx.db
-      .query("matters")
-      .withIndex("by_client", (q) => q.eq("client_id", client._id))
-      .collect();
-
-    return {
-      ...client,
-      matters: matters.map((m) => ({
-        reference: m.reference,
-        status: m.status,
-        next_action: m.next_action,
-      })),
+    return { 
+      success: true, 
+      token: token,
+      userId: userId,
+      role: "client"
     };
   },
 });
 
-// Get client by email (for booking lookup)
-export const getClientByEmail = query({
+/**
+ * Login a user and return a JWT.
+ */
+export const login = mutation({
   args: {
     email: v.string(),
+    password: v.string(),
   },
   handler: async (ctx, args) => {
-    const clients = await ctx.db
-      .query("clients")
-      .filter((q) => q.eq(q.field("email"), args.email))
-      .collect();
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .first();
 
-    if (clients.length === 0) {
-      return null;
+    if (!user) {
+      throw new Error("Authentication failed: User not found.");
     }
 
-    return clients[0];
+    const isMatch = await compare(args.password, user.password_hash);
+
+    if (!isMatch) {
+      throw new Error("Authentication failed: Invalid credentials.");
+    }
+
+    // Generate token
+    const token = generateToken(user._id, user.role);
+
+    // Optionally fetch client phone for immediate use if client role
+    let clientPhone = null;
+    if (user.role === 'client' && user.client_id) {
+        const client = await ctx.db.get(user.client_id);
+        clientPhone = client?.phone || null;
+    }
+
+    return { 
+      success: true, 
+      token: token, 
+      userId: user._id,
+      role: user.role,
+      clientPhone: clientPhone
+    };
   },
 });
 
-// Link existing client to Clerk account
-export const linkClerkAccount = mutation({
-  args: {
-    client_id: v.id("clients"),
-    clerk_id: v.string(),
-  },
-  handler: async (ctx, args) => {
-    // Check if clerk_id already linked
-    const existing = await ctx.db
-      .query("clients")
-      .withIndex("by_clerk_id", (q) => q.eq("clerk_id", args.clerk_id))
-      .collect();
+// --- QUERIES ---
 
-    if (existing.length > 0) {
-      throw new Error("This Clerk account is already linked to another client");
+/**
+ * Get current user data by validating the JWT token.
+ */
+export const getCurrentUser = query({
+  args: {},
+  handler: async (ctx, args) => {
+    // Get token from request headers (Convex utility)
+    const token = ctx.request.headers.get("Authorization")?.split(" ")[1];
+
+    if (!token) {
+      return null; // Not logged in
     }
 
-    await ctx.db.patch(args.client_id, {
-      clerk_id: args.clerk_id,
-    });
+    try {
+      const payload = verify(token, JWT_SECRET);
+      
+      const user = await ctx.db.get(payload.sub);
+      
+      if (!user) {
+          return null; // User deleted or token invalid
+      }
 
-    return { success: true };
+      // Fetch associated client data if role is client
+      let clientData = null;
+      if (user.role === 'client' && user.client_id) {
+          const client = await ctx.db.get(user.client_id);
+          clientData = {
+              name: client?.name,
+              phone: client?.phone,
+              email: client?.email,
+          };
+      }
+
+      return {
+        userId: user._id,
+        email: user.email,
+        role: user.role,
+        clientData: clientData,
+      };
+
+    } catch (e) {
+      console.error("JWT Verification failed:", e.message);
+      return null; // Token expired or invalid
+    }
   },
 });
+
+/**
+ * Syncs Admin users from server-side setup (for now, we use a simple admin check)
+ */
+export const createAdminUser = mutation({
+    args: { email: v.string(), password: v.string() },
+    handler: async (ctx, args) => {
+        // Check if admin user exists - for initial setup only
+        const existingAdmin = await ctx.db.query("users").withIndex("by_email", (q) => q.eq("email", args.email)).first();
+        if (existingAdmin) return { success: true, message: "Admin already exists." };
+
+        if (args.password.length < 8) throw new Error("Admin password too weak.");
+
+        const hashPass = await hash(args.password, 10);
+
+        const userId = await ctx.db.insert("users", {
+            email: args.email,
+            password_hash: hashPass,
+            role: "admin",
+            created_at: Date.now(),
+        });
+
+        return { success: true, userId, role: "admin" };
+    }
+})
