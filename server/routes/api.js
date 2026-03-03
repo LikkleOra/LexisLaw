@@ -2,6 +2,7 @@ import express from 'express';
 import { query, getOne, getAll, generateReference } from '../models/db.js';
 import { sendConfirmation, sendReminder, sendStatusUpdate } from '../services/whatsapp.js';
 import { sendBookingConfirmation, sendAdminNotification } from '../services/email.js';
+import { sendBookingSMS, sendAppointmentReminderSMS, sendStatusUpdateSMS } from '../services/sms.js'; // NEW: Import SMS service
 
 const router = express.Router();
 
@@ -76,6 +77,11 @@ router.post('/bookings', async (req, res) => {
         .then(() => console.log(`✓ WhatsApp sent to ${normalizedPhone}`))
         .catch(err => console.error('WhatsApp error:', err.message));
     }
+    
+    // NEW: Send SMS confirmation (async) - Task 4 requirement
+    sendBookingSMS(client.id, normalizedPhone, reference, dateFormatted, preferred_time, matter_type)
+        .then(() => console.log(`✓ SMS sent to ${normalizedPhone}`))
+        .catch(err => console.error('SMS error:', err.message));
 
     // Send email confirmation (async)
     if (email) {
@@ -204,7 +210,7 @@ router.patch('/matters/:ref/status', async (req, res) => {
     const { status, next_action, attorney_id } = req.body;
     const reference = ref.toUpperCase().startsWith('REF-') ? ref.toUpperCase() : `REF-${ref.toUpperCase()}`;
 
-    // Validate status
+    // Validation
     const validStatuses = ['pending', 'in_progress', 'awaiting_docs', 'hearing', 'resolved'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ error: 'Invalid status', valid: validStatuses });
@@ -250,6 +256,12 @@ router.patch('/matters/:ref/status', async (req, res) => {
       sendStatusUpdate(client.phone, reference, status, next_action || statusMessages[status])
         .catch(err => console.error('WhatsApp update error:', err.message));
     }
+    
+    // NEW: Send SMS status update (Task 4 requirement)
+    if (client?.phone) {
+        sendStatusUpdateSMS(client.id, reference, status, next_action || statusMessages[status])
+          .catch(err => console.error('SMS update error:', err.message));
+    }
 
     console.log(`✓ Status updated: ${reference} → ${status}`);
 
@@ -284,13 +296,13 @@ router.get('/bookings', async (req, res) => {
     }
 
     if (from_date) {
-      whereClause += whereClause ? ` AND ` : `WHERE `;
+      whereClause += whereClause ? ' AND ' : 'WHERE ';
       whereClause += `b.preferred_date >= $${paramIndex++}`;
       params.push(from_date);
     }
 
     if (to_date) {
-      whereClause += whereClause ? ` AND ` : `WHERE `;
+      whereClause += whereClause ? ' AND ' : 'WHERE ';
       whereClause += `b.preferred_date <= $${paramIndex++}`;
       params.push(to_date);
     }
@@ -309,14 +321,13 @@ router.get('/bookings', async (req, res) => {
       LEFT JOIN attorneys a ON m.attorney_id = a.id
       ${whereClause}
       ORDER BY b.preferred_date DESC, b.created_at DESC
-      LIMIT $${paramIndex++} OFFSET $${paramIndex}
+      LIMIT $${paramIndex++} OFFSET ${paramIndex}
     `, params);
 
     // Get total count
     const countResult = await getOne(`
-      SELECT COUNT(*) as total FROM bookings b ${whereClause.replace(/\$/g, '$$')}`, 
-      params.slice(0, -2)
-    );
+      SELECT COUNT(*) as total FROM bookings b ${whereClause.replace(/\$/g, '$$')}
+    `, params.slice(0, -2));
 
     res.json({
       bookings,

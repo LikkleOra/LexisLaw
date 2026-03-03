@@ -1,0 +1,24 @@
+# Netlify Configuration for LexisLaw Project
+
+[build]
+  # Directory where your static frontend files are located
+  publish = "src"
+  # No specific build command for static HTML/JS, can be left empty or a placeholder
+
+[[redirects]]
+  # For client-side routing (SPA fallback)
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  # Proxy for the Express backend API
+  from = "/api/*"
+  to = "http://localhost:3000/api/:splat" # Replace with your actual backend URL if deployed separately
+  status = 200
+
+[[redirects]]
+  # Redirect for the admin dashboard
+  from = "/admin"
+  to = "/admin/dashboard.html"
+  status = 200
