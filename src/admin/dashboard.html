@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEXIS LAW — Admin Dashboard</title>
+<title>LEXIS LAW — Client Portal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
@@ -34,16 +34,10 @@
     background: var(--black);
     color: var(--white);
     font-family: var(--font-body);
-    font-size: 15px;
-    line-height: 1.6;
-    overflow-x: hidden;
+    min-height: 100vh;
   }
 
-  ::selection { background: var(--red); color: var(--white); }
-
-  a { color: inherit; text-decoration: none; }
-
-  /* ── NAVIGATION ─────────────────────────────────────────────────────────── */
+  /* Navigation */
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -64,28 +58,18 @@
     display: flex;
     align-items: baseline;
     gap: 4px;
+    cursor: pointer;
   }
   .nav-logo span:first-child { color: var(--white); }
   .nav-logo span:last-child { color: var(--red); }
 
-  .nav-admin-badge {
-    background: var(--red);
-    color: var(--white);
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    padding: 4px 12px;
-    text-transform: uppercase;
-  }
-
-  .nav-user {
+  .nav-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 20px;
   }
 
-  .nav-user span {
+  .user-name {
     font-size: 13px;
     color: var(--grey);
   }
@@ -94,13 +78,12 @@
     background: none;
     border: 1px solid var(--grey);
     color: var(--grey);
-    padding: 6px 14px;
+    padding: 8px 16px;
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
     cursor: pointer;
-    transition: all var(--transition);
   }
 
   .logout-btn:hover {
@@ -108,71 +91,16 @@
     color: var(--red);
   }
 
-  /* ── LAYOUT ─────────────────────────────────────────────────────────────── */
-  .admin-layout {
-    display: grid;
-    grid-template-columns: 240px 1fr;
-    min-height: 100vh;
-    padding-top: 64px;
-  }
-
-  .sidebar {
-    background: var(--dgrey);
-    border-right: var(--border);
-    padding: 24px 0;
-    position: sticky;
-    top: 64px;
-    height: calc(100vh - 64px);
-    overflow-y: auto;
-  }
-
-  .sidebar-menu {
-    list-style: none;
-  }
-
-  .sidebar-item {
-    display: block;
-    padding: 14px 24px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--grey);
-    cursor: pointer;
-    transition: all var(--transition);
-    border-left: 3px solid transparent;
-  }
-
-  .sidebar-item:hover {
-    color: var(--white);
-    background: var(--lgrey);
-  }
-
-  .sidebar-item.active {
-    color: var(--white);
-    background: var(--lgrey);
-    border-left-color: var(--red);
-  }
-
-  .sidebar-item .count {
-    float: right;
-    background: var(--red);
-    color: var(--white);
-    padding: 2px 8px;
-    font-size: 10px;
-  }
-
-  /* ── MAIN CONTENT ─────────────────────────────────────────────────────── */
-  .main-content {
-    padding: 32px 40px;
+  /* Main Content */
+  .portal {
+    padding-top: 96px;
+    padding: 96px 40px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
   .page-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 32px;
+    margin-bottom: 40px;
   }
 
   .page-title {
@@ -184,136 +112,189 @@
 
   .page-title span { color: var(--red); }
 
-  /* ── STATS CARDS ─────────────────────────────────────────────────────── */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 40px;
-  }
-
-  .stat-card {
-    background: var(--lgrey);
-    border: var(--border);
-    padding: 24px;
-    position: relative;
-  }
-
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--red);
-  }
-
-  .stat-card.green::before { background: var(--green); }
-  .stat-card.yellow::before { background: #F5A623; }
-
-  .stat-num {
-    font-family: var(--font-display);
-    font-size: 42px;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 8px;
-  }
-
-  .stat-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
+  .welcome-text {
     color: var(--grey);
-    letter-spacing: 2px;
-    text-transform: uppercase;
+    margin-top: 8px;
+    font-size: 15px;
   }
 
-  /* ── TABLE ─────────────────────────────────────────────────────────────── */
-  .table-container {
+  /* Sections */
+  .section {
     background: var(--lgrey);
     border: var(--border);
-    overflow: hidden;
+    margin-bottom: 24px;
   }
 
-  .table-header {
+  .section-header {
+    background: var(--dgrey);
+    padding: 16px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 24px;
     border-bottom: var(--border);
-    background: var(--dgrey);
   }
 
-  .table-title {
+  .section-title {
     font-family: var(--font-body);
     font-size: 13px;
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--white);
   }
 
-  .table-filters {
+  .section-body {
+    padding: 24px;
+  }
+
+  /* Matters List */
+  .matter-card {
+    border: var(--border);
+    padding: 20px;
+    margin-bottom: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .matter-card:last-child { margin-bottom: 0; }
+
+  .matter-ref {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: 2px;
+  }
+
+  .matter-type {
+    font-size: 14px;
+    color: var(--grey);
+    margin-top: 4px;
+  }
+
+  .matter-status {
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 2px solid;
+  }
+
+  .status-pending { color: var(--grey); border-color: var(--grey); }
+  .status-in_progress { color: var(--red); border-color: var(--red); }
+  .status-awaiting_docs { color: #F5A623; border-color: #F5A623; }
+  .status-hearing { color: #64B5F6; border-color: #64B5F6; }
+  .status-resolved { color: var(--green); border-color: var(--green); }
+
+  .matter-next {
+    grid-column: 1 / -1;
+    padding-top: 12px;
+    border-top: 1px solid var(--dgrey);
+    font-size: 13px;
+    color: var(--grey);
+  }
+
+  /* Documents */
+  .upload-zone {
+    border: 2px dashed var(--grey);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .upload-zone:hover {
+    border-color: var(--red);
+    background: rgba(230, 51, 41, 0.05);
+  }
+
+  .upload-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .upload-text {
+    color: var(--grey);
+    font-size: 14px;
+  }
+
+  .upload-text strong {
+    color: var(--red);
+  }
+
+  .doc-list {
+    margin-top: 20px;
+  }
+
+  .doc-item {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--black);
+    border: var(--border);
+    margin-bottom: 8px;
+  }
+
+  .doc-info {
+    display: flex;
+    align-items: center;
     gap: 12px;
   }
 
-  .filter-select {
-    background: var(--black);
-    border: 1px solid var(--grey);
-    color: var(--white);
-    font-family: var(--font-mono);
+  .doc-icon {
+    font-size: 20px;
+  }
+
+  .doc-name {
+    font-size: 13px;
+  }
+
+  .doc-size {
     font-size: 11px;
-    padding: 8px 12px;
-    cursor: pointer;
+    color: var(--grey);
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
+  .doc-actions a {
+    color: var(--red);
+    font-size: 12px;
+    text-decoration: none;
   }
 
-  th {
-    background: var(--black);
+  /* Forms */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--grey);
-    text-align: left;
-    padding: 14px 20px;
-    border-bottom: var(--border);
+    margin-bottom: 8px;
   }
 
-  td {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--lgrey);
-    font-size: 14px;
+  .form-select, .form-input {
+    width: 100%;
+    background: var(--black);
+    border: 2px solid var(--dgrey);
     color: var(--white);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 12px;
+    outline: none;
   }
 
-  tr:hover {
-    background: rgba(255,255,255,0.02);
+  .form-select:focus, .form-input:focus {
+    border-color: var(--red);
   }
 
-  /* ── STATUS BADGES ─────────────────────────────────────────────────────── */
-  .status-badge {
-    display: inline-block;
-    padding: 4px 10px;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    border: 1px solid;
-  }
-
-  .status-pending { color: var(--grey); border-color: var(--grey); }
-  .status-confirmed { color: var(--green); border-color: var(--green); }
-  .status-completed { color: #64B5F6; border-color: #64B5F6; }
-  .status-cancelled { color: var(--red); border-color: var(--red); }
-
-  /* ── BUTTONS ─────────────────────────────────────────────────────────── */
   .btn {
     display: inline-block;
     font-family: var(--font-body);
@@ -321,7 +302,7 @@
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 10px 18px;
+    padding: 12px 20px;
     border: 2px solid;
     cursor: pointer;
     transition: all var(--transition);
@@ -340,181 +321,51 @@
     border-color: var(--grey);
   }
 
-  .btn-small {
-    padding: 6px 12px;
-    font-size: 10px;
-  }
-
-  /* ── LOGIN SCREEN ─────────────────────────────────────────────────────── */
-  .login-screen {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--black);
-  }
-
-  .login-box {
-    width: 400px;
-    background: var(--lgrey);
-    border: var(--border);
-    padding: 48px;
+  /* Empty State */
+  .empty-state {
     text-align: center;
+    padding: 40px;
+    color: var(--grey);
   }
 
-  .login-logo {
+  .empty-icon {
     font-family: var(--font-display);
     font-size: 48px;
-    letter-spacing: 4px;
-    margin-bottom: 32px;
-  }
-
-  .login-logo span:first-child { color: var(--white); }
-  .login-logo span:last-child { color: var(--red); }
-
-  .login-title {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 24px;
-  }
-
-  .login-input {
-    width: 100%;
-    background: var(--black);
-    border: 2px solid var(--dgrey);
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 15px;
-    padding: 14px 16px;
+    color: var(--lgrey);
     margin-bottom: 16px;
-    outline: none;
-    transition: border-color var(--transition);
   }
 
-  .login-input:focus {
-    border-color: var(--red);
+  /* Loading */
+  .loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--grey);
   }
 
-  .login-btn {
-    width: 100%;
-    margin-top: 16px;
-  }
-
-  .login-error {
-    color: var(--red);
-    font-size: 12px;
-    margin-top: 16px;
-    display: none;
-  }
-
-  .login-error.show { display: block; }
-
-  /* ── MODAL ─────────────────────────────────────────────────────────────── */
-  .modal-overlay {
+  /* Toast */
+  .toast {
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-  }
-
-  .modal-overlay.show {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .modal {
-    background: var(--lgrey);
-    border: var(--border);
-    width: 500px;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-
-  .modal-header {
-    background: var(--dgrey);
-    padding: 20px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: var(--border);
-  }
-
-  .modal-title {
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .modal-close {
-    background: none;
-    border: none;
-    color: var(--grey);
-    font-size: 24px;
-    cursor: pointer;
-  }
-
-  .modal-body {
-    padding: 24px;
-  }
-
-  .form-group {
-    margin-bottom: 16px;
-  }
-
-  .form-label {
-    display: block;
+    bottom: 32px;
+    right: 32px;
+    background: var(--green);
+    color: var(--black);
+    padding: 16px 24px;
     font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 8px;
+    z-index: 9000;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.4s ease;
   }
 
-  .form-input, .form-select {
-    width: 100%;
-    background: var(--black);
-    border: 2px solid var(--dgrey);
-    color: var(--white);
-    font-family: var(--font-body);
-    font-size: 14px;
-    padding: 12px;
-    outline: none;
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
   }
 
-  .form-input:focus, .form-select:focus {
-    border-color: var(--red);
-  }
-
-  .modal-footer {
-    padding: 16px 24px;
-    border-top: var(--border);
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
-  }
-
-  /* ── UTILITY ─────────────────────────────────────────────────────────────── */
-  .hidden { display: none !important; }
-
-  .text-red { color: var(--red); }
-  .text-green { color: var(--green); }
-  .text-grey { color: var(--grey); }
-
-  /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+  /* Responsive */
   @media (max-width: 1024px) {
     .admin-layout { grid-template-columns: 1fr; }
     .sidebar { display: none; }
@@ -620,16 +471,6 @@
             <!-- Populated via JS -->
           </tbody>
         </table>
-      </div>
-    </div>
-
-    <!-- Page: Calendar (Placeholder) -->
-    <div id="view-calendar" class="hidden">
-      <div class="page-header">
-        <h1 class="page-title">APPOINTMENT <span>CALENDAR</span></h1>
-      </div>
-      <div class="table-container" style="padding: 40px; text-align: center;">
-        <p class="text-grey">Calendar view coming in Phase 2</p>
       </div>
     </div>
 
@@ -828,61 +669,47 @@
   const API_BASE = window.location.origin;
   const DEMO_PASSWORD = 'lexislaw2026';
   
-  // Convex configuration - replace with your deployment
-  const CONVEX_URL = 'https://your-deployment.convex.cloud';
-  let convexClient = null;
-
-  // Initialize Convex client
-  async function initConvex() {
-    try {
-      const { ConvexHttpClient } = await import('https://cdn.jsdelivr.net/npm/convex@1.32.0/+esm');
-      convexClient = new ConvexHttpClient(CONVEX_URL);
-      console.log('✓ Convex client initialized');
-      return convexClient;
-    } catch (e) {
-      console.log('Convex not available, using Express API');
-      return null;
-    }
-  }
-
-  // Convex-aware API helper
-  async function convexApiCall(endpoint, options = {}) {
-    // Try Convex first
-    if (convexClient) {
-      try {
-        if (endpoint === '/api/bookings') {
-          const result = await convexClient.query('getBookings', {});
-          return { bookings: result };
-        }
-      } catch (e) {
-        console.log('Convex query failed, trying Express...');
-      }
-    }
-    
-    // Fall back to Express API
-    const res = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers: { 
-        'Content-Type': 'application/json',
-        ...options.headers 
-      }
-    });
-    
-    if (!res.ok) {
-      throw new Error(`API Error: ${res.status}`);
-    }
-    
-    return res.json();
-  }
-  
-  // Initialize Convex on load
-  initConvex();
-  
-  // Mock data for demo
+  // Mock data for admin views (Phase 1)
   let bookingsData = [
-    { id: '1', reference: 'REF-00421', client_name: 'Sipho Mkhize', client_phone: '+27820000000', matter_type: 'Family Law — Divorce', preferred_date: '2026-03-15', preferred_time: '10:00', status: 'pending', attorney_name: 'Adv. T. Nkosi' },
-    { id: '2', reference: 'REF-00100', client_name: 'Thandi Khumalo', client_phone: '+27820000001', matter_type: 'Commercial Law — Dispute', preferred_date: '2026-03-20', preferred_time: '09:00', status: 'confirmed', attorney_name: 'Adv. S. Mokoena' },
-    { id: '3', reference: 'REF-00311', client_name: 'Bongani Dlamini', client_phone: '+27820000002', matter_type: 'Criminal Defence — Bail', preferred_date: '2026-03-10', preferred_time: '14:00', status: 'completed', attorney_name: 'Adv. T. Nkosi' },
+    { id: '1', reference: 'REF-00421', client_name: 'Sipho Mkhize', client_phone: '+27820000000', matter_type: 'Family Law — Divorce', preferred_date: '2026-03-15', preferred_time: '10:00', status: 'pending', attorney_name: 'Adv. T. Nkosi', attorney_id: '1' },
+    { id: '2', reference: 'REF-00100', client_name: 'Thandi Khumalo', client_phone: '+27820000001', matter_type: 'Commercial Law — Dispute', preferred_date: '2026-03-20', preferred_time: '09:00', status: 'confirmed', attorney_name: 'Adv. S. Mokoena', attorney_id: '2' },
+    { id: '3', reference: 'REF-00311', client_name: 'Bongani Dlamini', client_phone: '+27820000002', matter_type: 'Criminal Defence — Bail', preferred_date: '2026-03-10', preferred_time: '14:00', status: 'completed', attorney_name: 'Adv. T. Nkosi', attorney_id: '1' },
+    { id: '4', reference: 'REF-00001', client_name: 'Fatima Essop', client_phone: '+27820000003', matter_type: 'Property Law', preferred_date: '2026-03-03', preferred_time: '11:00', status: 'awaiting_docs', attorney_name: 'Adv. N. Pillay', attorney_id: '3' },
+  ];
+  
+  let mattersData = [
+    { reference: 'REF-00421', client_name: 'Sipho Mkhize', client_phone: '+27820000000', attorney_name: 'Adv. T. Nkosi', attorney_id: '1', status: 'awaiting_docs', next_action: 'Waiting for client ID scan' },
+    { reference: 'REF-00100', client_name: 'Thandi Khumalo', client_phone: '+27820000001', attorney_name: 'Adv. S. Mokoena', attorney_id: '2', status: 'in_progress', next_action: 'Drafting initial papers' },
+    { reference: 'REF-00311', client_name: 'Bongani Dlamini', client_phone: '+27820000002', attorney_name: 'Adv. T. Nkosi', attorney_id: '1', status: 'resolved', next_action: 'Case closed, filed judgement' },
+    { reference: 'REF-00001', client_name: 'Fatima Essop', client_phone: '+27820000003', attorney_name: 'Adv. N. Pillay', attorney_id: '3', status: 'pending', next_action: 'Requires initial review' },
+  ];
+
+  let docsData = [
+    { filename: 'ID_Document.pdf', client: 'Sipho Mkhize', matter: 'REF-00421', type: 'pdf', size: '245 KB', date: '2026-03-01', storage: 's_abc123' },
+    { filename: 'Marriage_Cert.jpg', client: 'Sipho Mkhize', matter: 'REF-00421', type: 'image', size: '1.2 MB', date: '2026-03-01', storage: 's_abc124' },
+    { filename: 'Contract_Signed.pdf', client: 'Thandi Khumalo', matter: 'REF-00100', type: 'pdf', size: '89 KB', date: '2026-02-28', storage: 's_xyz456' },
+  ];
+
+  let clientsData = [
+      { name: 'Sipho Mkhize', email: 'sipho@email.co.za', phone: '+27820000000', clerk: null, date: '2026-01-15' },
+      { name: 'Thandi Khumalo', email: 'thandi@email.co.za', phone: '+27820000001', clerk: null, date: '2026-02-01' },
+      { name: 'Bongani Dlamini', email: 'bongani@email.co.za', phone: '+27820000002', clerk: null, date: '2026-02-15' },
+      { name: 'Fatima Essop', email: 'fatima@email.co.za', phone: '+27820000003', clerk: null, date: '2026-01-20' },
+  ];
+
+  let smsLogsData = [
+      { to: '+27820000000', client: 'Sipho Mkhize', message: 'REMINDER: Appointment tomorrow at 10:00.', status: 'delivered', date: '2026-03-02 14:30' },
+      { to: '+27820000001', client: 'Thandi Khumalo', message: 'Status update: Hearing scheduled for 2026-03-25.', status: 'sent', date: '2026-03-01 09:15' },
+      { to: '+27820000002', client: 'Bongani Dlamini', message: 'Booking confirmed for REF-00311', status: 'delivered', date: '2026-02-28 16:45' },
+      { to: '+27820000000', client: 'Sipho Mkhize', message: 'Document request: Please upload ID', status: 'failed', date: '2026-02-25 11:20' },
+  ];
+  
+  // --- Attorney Mock Data for Admin Use ---
+  const attorneys = [
+      { id: '1', name: 'Adv. T. Nkosi', email: 'tnkosi@lexislaw.co.za' },
+      { id: '2', name: 'Adv. S. Mokoena', email: 'smokoena@lexislaw.co.za' },
+      { id: '3', name: 'Adv. N. Pillay', email: 'npillay@lexislaw.co.za' },
+      { id: '4', name: 'Adv. L. van der Merwe', email: 'lvdm@lexislaw.co.za' },
   ];
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -896,7 +723,7 @@
     if (password === DEMO_PASSWORD) {
       document.getElementById('loginScreen').classList.add('hidden');
       document.getElementById('adminDashboard').classList.remove('hidden');
-      loadBookings();
+      switchView('bookings'); // Load initial view
     } else {
       error.classList.add('show');
     }
@@ -921,7 +748,7 @@
       document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
     });
 
-    // Load data
+    // Load data specific to the view
     if (view === 'bookings') loadBookings();
     if (view === 'matters') loadMatters();
     if (view === 'documents') loadDocuments();
@@ -930,19 +757,13 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // DOCUMENTS
+  // DOCUMENTS (Task 6.1)
   // ═══════════════════════════════════════════════════════════════════════════
   
   function loadDocuments() {
-    // Demo data
-    const docs = [
-      { filename: 'ID_Document.pdf', client: 'Sipho Mkhize', matter: 'REF-00421', type: 'pdf', size: '245 KB', date: '2026-03-01' },
-      { filename: 'Marriage_Cert.jpg', client: 'Sipho Mkhize', matter: 'REF-00421', type: 'image', size: '1.2 MB', date: '2026-03-01' },
-      { filename: 'Contract_Signed.pdf', client: 'Thandi Khumalo', matter: 'REF-00100', type: 'pdf', size: '89 KB', date: '2026-02-28' },
-    ];
-
     const tbody = document.getElementById('docsTable');
-    tbody.innerHTML = docs.map(d => `
+    
+    tbody.innerHTML = docsData.map(d => `
       <tr>
         <td><strong>${d.filename}</strong></td>
         <td>${d.client}</td>
@@ -950,64 +771,70 @@
         <td>${d.type.toUpperCase()}</td>
         <td>${d.size}</td>
         <td>${d.date}</td>
-        <td><button class="btn btn-outline btn-small">Download</button></td>
+        <td>
+            <button class="btn btn-outline btn-small" onclick="downloadDoc('${d.storage}')">Download</button>
+        </td>
       </tr>
     `).join('') || '<tr><td colspan="7" style="text-align: center; color: var(--grey);">No documents found</td></tr>';
   }
 
   function filterDocs() {
-    loadDocuments();
+    loadDocuments(); // Simple implementation: reload all for now
+  }
+  
+  function downloadDoc(storageId) {
+    // In production, this would call API to get temporary link from Convex storageId
+    alert(`Demo: Requesting download URL for storage ID: ${storageId}`);
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // CLIENTS
+  // CLIENTS (Task 6.2)
   // ═══════════════════════════════════════════════════════════════════════════
   
   function loadClients() {
-    // Demo data
-    const clients = [
-      { name: 'Sipho Mkhize', email: 'sipho@email.co.za', phone: '+27820000000', clerk: 'user_123', date: '2026-01-15' },
-      { name: 'Thandi Khumalo', email: 'thandi@email.co.za', phone: '+27820000001', clerk: 'user_456', date: '2026-02-01' },
-      { name: 'Bongani Dlamini', email: 'bongani@email.co.za', phone: '+27820000002', clerk: null, date: '2026-02-15' },
-      { name: 'Fatima Essop', email: 'fatima@email.co.za', phone: '+27820000003', clerk: 'user_789', date: '2026-01-20' },
-    ];
-
     const tbody = document.getElementById('clientsTable');
-    tbody.innerHTML = clients.map(c => `
+    
+    tbody.innerHTML = clientsData.map(c => `
       <tr>
         <td><strong>${c.name}</strong></td>
-        <td>${c.email}</td>
+        <td>${c.email || '<span class="text-grey">—</span>'}</td>
         <td>${c.phone}</td>
         <td>${c.clerk || '<span class="text-grey">—</span>'}</td>
         <td>${c.date}</td>
-        <td><button class="btn btn-outline btn-small">View</button></td>
+        <td><button class="btn btn-outline btn-small" onclick="viewClientDetails('${c.phone}')">View/Edit</button></td>
       </tr>
     `).join('') || '<tr><td colspan="6" style="text-align: center; color: var(--grey);">No clients found</td></tr>';
   }
+  
+  function viewClientDetails(phone) {
+      const client = clientsData.find(c => c.phone === phone);
+      if (client) {
+          alert(`Viewing Client: ${client.name} (${client.phone}). Clerk ID: ${client.clerk || 'N/A'}`);
+      }
+  }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // SMS
+  // SMS LOGS (Task 6.3)
   // ═══════════════════════════════════════════════════════════════════════════
   
   function loadSMS() {
-    // Demo data
-    const smsLogs = [
-      { to: '+27820000000', client: 'Sipho Mkhize', message: 'Reminder: Appointment tomorrow at 10:00', status: 'delivered', date: '2026-03-02 14:30' },
-      { to: '+27820000001', client: 'Thandi Khumalo', message: 'Status update: Hearing scheduled', status: 'sent', date: '2026-03-01 09:15' },
-      { to: '+27820000002', client: 'Bongani Dlamini', message: 'Booking confirmed for REF-00311', status: 'delivered', date: '2026-02-28 16:45' },
-      { to: '+27820000000', client: 'Sipho Mkhize', message: 'Document request: Please upload ID', status: 'failed', date: '2026-02-25 11:20' },
-    ];
+    const sent = smsLogsData.filter(s => s.status === 'sent' || s.status === 'delivered').length;
+    const delivered = smsLogsData.filter(s => s.status === 'delivered').length;
+    const failed = smsLogsData.filter(s => s.status === 'failed').length;
 
-    const sent = smsLogs.filter(s => s.status === 'sent' || s.status === 'delivered').length;
-    const delivered = smsLogs.filter(s => s.status === 'delivered').length;
-    const failed = smsLogs.filter(s => s.status === 'failed').length;
-
-    document.getElementById('smsTotal').textContent = smsLogs.length;
+    document.getElementById('smsTotal').textContent = smsLogsData.length;
     document.getElementById('smsDelivered').textContent = delivered;
     document.getElementById('smsFailed').textContent = failed;
 
     const tbody = document.getElementById('smsTable');
-    tbody.innerHTML = smsLogs.map(s => `
+    const filter = document.getElementById('smsFilter').value;
+    
+    let filteredLogs = smsLogsData;
+    if (filter) {
+        filteredLogs = smsLogsData.filter(l => l.status === filter);
+    }
+    
+    tbody.innerHTML = filteredLogs.map(s => `
       <tr>
         <td>${s.to}</td>
         <td>${s.client}</td>
@@ -1023,40 +850,15 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // API HELPERS
-  // ═══════════════════════════════════════════════════════════════════════════
-  
-  async function apiCall(endpoint, options = {}) {
-    try {
-      const res = await fetch(`${API_BASE}${endpoint}`, {
-        ...options,
-        headers: { 'Content-Type': 'application/json', ...options.headers }
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'API Error');
-      return data;
-    } catch (error) {
-      console.warn('API unavailable, using demo data');
-      throw error;
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // BOOKINGS
+  // BOOKINGS & MATTERS (Existing Logic)
   // ═══════════════════════════════════════════════════════════════════════════
   
   async function loadBookings() {
-    try {
-      const data = await convexApiCall('/api/bookings');
-      bookingsData = data.bookings || [];
-    } catch (e) {
-      console.log('Using demo booking data');
-    }
-    
+    // NOTE: In production, this calls /api/bookings. Here, we use mock data.
     updateStats();
     renderBookings();
   }
-
+  
   function updateStats() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('statTotal').textContent = bookingsData.length;
@@ -1084,7 +886,7 @@
         <td>${formatDate(booking.preferred_date)}<br><span class="text-grey" style="font-size: 12px;">${booking.preferred_time}</span></td>
         <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
         <td>
-          <button class="btn btn-outline btn-small" onclick="viewBooking('${booking.reference}')">View</button>
+          <button class="btn btn-outline btn-small" onclick="openMatterModal('${booking.reference}', '${booking.status}')">Update</button>
         </td>
       </tr>
     `).join('') || '<tr><td colspan="6" style="text-align: center; color: var(--grey);">No bookings found</td></tr>';
@@ -1095,33 +897,26 @@
   }
 
   function refreshBookings() {
+    // In production: loadBookings() which calls API
     loadBookings();
+    showToast('Data refreshed.');
   }
 
-  function viewBooking(ref) {
-    window.open(`/tracker?ref=${ref}`, '_blank');
-  }
-
-  // ═══════════════════════════════════════════════════════════════════════════
-  // MATTERS
-  // ═══════════════════════════════════════════════════════════════════════════
-  
   function loadMatters() {
-    // For demo, show bookings as matters
     const tbody = document.getElementById('mattersTable');
     
-    tbody.innerHTML = bookingsData.map(booking => `
+    tbody.innerHTML = mattersData.map(matter => `
       <tr>
-        <td><strong>${booking.reference}</strong></td>
+        <td><strong>${matter.reference}</strong></td>
         <td>
-          ${booking.client_name}<br>
-          <span class="text-grey" style="font-size: 12px;">${booking.client_phone}</span>
+          ${matter.client_name}<br>
+          <span class="text-grey" style="font-size: 12px;">${matter.client_phone}</span>
         </td>
-        <td>${booking.attorney_name || '<span class="text-grey">Unassigned</span>'}</td>
-        <td><span class="status-badge status-${booking.status}">${formatStatus(booking.status)}</span></td>
-        <td class="text-grey">-</td>
+        <td>${matter.attorney_name || '<span class="text-grey">Unassigned</span>'}</td>
+        <td><span class="status-badge status-${matter.status}">${formatStatus(matter.status)}</span></td>
+        <td class="text-grey">${matter.next_action || '-'}</td>
         <td>
-          <button class="btn btn-outline btn-small" onclick="openMatterModal('${booking.reference}', '${booking.status}')">Update</button>
+          <button class="btn btn-outline btn-small" onclick="openMatterModal('${matter.reference}', '${matter.status}')">Update</button>
         </td>
       </tr>
     `).join('') || '<tr><td colspan="6" style="text-align: center; color: var(--grey);">No matters found</td></tr>';
@@ -1145,6 +940,9 @@
     document.getElementById('modalCurrentStatus').textContent = formatStatus(status);
     document.getElementById('modalStatus').value = status === 'confirmed' ? 'in_progress' : status;
     document.getElementById('modalNextAction').value = '';
+    // Demo: Select an attorney based on status
+    const attorneyId = (status === 'pending' || status === 'resolved') ? '' : (status === 'awaiting_docs' ? '3' : '1');
+    document.getElementById('modalAttorney').value = attorneyId;
     document.getElementById('matterModal').classList.add('show');
   }
 
@@ -1156,17 +954,24 @@
     const ref = document.getElementById('modalMatterRef').value;
     const status = document.getElementById('modalStatus').value;
     const next_action = document.getElementById('modalNextAction').value;
-    const attorney_id = document.getElementById('modalAttorney').value;
+    const attorney_id = document.getElementById('modalAttorney').value || null;
 
     try {
+      // API Call to update status (Task 1)
       await apiCall(`/api/matters/${ref.replace('REF-', '')}/status`, {
         method: 'PATCH',
-        body: JSON.stringify({ status, next_action, attorney_id: attorney_id || null })
+        body: JSON.stringify({ status, next_action, attorney_id })
       });
-      alert('Matter updated successfully!');
+      showToast(`Matter ${ref} updated! SMS notifications triggered.`);
     } catch (e) {
-      // Demo mode - just show success
-      alert('Matter updated (demo mode)');
+      showToast(`Update Failed: ${e.message}`, 'error');
+      // For demo resilience:
+      const matterIndex = mattersData.findIndex(m => m.reference === ref);
+      if(matterIndex !== -1) {
+          mattersData[matterIndex].status = status;
+          mattersData[matterIndex].next_action = next_action;
+          mattersData[matterIndex].attorney_name = attorneys.find(a => a.id === attorney_id)?.name || 'Unassigned';
+      }
     }
 
     closeModal();
@@ -1182,6 +987,21 @@
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') closeModal();
   });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // INITIALIZATION
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function init() {
+    loadBookings();
+    loadMatters();
+    loadDocuments();
+    loadClients();
+    loadSMS();
+  }
+  
+  init();
 </script>
+
 </body>
 </html>

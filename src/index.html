@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEXIS LAW — Expert Legal Counsel</title>
+<title>LEXIS LAW — Admin Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
@@ -22,10 +22,6 @@
     --dgrey:   #141414;
     --white:   #F0EDE8;
     --border:  2px solid #2E2E2E;
-    --border-red: 3px solid var(--red);
-    --shadow-red: 5px 5px 0px var(--red);
-    --shadow-green: 5px 5px 0px var(--green);
-    --shadow-grey: 5px 5px 0px #2E2E2E;
     --font-display: 'Bebas Neue', sans-serif;
     --font-body: 'Space Grotesk', sans-serif;
     --font-mono: 'Courier Prime', monospace;
@@ -41,32 +37,11 @@
     font-size: 15px;
     line-height: 1.6;
     overflow-x: hidden;
-    cursor: crosshair;
   }
 
   ::selection { background: var(--red); color: var(--white); }
 
   a { color: inherit; text-decoration: none; }
-
-  /* ── SCROLLBAR ──────────────────────────────────────────────────────────── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--black); }
-  ::-webkit-scrollbar-thumb { background: var(--red); }
-
-  /* ── NOISE TEXTURE OVERLAY ──────────────────────────────────────────────── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: 0.4;
-  }
-
-  /* ── PAGE SECTIONS ──────────────────────────────────────────────────────── */
-  .page { display: none; min-height: 100vh; }
-  .page.active { display: block; }
 
   /* ── NAVIGATION ─────────────────────────────────────────────────────────── */
   nav {
@@ -89,1349 +64,419 @@
     display: flex;
     align-items: baseline;
     gap: 4px;
-    cursor: pointer;
   }
   .nav-logo span:first-child { color: var(--white); }
   .nav-logo span:last-child { color: var(--red); }
 
-  .nav-links {
+  .nav-admin-badge {
+    background: var(--red);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    text-transform: uppercase;
+  }
+
+  .nav-user {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 16px;
+  }
+
+  .nav-user span {
+    font-size: 13px;
+    color: var(--grey);
+  }
+
+  .logout-btn {
+    background: none;
+    border: 1px solid var(--grey);
+    color: var(--grey);
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+
+  .logout-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────────────────────────── */
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+    padding-top: 64px;
+  }
+
+  .sidebar {
+    background: var(--dgrey);
+    border-right: var(--border);
+    padding: 24px 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .sidebar-menu {
     list-style: none;
   }
 
-  .nav-links li a, .nav-links li button {
-    font-family: var(--font-body);
+  .sidebar-item {
+    display: block;
+    padding: 14px 24px;
+    font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--grey);
-    background: none;
-    border: none;
     cursor: pointer;
-    transition: color var(--transition);
-    padding: 0;
+    transition: all var(--transition);
+    border-left: 3px solid transparent;
   }
 
-  .nav-links li a:hover, .nav-links li button:hover { color: var(--white); }
+  .sidebar-item:hover {
+    color: var(--white);
+    background: var(--lgrey);
+  }
 
-  .nav-cta {
-    background: var(--red) !important;
-    color: var(--white) !important;
-    padding: 10px 20px !important;
-    border: 2px solid var(--red) !important;
-    font-family: var(--font-body) !important;
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    letter-spacing: 2px !important;
-    text-transform: uppercase !important;
-    cursor: pointer;
-    transition: all var(--transition) !important;
+  .sidebar-item.active {
+    color: var(--white);
+    background: var(--lgrey);
+    border-left-color: var(--red);
+  }
+
+  .sidebar-item .count {
+    float: right;
+    background: var(--red);
+    color: var(--white);
+    padding: 2px 8px;
+    font-size: 10px;
+  }
+
+  /* ── MAIN CONTENT ─────────────────────────────────────────────────────── */
+  .main-content {
+    padding: 32px 40px;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(32px, 4vw, 48px);
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .page-title span { color: var(--red); }
+
+  /* ── STATS CARDS ─────────────────────────────────────────────────────── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: var(--lgrey);
+    border: var(--border);
+    padding: 24px;
     position: relative;
   }
 
-  .nav-cta::after {
+  .stat-card::before {
     content: '';
     position: absolute;
-    bottom: -4px; right: -4px;
-    width: 100%; height: 100%;
-    background: var(--red-dark);
-    z-index: -1;
-    transition: all var(--transition);
-  }
-
-  .nav-cta:hover { transform: translate(-2px, -2px); }
-  .nav-cta:hover::after { bottom: -6px; right: -6px; }
-
-  /* ── UTILITY ─────────────────────────────────────────────────────────────── */
-  .pt-nav { padding-top: 64px; }
-
-  .section-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--grey);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .section-label::before {
-    content: '';
-    display: block;
-    width: 24px;
-    height: 2px;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
     background: var(--red);
   }
 
-  .tag {
-    display: inline-block;
+  .stat-card.green::before { background: var(--green); }
+  .stat-card.yellow::before { background: #F5A623; }
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 42px;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--grey);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── TABLE ─────────────────────────────────────────────────────────────── */
+  .table-container {
+    background: var(--lgrey);
+    border: var(--border);
+    overflow: hidden;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    border-bottom: var(--border);
+    background: var(--dgrey);
+  }
+
+  .table-title {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .table-filters {
+    display: flex;
+    gap: 12px;
+  }
+
+  .filter-select {
+    background: var(--black);
+    border: 1px solid var(--grey);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 8px 12px;
+    cursor: pointer;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    background: var(--black);
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 4px 10px;
-    border: 1px solid currentColor;
+    color: var(--grey);
+    text-align: left;
+    padding: 14px 20px;
+    border-bottom: var(--border);
   }
 
-  .tag-red { color: var(--red); border-color: var(--red); }
-  .tag-green { color: var(--green); border-color: var(--green); }
-  .tag-grey { color: var(--grey); border-color: var(--grey); }
+  td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--lgrey);
+    font-size: 14px;
+    color: var(--white);
+  }
 
-  /* ── BUTTONS ─────────────────────────────────────────────────────────────── */
+  tr:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* ── STATUS BADGES ─────────────────────────────────────────────────────── */
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid;
+  }
+
+  .status-pending { color: var(--grey); border-color: var(--grey); }
+  .status-confirmed { color: var(--green); border-color: var(--green); }
+  .status-completed { color: #64B5F6; border-color: #64B5F6; }
+  .status-cancelled { color: var(--red); border-color: var(--red); }
+
+  /* ── BUTTONS ─────────────────────────────────────────────────────────── */
   .btn {
     display: inline-block;
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 2.5px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    padding: 14px 28px;
+    padding: 10px 18px;
     border: 2px solid;
     cursor: pointer;
     transition: all var(--transition);
-    position: relative;
     background: none;
   }
-
-  .btn::after {
-    content: '';
-    position: absolute;
-    bottom: -5px; right: -5px;
-    width: 100%; height: 100%;
-    z-index: -1;
-    transition: all var(--transition);
-  }
-
-  .btn:hover { transform: translate(-3px, -3px); }
-  .btn:hover::after { bottom: -8px; right: -8px; }
-  .btn:active { transform: translate(0, 0); }
-  .btn:active::after { bottom: -3px; right: -3px; }
 
   .btn-red {
     background: var(--red);
     color: var(--white);
     border-color: var(--red);
   }
-  .btn-red::after { background: var(--red-dark); }
 
   .btn-outline {
     background: transparent;
     color: var(--white);
     border-color: var(--grey);
   }
-  .btn-outline::after { background: var(--lgrey); }
 
-  .btn-green {
-    background: var(--green);
-    color: var(--black);
-    border-color: var(--green);
+  .btn-small {
+    padding: 6px 12px;
+    font-size: 10px;
   }
-  .btn-green::after { background: var(--green-dark); }
 
-  .btn-black {
-    background: var(--black);
-    color: var(--white);
-    border-color: var(--white);
-  }
-  .btn-black::after { background: var(--lgrey); }
-
-  /* ══════════════════════════════════════════════════════════════════════════
-     LANDING PAGE
-  ═══════════════════════════════════════════════════════════════════════════ */
-
-  /* ── HERO ─────────────────────────────────────────────────────────────── */
-  .hero {
+  /* ── LOGIN SCREEN ─────────────────────────────────────────────────────── */
+  .login-screen {
     min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-bottom: var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-left {
-    padding: 120px 60px 80px 60px;
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    border-right: var(--border);
-    position: relative;
-    z-index: 2;
+    background: var(--black);
   }
 
-  .hero-eyebrow {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--grey);
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 32px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .hero-eyebrow::before {
-    content: '—';
-    color: var(--red);
-  }
-
-  .hero-headline {
-    font-family: var(--font-display);
-    font-size: clamp(72px, 9vw, 120px);
-    line-height: 0.92;
-    letter-spacing: 2px;
-    color: var(--white);
-    margin-bottom: 32px;
-  }
-
-  .hero-headline .line-red { color: var(--red); display: block; }
-
-  .hero-sub {
-    font-family: var(--font-body);
-    font-size: 16px;
-    color: var(--grey);
-    line-height: 1.7;
-    max-width: 440px;
-    margin-bottom: 48px;
-    border-left: 3px solid var(--red);
-    padding-left: 20px;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .hero-right {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    overflow: hidden;
-  }
-
-  .hero-number {
-    font-family: var(--font-display);
-    font-size: 320px;
-    line-height: 1;
-    color: var(--lgrey);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    user-select: none;
-    letter-spacing: -10px;
-    opacity: 0.6;
-  }
-
-  .hero-stats {
-    position: relative;
-    z-index: 2;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-top: var(--border);
-  }
-
-  .hero-stat {
-    padding: 32px 28px;
-    border-right: var(--border);
-  }
-  .hero-stat:last-child { border-right: none; }
-
-  .hero-stat-num {
-    font-family: var(--font-display);
-    font-size: 48px;
-    color: var(--red);
-    display: block;
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-
-  .hero-stat-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--grey);
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .hero-ticker {
-    background: var(--red);
-    padding: 12px 0;
-    overflow: hidden;
-    white-space: nowrap;
-    border-top: 2px solid var(--red-dark);
-    border-bottom: 2px solid var(--red-dark);
-  }
-
-  .hero-ticker-inner {
-    display: inline-flex;
-    gap: 0;
-    animation: ticker 25s linear infinite;
-  }
-
-  .hero-ticker-item {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--white);
-    padding: 0 40px;
-    white-space: nowrap;
-  }
-  .hero-ticker-item::after {
-    content: '◆';
-    margin-left: 40px;
-    color: var(--red-dark);
-  }
-
-  @keyframes ticker {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* ── SERVICES ─────────────────────────────────────────────────────────── */
-  .services-section {
-    padding: 100px 60px;
-    border-bottom: var(--border);
-  }
-
-  .services-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: end;
-    margin-bottom: 60px;
-  }
-
-  .services-title {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 6vw, 80px);
-    line-height: 0.95;
-    color: var(--white);
-  }
-
-  .services-desc {
-    color: var(--grey);
-    font-size: 15px;
-    line-height: 1.8;
-    max-width: 420px;
-  }
-
-  .services-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border: var(--border);
-  }
-
-  .service-card {
-    padding: 36px 28px;
-    border-right: var(--border);
-    border-bottom: var(--border);
-    position: relative;
-    overflow: hidden;
-    transition: background var(--transition);
-    cursor: default;
-  }
-
-  .service-card:nth-child(4n) { border-right: none; }
-  .service-card:nth-last-child(-n+4) { border-bottom: none; }
-
-  .service-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 3px;
-    background: var(--red);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-
-  .service-card:hover::before { transform: scaleX(1); }
-  .service-card:hover { background: var(--lgrey); }
-
-  .service-icon {
-    font-family: var(--font-display);
-    font-size: 40px;
-    color: var(--red);
-    display: block;
-    margin-bottom: 20px;
-    line-height: 1;
-  }
-
-  .service-name {
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--white);
-    margin-bottom: 12px;
-  }
-
-  .service-desc {
-    font-size: 13px;
-    color: var(--grey);
-    line-height: 1.7;
-  }
-
-  .service-num {
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--lgrey);
-    font-weight: 700;
-    transition: color var(--transition);
-  }
-
-  .service-card:hover .service-num { color: var(--grey); }
-
-  /* ── ABOUT ──────────────────────────────────────────────────────────────── */
-  .about-section {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    border-bottom: var(--border);
-  }
-
-  .about-left {
-    padding: 100px 60px;
-    border-right: var(--border);
-  }
-
-  .about-title {
-    font-family: var(--font-display);
-    font-size: clamp(48px, 5vw, 72px);
-    color: var(--white);
-    line-height: 0.95;
-    margin-bottom: 32px;
-  }
-
-  .about-title em {
-    color: var(--red);
-    font-style: normal;
-  }
-
-  .about-body {
-    color: var(--grey);
-    font-size: 15px;
-    line-height: 1.9;
-    margin-bottom: 24px;
-  }
-
-  .about-right {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .about-value {
-    padding: 40px 48px;
-    border-bottom: var(--border);
-    position: relative;
-  }
-
-  .about-value:last-child { border-bottom: none; }
-
-  .about-value-title {
-    font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--white);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .about-value-title::before {
-    content: '';
-    width: 8px;
-    height: 8px;
-    background: var(--red);
-    display: block;
-    flex-shrink: 0;
-  }
-
-  .about-value p {
-    color: var(--grey);
-    font-size: 14px;
-    line-height: 1.7;
-  }
-
-  /* ── PROCESS / HOW IT WORKS ─────────────────────────────────────────────── */
-  .process-section {
-    padding: 100px 60px;
-    border-bottom: var(--border);
+  .login-box {
+    width: 400px;
     background: var(--lgrey);
-  }
-
-  .process-steps {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    margin-top: 60px;
     border: var(--border);
-    position: relative;
-  }
-
-  .process-steps::before {
-    content: '';
-    position: absolute;
-    top: 60px;
-    left: calc(10% + 32px);
-    right: calc(10% + 32px);
-    height: 2px;
-    background: var(--red);
-    z-index: 0;
-  }
-
-  .process-step {
-    padding: 40px 24px;
-    border-right: var(--border);
-    position: relative;
-    z-index: 1;
+    padding: 48px;
     text-align: center;
   }
 
-  .process-step:last-child { border-right: none; }
-
-  .step-num-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-  }
-
-  .step-num {
-    width: 48px;
-    height: 48px;
-    background: var(--red);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .login-logo {
     font-family: var(--font-display);
-    font-size: 24px;
-    color: var(--white);
-    position: relative;
-    border: 2px solid var(--red);
+    font-size: 48px;
+    letter-spacing: 4px;
+    margin-bottom: 32px;
   }
 
-  .step-num::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; right: -4px;
-    width: 100%; height: 100%;
-    background: var(--red-dark);
-    z-index: -1;
-  }
+  .login-logo span:first-child { color: var(--white); }
+  .login-logo span:last-child { color: var(--red); }
 
-  .step-title {
+  .login-title {
     font-family: var(--font-body);
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: var(--white);
-    margin-bottom: 10px;
-  }
-
-  .step-desc {
-    font-size: 12px;
-    color: var(--grey);
-    line-height: 1.7;
-  }
-
-  /* ── CTA BAND ─────────────────────────────────────────────────────────── */
-  .cta-band {
-    background: var(--red);
-    padding: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: var(--border);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-band::before {
-    content: 'LEGAL';
-    font-family: var(--font-display);
-    font-size: 200px;
-    color: var(--red-dark);
-    position: absolute;
-    right: 60px;
-    top: 50%;
-    transform: translateY(-50%);
-    line-height: 1;
-    user-select: none;
-    pointer-events: none;
-  }
-
-  .cta-band-text {
-    font-family: var(--font-display);
-    font-size: clamp(32px, 4vw, 52px);
-    color: var(--white);
-    line-height: 1.1;
-    max-width: 600px;
-    position: relative;
-    z-index: 1;
-  }
-
-  .cta-band-action {
-    position: relative;
-    z-index: 1;
-  }
-
-  /* ── FOOTER ─────────────────────────────────────────────────────────────── */
-  footer {
-    background: var(--black);
-    border-top: var(--border);
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 0;
-  }
-
-  .footer-col {
-    padding: 56px 40px;
-    border-right: var(--border);
-  }
-
-  .footer-col:last-child { border-right: none; }
-
-  .footer-logo {
-    font-family: var(--font-display);
-    font-size: 36px;
-    letter-spacing: 3px;
-    margin-bottom: 20px;
-  }
-
-  .footer-logo span:first-child { color: var(--white); }
-  .footer-logo span:last-child { color: var(--red); }
-
-  .footer-tagline {
-    color: var(--grey);
-    font-size: 13px;
-    line-height: 1.8;
-    margin-bottom: 28px;
-    max-width: 280px;
-  }
-
-  .footer-col-title {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--lgrey);
-  }
-
-  .footer-links { list-style: none; }
-
-  .footer-links li {
-    margin-bottom: 10px;
-  }
-
-  .footer-links a {
-    font-size: 13px;
-    color: var(--grey);
-    transition: color var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .footer-links a::before {
-    content: '→';
-    color: var(--red);
-    font-size: 11px;
-  }
-
-  .footer-links a:hover { color: var(--white); }
-
-  .footer-bottom {
-    grid-column: 1 / -1;
-    border-top: var(--border);
-    padding: 20px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .footer-bottom p {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--grey);
-    letter-spacing: 1px;
-  }
-
-  .footer-popia {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--grey);
-    letter-spacing: 1px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .footer-popia::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: var(--green);
-    border-radius: 50%;
-    display: block;
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* ══════════════════════════════════════════════════════════════════════════
-     BOOKING PAGE
-  ═══════════════════════════════════════════════════════════════════════════ */
-
-  .booking-page {
-    min-height: 100vh;
-    padding-top: 64px;
-  }
-
-  .booking-header {
-    background: var(--lgrey);
-    border-bottom: var(--border);
-    padding: 60px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    align-items: end;
-  }
-
-  .booking-title {
-    font-family: var(--font-display);
-    font-size: clamp(40px, 5vw, 64px);
-    color: var(--white);
-    line-height: 0.95;
-  }
-
-  .booking-title span { color: var(--red); }
-
-  .step-progress {
-    display: flex;
-    gap: 0;
-    border: var(--border);
-  }
-
-  .step-pill {
-    padding: 10px 20px;
-    font-family: var(--font-mono);
-    font-size: 10px;
+    font-size: 14px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--grey);
-    border-right: var(--border);
+    margin-bottom: 24px;
+  }
+
+  .login-input {
+    width: 100%;
     background: var(--black);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .step-pill:last-child { border-right: none; }
-  .step-pill.active { background: var(--red); color: var(--white); }
-  .step-pill.done { background: var(--lgrey); color: var(--green); }
-
-  .step-pill .s-num {
-    width: 18px;
-    height: 18px;
-    background: rgba(255,255,255,0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 9px;
-  }
-
-  .step-pill.done .s-num {
-    background: var(--green);
-    color: var(--black);
-  }
-
-  .booking-body {
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    min-height: calc(100vh - 240px);
-    border-bottom: var(--border);
-  }
-
-  .booking-form-area {
-    padding: 60px;
-    border-right: var(--border);
-  }
-
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-  }
-
-  .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .form-field.full { grid-column: 1 / -1; }
-
-  .form-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--red);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .form-label .required { color: var(--grey); }
-
-  .form-input, .form-select, .form-textarea {
-    background: var(--lgrey);
     border: 2px solid var(--dgrey);
     color: var(--white);
     font-family: var(--font-body);
     font-size: 15px;
     padding: 14px 16px;
+    margin-bottom: 16px;
     outline: none;
-    transition: border-color var(--transition), box-shadow var(--transition);
+    transition: border-color var(--transition);
+  }
+
+  .login-input:focus {
+    border-color: var(--red);
+  }
+
+  .login-btn {
     width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
+    margin-top: 16px;
   }
 
-  .form-input::placeholder, .form-textarea::placeholder {
-    color: var(--grey);
-    font-size: 14px;
-  }
-
-  .form-input:focus, .form-select:focus, .form-textarea:focus {
-    border-color: var(--red);
-    box-shadow: 4px 4px 0px var(--red-dark);
-  }
-
-  .form-select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A8A8A' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 16px center;
-    padding-right: 40px;
-    cursor: pointer;
-  }
-
-  .form-select option { background: var(--lgrey); color: var(--white); }
-
-  .form-textarea { resize: vertical; min-height: 100px; }
-
-  .form-checkbox-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-top: 8px;
-  }
-
-  .form-checkbox {
-    width: 18px;
-    height: 18px;
-    background: var(--lgrey);
-    border: 2px solid var(--grey);
-    cursor: pointer;
-    flex-shrink: 0;
-    margin-top: 2px;
-    appearance: none;
-    -webkit-appearance: none;
-    position: relative;
-    transition: all var(--transition);
-  }
-
-  .form-checkbox:checked {
-    background: var(--green);
-    border-color: var(--green);
-  }
-
-  .form-checkbox:checked::after {
-    content: '✓';
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    color: var(--black);
-    font-weight: 700;
-  }
-
-  .form-checkbox-label {
-    font-size: 13px;
-    color: var(--grey);
-    line-height: 1.6;
-  }
-
-  .form-checkbox-label a { color: var(--red); }
-
-  .form-submit-row {
-    margin-top: 36px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-  }
-
-  .booking-sidebar {
-    padding: 48px 36px;
-    background: var(--dgrey);
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-  }
-
-  .sidebar-block {
-    border: var(--border);
-    padding: 24px;
-    background: var(--black);
-  }
-
-  .sidebar-block-title {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--lgrey);
-  }
-
-  .next-step-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    margin-bottom: 16px;
-  }
-
-  .next-step-item:last-child { margin-bottom: 0; }
-
-  .ns-num {
-    width: 24px;
-    height: 24px;
-    background: var(--red);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--white);
-    flex-shrink: 0;
-  }
-
-  .ns-text {
-    font-size: 13px;
-    color: var(--grey);
-    line-height: 1.6;
-  }
-
-  .wa-badge {
-    background: #075E54;
-    border: 2px solid #128C7E;
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-
-  .wa-icon {
-    font-size: 28px;
-    line-height: 1;
-  }
-
-  .wa-badge-text strong {
-    display: block;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 4px;
-  }
-
-  .wa-badge-text span {
-    font-size: 12px;
-    color: rgba(240,237,232,0.6);
-    line-height: 1.5;
-  }
-
-  .office-info p {
-    font-size: 13px;
-    color: var(--grey);
-    line-height: 2;
-    display: flex;
-    gap: 10px;
-  }
-
-  .office-info p::before {
+  .login-error {
     color: var(--red);
-    font-weight: 700;
-  }
-
-  /* ── CONFIRMATION STATE ─────────────────────────────────────────────────── */
-  .confirmation-view {
+    font-size: 12px;
+    margin-top: 16px;
     display: none;
-    padding: 80px 60px;
-    min-height: calc(100vh - 240px);
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
   }
 
-  .confirmation-view.visible { display: flex; }
+  .login-error.show { display: block; }
 
-  .confirm-icon {
-    width: 80px;
-    height: 80px;
-    background: var(--green);
+  /* ── MODAL ─────────────────────────────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36px;
-    margin-bottom: 32px;
-    border: 3px solid var(--green);
-    box-shadow: 6px 6px 0px var(--green-dark);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
   }
 
-  .confirm-title {
-    font-family: var(--font-display);
-    font-size: 56px;
-    color: var(--white);
-    line-height: 0.95;
-    margin-bottom: 12px;
+  .modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
   }
 
-  .confirm-title span { color: var(--green); }
-
-  .confirm-ref {
-    font-family: var(--font-mono);
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--red);
-    padding: 12px 24px;
-    border: 2px solid var(--red);
-    margin: 24px 0;
-    letter-spacing: 4px;
-    display: inline-block;
-  }
-
-  .confirm-detail {
-    font-size: 15px;
-    color: var(--grey);
-    line-height: 2;
-    margin-bottom: 40px;
-  }
-
-  .confirm-wa-note {
-    background: #075E54;
-    border: 2px solid #128C7E;
-    padding: 20px 32px;
-    max-width: 480px;
-    margin: 0 auto 40px;
-    font-size: 14px;
-    color: var(--white);
-    line-height: 1.7;
-  }
-
-  .confirm-actions {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  /* ══════════════════════════════════════════════════════════════════════════
-     TRACKER PAGE
-  ═══════════════════════════════════════════════════════════════════════════ */
-
-  .tracker-page { padding-top: 64px; }
-
-  .tracker-header {
+  .modal {
     background: var(--lgrey);
-    padding: 60px;
-    border-bottom: var(--border);
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 40px;
-    flex-wrap: wrap;
-  }
-
-  .tracker-title {
-    font-family: var(--font-display);
-    font-size: clamp(40px, 5vw, 64px);
-    color: var(--white);
-    line-height: 0.95;
-  }
-
-  .tracker-title span { color: var(--green); }
-
-  .tracker-lookup {
-    display: flex;
-    gap: 0;
     border: var(--border);
-    flex: 1;
-    max-width: 520px;
+    width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
   }
 
-  .tracker-input {
-    flex: 1;
-    background: var(--black);
-    border: none;
-    color: var(--white);
-    font-family: var(--font-mono);
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    padding: 16px 20px;
-    outline: none;
-  }
-
-  .tracker-input::placeholder {
-    color: var(--grey);
-    font-size: 13px;
-    letter-spacing: 2px;
-  }
-
-  .tracker-btn {
-    background: var(--red);
-    color: var(--white);
-    border: none;
-    padding: 16px 28px;
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background var(--transition);
-    white-space: nowrap;
-  }
-
-  .tracker-btn:hover { background: var(--red-dark); }
-
-  .tracker-body {
-    padding: 60px;
-    min-height: calc(100vh - 280px);
-  }
-
-  .tracker-empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 400px;
-    text-align: center;
-    color: var(--grey);
-    border: 2px dashed var(--lgrey);
-    padding: 60px;
-  }
-
-  .tracker-empty-icon {
-    font-family: var(--font-display);
-    font-size: 80px;
-    color: var(--lgrey);
-    margin-bottom: 20px;
-  }
-
-  .tracker-empty h3 {
-    font-family: var(--font-body);
-    font-size: 16px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 10px;
-  }
-
-  .tracker-empty p { font-size: 14px; }
-
-  .tracker-result { display: none; }
-  .tracker-result.visible { display: block; }
-
-  .result-card {
-    border: 2px solid var(--green);
-    background: var(--lgrey);
-    box-shadow: 6px 6px 0px var(--green-dark);
-    margin-bottom: 28px;
-  }
-
-  .result-card-header {
+  .modal-header {
     background: var(--dgrey);
-    padding: 20px 28px;
+    padding: 20px 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     border-bottom: var(--border);
-    flex-wrap: wrap;
-    gap: 16px;
   }
 
-  .result-client {
+  .modal-title {
     font-family: var(--font-body);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
-    color: var(--white);
-  }
-
-  .result-meta {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--grey);
     letter-spacing: 1px;
-    margin-top: 4px;
+    text-transform: uppercase;
   }
 
-  .status-badge {
-    padding: 6px 14px;
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--grey);
+    font-size: 24px;
+    cursor: pointer;
+  }
+
+  .modal-body {
+    padding: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
     font-family: var(--font-mono);
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border: 2px solid;
-  }
-
-  .status-pending { color: var(--grey); border-color: var(--grey); }
-  .status-in-progress { color: var(--red); border-color: var(--red); background: rgba(230,51,41,0.1); }
-  .status-awaiting { color: #F5A623; border-color: #F5A623; background: rgba(245,166,35,0.1); }
-  .status-scheduled { color: #64B5F6; border-color: #64B5F6; background: rgba(100,181,246,0.1); }
-  .status-resolved { color: var(--green); border-color: var(--green); background: rgba(45,179,74,0.1); }
-
-  .result-card-body { padding: 36px 28px; }
-
-  .progress-label {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--grey);
-    margin-bottom: 24px;
-  }
-
-  .progress-stepper {
-    display: flex;
-    align-items: flex-start;
-    position: relative;
-    margin-bottom: 40px;
-  }
-
-  .progress-line {
-    position: absolute;
-    top: 19px;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--lgrey);
-    z-index: 0;
-  }
-
-  .progress-line-fill {
-    height: 100%;
-    background: var(--green);
-    transition: width 1s ease;
-  }
-
-  .p-step {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    z-index: 1;
-  }
-
-  .p-step-circle {
-    width: 40px;
-    height: 40px;
-    background: var(--lgrey);
-    border: 2px solid var(--grey);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--grey);
-    margin-bottom: 12px;
-    transition: all 0.4s ease;
-  }
-
-  .p-step.done .p-step-circle {
-    background: var(--green);
-    border-color: var(--green);
-    color: var(--black);
-  }
-
-  .p-step.active .p-step-circle {
-    background: var(--red);
-    border-color: var(--red);
-    color: var(--white);
-    box-shadow: 0 0 0 4px rgba(230,51,41,0.2);
-  }
-
-  .p-step-label {
-    font-family: var(--font-mono);
-    font-size: 9px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--grey);
-    text-align: center;
-    line-height: 1.4;
-    max-width: 80px;
-  }
-
-  .p-step.done .p-step-label { color: var(--green); }
-  .p-step.active .p-step-label { color: var(--white); }
-
-  .result-details-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    border: var(--border);
-    margin-bottom: 28px;
-  }
-
-  .detail-cell {
-    padding: 20px 20px;
-    border-right: var(--border);
-  }
-
-  .detail-cell:last-child { border-right: none; }
-
-  .detail-key {
-    font-family: var(--font-mono);
-    font-size: 9px;
     font-weight: 700;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -1439,1199 +484,675 @@
     margin-bottom: 8px;
   }
 
-  .detail-val {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--white);
-  }
-
-  .result-actions {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-
-  .wa-contact-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: #25D366;
-    color: var(--black);
-    border: 2px solid #25D366;
-    padding: 14px 24px;
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all var(--transition);
-    text-decoration: none;
-    position: relative;
-  }
-
-  .wa-contact-btn::after {
-    content: '';
-    position: absolute;
-    bottom: -5px; right: -5px;
-    width: 100%; height: 100%;
-    background: #1A6B2E;
-    z-index: -1;
-  }
-
-  .wa-contact-btn:hover { transform: translate(-3px, -3px); }
-
-  .notification-panel {
-    background: var(--dgrey);
-    border: var(--border);
-    padding: 28px;
-    margin-top: 28px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 24px;
-    flex-wrap: wrap;
-  }
-
-  .notif-text strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--white);
-    margin-bottom: 6px;
-  }
-
-  .notif-text span {
-    font-size: 13px;
-    color: var(--grey);
-  }
-
-  .notif-toggle {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .toggle-switch {
-    width: 48px;
-    height: 26px;
-    background: var(--lgrey);
-    border: 2px solid var(--grey);
-    position: relative;
-    cursor: pointer;
-    transition: all var(--transition);
-  }
-
-  .toggle-switch.on {
-    background: var(--green);
-    border-color: var(--green);
-  }
-
-  .toggle-knob {
-    position: absolute;
-    top: 2px; left: 2px;
-    width: 18px;
-    height: 18px;
-    background: var(--grey);
-    transition: all 0.25s ease;
-  }
-
-  .toggle-switch.on .toggle-knob {
-    left: calc(100% - 20px);
+  .form-input, .form-select {
+    width: 100%;
     background: var(--black);
+    border: 2px solid var(--dgrey);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 14px;
+    padding: 12px;
+    outline: none;
   }
 
-  .toggle-label {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: var(--grey);
-  }
-
-  .toggle-switch.on + .toggle-label { color: var(--green); }
-
-  /* ── ANIMATIONS ─────────────────────────────────────────────────────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .anim { opacity: 0; animation: fadeUp 0.6s ease forwards; }
-  .anim-d1 { animation-delay: 0.1s; }
-  .anim-d2 { animation-delay: 0.2s; }
-  .anim-d3 { animation-delay: 0.3s; }
-  .anim-d4 { animation-delay: 0.4s; }
-  .anim-d5 { animation-delay: 0.5s; }
-
-  /* ── MOBILE ─────────────────────────────────────────────────────────────── */
-  @media (max-width: 1024px) {
-    .hero { grid-template-columns: 1fr; }
-    .hero-right { display: none; }
-    .hero-left { padding: 80px 28px 60px; }
-    .services-grid { grid-template-columns: repeat(2, 1fr); }
-    .services-section { padding: 60px 28px; }
-    .services-header { grid-template-columns: 1fr; gap: 20px; }
-    .about-section { grid-template-columns: 1fr; }
-    .about-left { padding: 60px 28px; border-right: none; border-bottom: var(--border); }
-    .process-steps { grid-template-columns: repeat(2, 1fr) !important; }
-    .process-section { padding: 60px 28px; }
-    .process-steps::before { display: none; }
-    .cta-band { padding: 40px 28px; flex-direction: column; align-items: flex-start; }
-    .cta-band::before { display: none; }
-    footer { grid-template-columns: 1fr 1fr; }
-    .footer-col { padding: 36px 24px; }
-    nav { padding: 0 20px; }
-    .nav-links { gap: 16px; }
-    .booking-header { padding: 40px 28px; grid-template-columns: 1fr; gap: 24px; }
-    .booking-body { grid-template-columns: 1fr; }
-    .booking-form-area { padding: 40px 28px; border-right: none; border-bottom: var(--border); }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-field.full { grid-column: auto; }
-    .booking-sidebar { padding: 40px 28px; }
-    .tracker-header { padding: 40px 28px; flex-direction: column; align-items: flex-start; }
-    .tracker-lookup { max-width: 100%; }
-    .tracker-body { padding: 40px 28px; }
-    .result-details-grid { grid-template-columns: 1fr 1fr; }
-    .detail-cell:nth-child(2) { border-right: none; }
-    .detail-cell { border-bottom: var(--border); }
-    .detail-cell:last-child { border-bottom: none; }
-    .detail-cell:nth-last-child(2) { border-bottom: none; }
-    .confirmation-view { padding: 60px 28px; }
-  }
-
-  @media (max-width: 640px) {
-    .nav-links li:not(:last-child) { display: none; }
-    .services-grid { grid-template-columns: 1fr; }
-    .service-card { border-right: none; }
-    footer { grid-template-columns: 1fr; }
-    .footer-col { border-right: none; }
-    .process-steps { grid-template-columns: 1fr !important; }
-    .hero-stats { grid-template-columns: 1fr 1fr; }
-    .step-progress { flex-direction: column; width: 100%; }
-    .step-pill { border-right: none; border-bottom: var(--border); }
-    .step-pill:last-child { border-bottom: none; }
-    .result-details-grid { grid-template-columns: 1fr; }
-    .detail-cell { border-right: none; }
-    .progress-stepper { overflow-x: auto; padding-bottom: 8px; }
-    .p-step { min-width: 80px; }
-  }
-
-  /* ── MISC ────────────────────────────────────────────────────────────────── */
-  .hidden { display: none !important; }
-  .visible { display: block !important; }
-
-  .error-msg {
-    color: var(--red);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 1px;
-    margin-top: 4px;
-    display: none;
-  }
-
-  .form-field.has-error .form-input,
-  .form-field.has-error .form-select {
+  .form-input:focus, .form-select:focus {
     border-color: var(--red);
   }
 
-  .form-field.has-error .error-msg { display: block; }
-
-  .toast {
-    position: fixed;
-    bottom: 32px;
-    right: 32px;
-    background: var(--green);
-    color: var(--black);
+  .modal-footer {
     padding: 16px 24px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    z-index: 9000;
-    border: 2px solid var(--green-dark);
-    box-shadow: 5px 5px 0 var(--green-dark);
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.4s ease;
+    border-top: var(--border);
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
   }
 
-  .toast.show {
-    transform: translateY(0);
-    opacity: 1;
+  /* ── UTILITY ─────────────────────────────────────────────────────────────── */
+  .hidden { display: none !important; }
+
+  .text-red { color: var(--red); }
+  .text-green { color: var(--green); }
+  .text-grey { color: var(--grey); }
+
+  /* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+  @media (max-width: 1024px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .sidebar { display: none; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
-  /* Divider line */
-  .divider {
-    height: 1px;
-    background: var(--lgrey);
-    margin: 32px 0;
+  @media (max-width: 640px) {
+    .stats-grid { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; gap: 16px; align-items: flex-start; }
   }
 </style>
 </head>
 <body>
 
-<!-- ── TOAST ──────────────────────────────────────────────────────────────── -->
-<div class="toast" id="toast">✓ BOOKING CONFIRMED</div>
-
-<!-- ── NAVIGATION ─────────────────────────────────────────────────────────── -->
-<nav>
-  <div class="nav-logo" onclick="showPage('home')">
-    <span>LEXIS</span><span>LAW</span>
+<!-- ── LOGIN SCREEN ─────────────────────────────────────────────────────── -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo"><span>LEXIS</span><span>LAW</span></div>
+    <p class="login-title">Attorney Login</p>
+    <input type="password" class="login-input" id="loginPassword" placeholder="Enter admin password">
+    <button class="btn btn-red login-btn" onclick="attemptLogin()">Access Dashboard</button>
+    <p class="login-error" id="loginError">Incorrect password. Try: lexislaw2026</p>
   </div>
-  <ul class="nav-links">
-    <li><a href="#services" onclick="showPage('home', 'services')">Services</a></li>
-    <li><a href="#about" onclick="showPage('home', 'about')">About</a></li>
-    <li><a href="#contact" onclick="showPage('home', 'contact')">Contact</a></li>
-    <li><button onclick="showPage('tracker')">Track Matter</button></li>
-    <li><button class="nav-cta" onclick="showPage('booking')">Book Consultation</button></li>
-  </ul>
-</nav>
-
-<!-- ══════════════════════════════════════════════════════════════════════════
-     PAGE: HOME
-═══════════════════════════════════════════════════════════════════════════ -->
-<div id="page-home" class="page active pt-nav">
-
-  <!-- TICKER -->
-  <div class="hero-ticker">
-    <div class="hero-ticker-inner" id="tickerInner">
-      <span class="hero-ticker-item">Family Law</span>
-      <span class="hero-ticker-item">Criminal Defence</span>
-      <span class="hero-ticker-item">Commercial Law</span>
-      <span class="hero-ticker-item">Civil Litigation</span>
-      <span class="hero-ticker-item">Labour Law</span>
-      <span class="hero-ticker-item">Property Law</span>
-      <span class="hero-ticker-item">Estate Planning</span>
-      <span class="hero-ticker-item">Contract Law</span>
-      <!-- Duplicate for seamless loop -->
-      <span class="hero-ticker-item">Family Law</span>
-      <span class="hero-ticker-item">Criminal Defence</span>
-      <span class="hero-ticker-item">Commercial Law</span>
-      <span class="hero-ticker-item">Civil Litigation</span>
-      <span class="hero-ticker-item">Labour Law</span>
-      <span class="hero-ticker-item">Property Law</span>
-      <span class="hero-ticker-item">Estate Planning</span>
-      <span class="hero-ticker-item">Contract Law</span>
-    </div>
-  </div>
-
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-left">
-      <p class="hero-eyebrow anim anim-d1">Expert Legal Counsel — Johannesburg, South Africa</p>
-      <h1 class="hero-headline anim anim-d2">
-        JUSTICE
-        <span class="line-red">STARTS</span>
-        HERE.
-      </h1>
-      <p class="hero-sub anim anim-d3">
-        Direct. Fearless. Results-driven legal representation for individuals, families, and businesses across South Africa.
-      </p>
-      <div class="hero-actions anim anim-d4">
-        <button class="btn btn-red" onclick="showPage('booking')">Book a Consultation →</button>
-        <a href="#services" class="btn btn-outline" onclick="event.preventDefault(); showPage('home', 'services')">Our Services</a>
-      </div>
-    </div>
-    <div class="hero-right">
-      <div class="hero-number">LL</div>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <span class="hero-stat-num">20+</span>
-          <span class="hero-stat-label">Years of Practice</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat-num">98%</span>
-          <span class="hero-stat-label">Client Satisfaction</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat-num">800+</span>
-          <span class="hero-stat-label">Cases Handled</span>
-        </div>
-        <div class="hero-stat">
-          <span class="hero-stat-num">4</span>
-          <span class="hero-stat-label">Attorneys On Call</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SERVICES -->
-  <section class="services-section" id="services">
-    <div class="services-header">
-      <div>
-        <div class="section-label">Practice Areas</div>
-        <h2 class="services-title">OUR<br>EXPERTISE</h2>
-      </div>
-      <p class="services-desc">
-        We provide expert legal representation across a wide range of practice areas. Every matter is handled with precision, urgency, and a commitment to achieving the best possible outcome.
-      </p>
-    </div>
-    <div class="services-grid">
-      <div class="service-card">
-        <span class="service-icon">⚖</span>
-        <h3 class="service-name">Family Law</h3>
-        <p class="service-desc">Divorce, custody, maintenance, adoption, and domestic violence matters handled with sensitivity and strength.</p>
-        <span class="service-num">01</span>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">🛡</span>
-        <h3 class="service-name">Criminal Defence</h3>
-        <p class="service-desc">Aggressive defence representation from bail hearings to full trials across all courts.</p>
-        <span class="service-num">02</span>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">📋</span>
-        <h3 class="service-name">Commercial Law</h3>
-        <p class="service-desc">Business contracts, company disputes, mergers, and commercial litigation for SMEs and corporates.</p>
-        <span class="service-num">03</span>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">🏛</span>
-        <h3 class="service-name">Civil Litigation</h3>
-        <p class="service-desc">High Court and Magistrates' Court matters — debt recovery, delictual claims, and interdicts.</p>
-        <span class="service-num">04</span>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">👷</span>
-        <h3 class="service-name">Labour Law</h3>
-        <p class="service-desc">CCMA representation, unfair dismissal, retrenchments, and employment equity matters.</p>
-        <span class="service-num">05</span>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">🏠</span>
-        <h3 class="service-name">Property Law</h3>
-        <p class="service-desc">Conveyancing, lease disputes, evictions, and property transfers handled efficiently.</p>
-        <span class="service-num">06</span>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">📜</span>
-        <h3 class="service-name">Estate Planning</h3>
-        <p class="service-desc">Wills, trusts, and deceased estate administration — protecting your family's future.</p>
-        <span class="service-num">07</span>
-      </div>
-      <div class="service-card">
-        <span class="service-icon">✍</span>
-        <h3 class="service-name">Contract Law</h3>
-        <p class="service-desc">Drafting, reviewing, and enforcing commercial and personal agreements of all kinds.</p>
-        <span class="service-num">08</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section class="about-section" id="about">
-    <div class="about-left">
-      <div class="section-label">About the Firm</div>
-      <h2 class="about-title">BUILT ON<br><em>RESULTS,</em><br>NOT PROMISES.</h2>
-      <p class="about-body">
-        Lexis Law is a results-driven law firm serving clients across Gauteng and South Africa. Founded over two decades ago, we have grown from a boutique practice into a multi-disciplinary legal team renowned for fearless advocacy and practical solutions.
-      </p>
-      <p class="about-body">
-        We believe in clear communication, no surprises on billing, and fighting as hard for the individual as for the corporation. Every client gets direct access to their attorney — not a paralegal, not a receptionist.
-      </p>
-      <div style="margin-top: 32px;">
-        <button class="btn btn-red" onclick="showPage('booking')">Book a Free Initial Consultation →</button>
-      </div>
-    </div>
-    <div class="about-right">
-      <div class="about-value">
-        <h4 class="about-value-title">Direct Communication</h4>
-        <p>You will always speak to your attorney directly. We use WhatsApp to keep you informed at every step — no chasing, no voicemails left unanswered.</p>
-      </div>
-      <div class="about-value">
-        <h4 class="about-value-title">Transparent Process</h4>
-        <p>Track your matter in real-time through our online tracker. Know where things stand before you even pick up the phone.</p>
-      </div>
-      <div class="about-value">
-        <h4 class="about-value-title">Focused Expertise</h4>
-        <p>Our four attorneys each specialise in defined areas of law — you get a specialist, not a generalist who knows a little about everything.</p>
-      </div>
-      <div class="about-value">
-        <h4 class="about-value-title">No Surprises</h4>
-        <p>Fees are discussed upfront. Our booking system, reminders, and status updates exist to ensure you are never caught off-guard by your own legal matter.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section class="process-section">
-    <div class="section-label">How It Works</div>
-    <h2 class="services-title" style="font-family: var(--font-display); font-size: clamp(48px,6vw,80px); color: var(--white); line-height: 0.95; margin-bottom: 8px;">THE PROCESS</h2>
-    <p style="color: var(--grey); font-size: 15px; max-width: 500px; margin-top: 12px;">From first contact to resolution — clear steps, no confusion.</p>
-    <div class="process-steps">
-      <div class="process-step">
-        <div class="step-num-wrap"><div class="step-num">1</div></div>
-        <h4 class="step-title">Book Online</h4>
-        <p class="step-desc">Fill in the consultation form in under 2 minutes. Pick your date and time.</p>
-      </div>
-      <div class="process-step">
-        <div class="step-num-wrap"><div class="step-num">2</div></div>
-        <h4 class="step-title">Get Confirmed</h4>
-        <p class="step-desc">Receive an instant WhatsApp confirmation with your reference number and booking details.</p>
-      </div>
-      <div class="process-step">
-        <div class="step-num-wrap"><div class="step-num">3</div></div>
-        <h4 class="step-title">Consultation</h4>
-        <p class="step-desc">Meet your attorney. We assess your matter and provide a clear action plan.</p>
-      </div>
-      <div class="process-step">
-        <div class="step-num-wrap"><div class="step-num">4</div></div>
-        <h4 class="step-title">Track Progress</h4>
-        <p class="step-desc">Use your reference number to check your matter status online at any time.</p>
-      </div>
-      <div class="process-step">
-        <div class="step-num-wrap"><div class="step-num">5</div></div>
-        <h4 class="step-title">Stay Notified</h4>
-        <p class="step-desc">Automated WhatsApp reminders before appointments and when your status changes.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA BAND -->
-  <div class="cta-band">
-    <div class="cta-band-text">
-      DON'T WAIT.<br>GET LEGAL<br>HELP TODAY.
-    </div>
-    <div class="cta-band-action">
-      <button class="btn btn-black" onclick="showPage('booking')">Book a Consultation →</button>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer id="contact">
-    <div class="footer-col">
-      <div class="footer-logo"><span>LEXIS</span><span>LAW</span></div>
-      <p class="footer-tagline">Expert legal representation for individuals, families, and businesses across South Africa. Direct. Fearless. Results-driven.</p>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <span class="tag tag-red">POPIA Compliant</span>
-        <span class="tag tag-green">LSSA Registered</span>
-      </div>
-    </div>
-    <div class="footer-col">
-      <p class="footer-col-title">Practice Areas</p>
-      <ul class="footer-links">
-        <li><a href="#">Family Law</a></li>
-        <li><a href="#">Criminal Defence</a></li>
-        <li><a href="#">Commercial Law</a></li>
-        <li><a href="#">Civil Litigation</a></li>
-        <li><a href="#">Labour Law</a></li>
-        <li><a href="#">Property Law</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <p class="footer-col-title">Quick Links</p>
-      <ul class="footer-links">
-        <li><a href="#" onclick="showPage('booking')">Book a Consultation</a></li>
-        <li><a href="#" onclick="showPage('tracker')">Track Your Matter</a></li>
-        <li><a href="#" onclick="showPage('home', 'about')">About the Firm</a></li>
-        <li><a href="#">Privacy Policy</a></li>
-        <li><a href="#">Fee Structure</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <p class="footer-col-title">Contact</p>
-      <div class="office-info">
-        <p>📍 &nbsp;123 Commissioner Street, Johannesburg, 2001</p>
-        <p>📞 &nbsp;+27 11 000 0000</p>
-        <p>💬 &nbsp;+27 82 000 0000 (WhatsApp)</p>
-        <p>✉️ &nbsp;info@lexislaw.co.za</p>
-        <p>🕐 &nbsp;Mon–Fri: 08:00 – 17:00</p>
-      </div>
-      <div style="margin-top:24px;">
-        <button class="btn btn-red" onclick="showPage('booking')" style="padding: 10px 20px; font-size: 11px;">Book Now →</button>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 LEXIS LAW INCORPORATED. ALL RIGHTS RESERVED.</p>
-      <p class="footer-popia">POPIA COMPLIANT — DATA PROTECTED</p>
-    </div>
-  </footer>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     PAGE: BOOKING
-═══════════════════════════════════════════════════════════════════════════ -->
-<div id="page-booking" class="page">
+<!-- ── ADMIN DASHBOARD ───────────────────────────────────────────────────── -->
+<div class="admin-layout hidden" id="adminDashboard">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <ul class="sidebar-menu">
+      <li class="sidebar-item active" data-view="bookings" onclick="switchView('bookings')">
+        Bookings <span class="count" id="pendingCount">0</span>
+      </li>
+      <li class="sidebar-item" data-view="matters" onclick="switchView('matters')">
+        Matters
+      </li>
+      <li class="sidebar-item" data-view="documents" onclick="switchView('documents')">
+        Documents
+      </li>
+      <li class="sidebar-item" data-view="clients" onclick="switchView('clients')">
+        Clients
+      </li>
+      <li class="sidebar-item" data-view="sms" onclick="switchView('sms')">
+        SMS Logs
+      </li>
+    </ul>
+  </aside>
 
-  <div class="booking-page">
-    <div class="booking-header">
-      <div>
-        <div class="section-label">Step 02 of 03</div>
-        <h1 class="booking-title">BOOK YOUR<br><span>CONSULTATION</span></h1>
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Page: Bookings -->
+    <div id="view-bookings">
+      <div class="page-header">
+        <h1 class="page-title">BOOKINGS <span>MANAGEMENT</span></h1>
+        <button class="btn btn-red" onclick="refreshBookings()">Refresh ↻</button>
       </div>
-      <div class="step-progress">
-        <div class="step-pill done">
-          <span class="s-num">✓</span> Visit
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num" id="statTotal">0</div>
+          <div class="stat-label">Total Bookings</div>
         </div>
-        <div class="step-pill active">
-          <span class="s-num">2</span> Book
+        <div class="stat-card yellow">
+          <div class="stat-num" id="statPending">0</div>
+          <div class="stat-label">Pending</div>
         </div>
-        <div class="step-pill">
-          <span class="s-num">3</span> Confirm
+        <div class="stat-card green">
+          <div class="stat-num" id="statConfirmed">0</div>
+          <div class="stat-label">Confirmed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statToday">0</div>
+          <div class="stat-label">Today</div>
         </div>
       </div>
-    </div>
 
-    <!-- FORM VIEW -->
-    <div class="booking-body" id="bookingFormView">
-      <div class="booking-form-area">
-        <div class="section-label" style="margin-bottom: 32px;">Fill in your details below</div>
-
-        <div class="form-grid" id="bookingForm">
-
-          <div class="form-field" id="field-name">
-            <label class="form-label">Full Name <span class="required">*</span></label>
-            <input type="text" class="form-input" id="inp-name" placeholder="e.g. Sipho Mkhize">
-            <span class="error-msg">Please enter your full name</span>
-          </div>
-
-          <div class="form-field" id="field-phone">
-            <label class="form-label">WhatsApp Number <span class="required">*</span></label>
-            <input type="tel" class="form-input" id="inp-phone" placeholder="+27 82 000 0000">
-            <span class="error-msg">Please enter a valid SA number</span>
-          </div>
-
-          <div class="form-field" id="field-email">
-            <label class="form-label">Email <span class="required" style="color: var(--grey);">(optional)</span></label>
-            <input type="email" class="form-input" id="inp-email" placeholder="your@email.com">
-          </div>
-
-          <div class="form-field full" id="field-matter">
-            <label class="form-label">Matter Type <span class="required">*</span></label>
-            <select class="form-select" id="inp-matter">
-              <option value="" disabled selected>Select your legal matter</option>
-              <option>Family Law — Divorce / Custody</option>
-              <option>Family Law — Maintenance</option>
-              <option>Family Law — Domestic Violence</option>
-              <option>Criminal Defence</option>
-              <option>Commercial Law</option>
-              <option>Civil Litigation</option>
-              <option>Labour Law — Dismissal / CCMA</option>
-              <option>Property Law</option>
-              <option>Estate Planning / Wills</option>
-              <option>Contract Law</option>
-              <option>Other</option>
+      <div class="table-container">
+        <div class="table-header">
+          <span class="table-title">Recent Bookings</span>
+          <div class="table-filters">
+            <select class="filter-select" id="statusFilter" onchange="filterBookings()">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
             </select>
-            <span class="error-msg">Please select a matter type</span>
           </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Client</th>
+              <th>Matter Type</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTable">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-          <div class="form-field" id="field-date">
-            <label class="form-label">Preferred Date <span class="required">*</span></label>
-            <input type="date" class="form-input" id="inp-date">
-            <span class="error-msg">Please select a date</span>
-          </div>
+    <!-- Page: Matters -->
+    <div id="view-matters" class="hidden">
+      <div class="page-header">
+        <h1 class="page-title">MATTER <span>TRACKING</span></h1>
+      </div>
+      <div class="table-container">
+        <div class="table-header">
+          <span class="table-title">All Matters</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Client</th>
+              <th>Attorney</th>
+              <th>Status</th>
+              <th>Next Action</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="mattersTable">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-          <div class="form-field" id="field-time">
-            <label class="form-label">Preferred Time <span class="required">*</span></label>
-            <select class="form-select" id="inp-time">
-              <option value="" disabled selected>Select a time slot</option>
-              <option>08:00 – 09:00</option>
-              <option>09:00 – 10:00</option>
-              <option>10:00 – 11:00</option>
-              <option>11:00 – 12:00</option>
-              <option>13:00 – 14:00</option>
-              <option>14:00 – 15:00</option>
-              <option>15:00 – 16:00</option>
-              <option>16:00 – 17:00</option>
+    <!-- Page: Documents -->
+    <div id="view-documents" class="hidden">
+      <div class="page-header">
+        <h1 class="page-title">DOCUMENT <span>MANAGEMENT</span></h1>
+      </div>
+      <div class="table-container">
+        <div class="table-header">
+          <span class="table-title">All Uploaded Documents</span>
+          <div class="table-filters">
+            <select class="filter-select" id="docFilter" onchange="filterDocs()">
+              <option value="">All Matters</option>
             </select>
-            <span class="error-msg">Please select a time slot</span>
-          </div>
-
-          <div class="form-field full">
-            <label class="form-label">Brief Description <span class="required" style="color: var(--grey);">(optional)</span></label>
-            <textarea class="form-textarea" id="inp-desc" placeholder="Briefly describe your legal matter so we can prepare before your consultation..."></textarea>
-          </div>
-
-          <div class="form-field full">
-            <div class="form-checkbox-row">
-              <input type="checkbox" class="form-checkbox" id="chk-wa" checked>
-              <label class="form-checkbox-label" for="chk-wa">
-                Send me a WhatsApp confirmation and reminders for this booking. I consent to being contacted via WhatsApp by Lexis Law.
-              </label>
-            </div>
-            <div class="form-checkbox-row" style="margin-top: 12px;">
-              <input type="checkbox" class="form-checkbox" id="chk-popia" required>
-              <label class="form-checkbox-label" for="chk-popia">
-                I consent to the processing of my personal information in accordance with the <a href="#">POPIA Privacy Policy</a>. <span style="color: var(--red);">*</span>
-              </label>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="form-submit-row">
-          <button class="btn btn-red" onclick="submitBooking()">Submit Booking →</button>
-          <button class="btn btn-outline" onclick="showPage('home')">← Back</button>
-        </div>
-
-      </div>
-
-      <aside class="booking-sidebar">
-        <div class="sidebar-block">
-          <p class="sidebar-block-title">What Happens Next</p>
-          <div class="next-step-item">
-            <span class="ns-num">1</span>
-            <p class="ns-text">Submit your details using the form.</p>
-          </div>
-          <div class="next-step-item">
-            <span class="ns-num">2</span>
-            <p class="ns-text">Receive an instant WhatsApp confirmation with your unique reference number.</p>
-          </div>
-          <div class="next-step-item">
-            <span class="ns-num">3</span>
-            <p class="ns-text">Arrive 10 minutes early for your consultation.</p>
-          </div>
-          <div class="next-step-item">
-            <span class="ns-num">4</span>
-            <p class="ns-text">Use your reference number to track your matter online, anytime.</p>
           </div>
         </div>
-
-        <div class="wa-badge">
-          <span class="wa-icon">💬</span>
-          <div class="wa-badge-text">
-            <strong>WhatsApp Confirmation</strong>
-            <span>Delivered to your number within 30 seconds of booking submission.</span>
-          </div>
-        </div>
-
-        <div class="sidebar-block">
-          <p class="sidebar-block-title">Office Details</p>
-          <div class="office-info">
-            <p>📍 &nbsp;123 Commissioner Street, JHB</p>
-            <p>📞 &nbsp;+27 11 000 0000</p>
-            <p>💬 &nbsp;+27 82 000 0000 (WhatsApp)</p>
-            <p>🕐 &nbsp;Mon–Fri: 08:00 – 17:00</p>
-          </div>
-        </div>
-
-        <div class="sidebar-block" style="border-color: var(--red);">
-          <p class="sidebar-block-title">Initial Consultation</p>
-          <p style="font-size: 13px; color: var(--grey); line-height: 1.7;">
-            Your first consultation is a confidential meeting with your assigned attorney. Bring any relevant documents you have. Duration: approximately 45 minutes.
-          </p>
-        </div>
-      </aside>
-    </div>
-
-    <!-- CONFIRMATION VIEW -->
-    <div class="confirmation-view" id="confirmationView">
-      <div class="confirm-icon">✓</div>
-      <h2 class="confirm-title">BOOKING<br><span>CONFIRMED</span></h2>
-      <div class="confirm-ref" id="confirmRef">REF-00000</div>
-      <div class="confirm-detail" id="confirmDetail">
-        <strong id="confName" style="color: var(--white); font-weight: 700; font-size: 18px;"></strong><br>
-        <span id="confMatter"></span><br>
-        <span id="confDateTime"></span>
-      </div>
-      <div class="confirm-wa-note">
-        💬 &nbsp;A WhatsApp confirmation has been sent to your number. Save your reference number — you'll need it to track your matter.
-      </div>
-      <div class="confirm-actions">
-        <button class="btn btn-green" onclick="showPage('tracker')">Track My Matter →</button>
-        <button class="btn btn-outline" onclick="showPage('home')">← Back to Home</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Filename</th>
+              <th>Client</th>
+              <th>Matter</th>
+              <th>Type</th>
+              <th>Size</th>
+              <th>Uploaded</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="docsTable">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
       </div>
     </div>
 
-  </div>
+    <!-- Page: Clients -->
+    <div id="view-clients" class="hidden">
+      <div class="page-header">
+        <h1 class="page-title">CLIENT <span>DATABASE</span></h1>
+      </div>
+      <div class="table-container">
+        <div class="table-header">
+          <span class="table-title">All Clients</span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Clerk ID</th>
+              <th>Registered</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="clientsTable">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Page: SMS -->
+    <div id="view-sms" class="hidden">
+      <div class="page-header">
+        <h1 class="page-title">SMS <span>LOGS</span></h1>
+      </div>
+      <div class="stats-grid" style="margin-bottom: 24px;">
+        <div class="stat-card">
+          <div class="stat-num" id="smsTotal">0</div>
+          <div class="stat-label">Total Sent</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-num" id="smsDelivered">0</div>
+          <div class="stat-label">Delivered</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="smsFailed">0</div>
+          <div class="stat-label">Failed</div>
+        </div>
+      </div>
+      <div class="table-container">
+        <div class="table-header">
+          <span class="table-title">SMS History</span>
+          <div class="table-filters">
+            <select class="filter-select" id="smsFilter" onchange="filterSMS()">
+              <option value="">All Status</option>
+              <option value="sent">Sent</option>
+              <option value="delivered">Delivered</option>
+              <option value="failed">Failed</option>
+            </select>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>To</th>
+              <th>Client</th>
+              <th>Message</th>
+              <th>Status</th>
+              <th>Sent</th>
+            </tr>
+          </thead>
+          <tbody id="smsTable">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     PAGE: TRACKER
-═══════════════════════════════════════════════════════════════════════════ -->
-<div id="page-tracker" class="page">
-
-  <div class="tracker-page">
-    <div class="tracker-header">
-      <div>
-        <div class="section-label">Client Portal</div>
-        <h1 class="tracker-title">TRACK YOUR<br><span>MATTER</span></h1>
+<!-- ── MATTER STATUS MODAL ───────────────────────────────────────────────── -->
+<div class="modal-overlay" id="matterModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Update Matter Status</span>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="modalMatterRef">
+      
+      <div class="form-group">
+        <label class="form-label">Current Status</label>
+        <div id="modalCurrentStatus" class="text-grey">-</div>
       </div>
-      <div style="flex: 1; max-width: 520px;">
-        <p style="font-family: var(--font-mono); font-size: 11px; color: var(--grey); letter-spacing: 2px; margin-bottom: 12px; text-transform: uppercase;">Enter your reference number below</p>
-        <div class="tracker-lookup">
-          <input type="text" class="tracker-input" id="trackerInput" placeholder="REF-XXXXX" maxlength="10">
-          <button class="tracker-btn" onclick="lookupMatter()">Search →</button>
-        </div>
+
+      <div class="form-group">
+        <label class="form-label">New Status</label>
+        <select class="form-select" id="modalStatus">
+          <option value="pending">Pending</option>
+          <option value="in_progress">In Progress</option>
+          <option value="awaiting_docs">Awaiting Documents</option>
+          <option value="hearing">Hearing Scheduled</option>
+          <option value="resolved">Resolved</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Next Action</label>
+        <input type="text" class="form-input" id="modalNextAction" placeholder="e.g. Awaiting client documents">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Assign Attorney</label>
+        <select class="form-select" id="modalAttorney">
+          <option value="">Unassigned</option>
+          <option value="1">Adv. T. Nkosi</option>
+          <option value="2">Adv. S. Mokoena</option>
+          <option value="3">Adv. N. Pillay</option>
+          <option value="4">Adv. L. van der Merwe</option>
+        </select>
       </div>
     </div>
-
-    <div class="tracker-body">
-
-      <!-- Empty state -->
-      <div class="tracker-empty" id="trackerEmpty">
-        <div class="tracker-empty-icon">⚖</div>
-        <h3>Enter Your Reference Number</h3>
-        <p>Your reference number was sent to your WhatsApp when you booked your consultation.</p>
-        <p style="margin-top: 8px; color: var(--red); font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;">Try: REF-00421 or REF-00100</p>
-      </div>
-
-      <!-- Not found state -->
-      <div id="trackerNotFound" style="display:none; text-align:center; padding: 60px; border: 2px dashed var(--red);">
-        <p style="font-family: var(--font-display); font-size: 36px; color: var(--red);">NOT FOUND</p>
-        <p style="color: var(--grey); font-size: 14px; margin-top: 12px;">No matter found with that reference number. Please check and try again.</p>
-      </div>
-
-      <!-- Result -->
-      <div class="tracker-result" id="trackerResult">
-
-        <div class="result-card">
-          <div class="result-card-header">
-            <div>
-              <p class="result-client" id="resName">—</p>
-              <p class="result-meta" id="resMeta">—</p>
-            </div>
-            <span class="status-badge" id="resStatusBadge">—</span>
-          </div>
-
-          <div class="result-card-body">
-            <p class="progress-label">Matter Progress</p>
-
-            <div class="progress-stepper">
-              <div class="progress-line">
-                <div class="progress-line-fill" id="progressFill" style="width: 0%"></div>
-              </div>
-              <div class="p-step" id="ps-0">
-                <div class="p-step-circle">1</div>
-                <p class="p-step-label">Pending</p>
-              </div>
-              <div class="p-step" id="ps-1">
-                <div class="p-step-circle">2</div>
-                <p class="p-step-label">In Progress</p>
-              </div>
-              <div class="p-step" id="ps-2">
-                <div class="p-step-circle">3</div>
-                <p class="p-step-label">Awaiting Docs</p>
-              </div>
-              <div class="p-step" id="ps-3">
-                <div class="p-step-circle">4</div>
-                <p class="p-step-label">Hearing Set</p>
-              </div>
-              <div class="p-step" id="ps-4">
-                <div class="p-step-circle">✓</div>
-                <p class="p-step-label">Resolved</p>
-              </div>
-            </div>
-
-            <div class="result-details-grid">
-              <div class="detail-cell">
-                <p class="detail-key">Consultation Date</p>
-                <p class="detail-val" id="resDate">—</p>
-              </div>
-              <div class="detail-cell">
-                <p class="detail-key">Assigned Attorney</p>
-                <p class="detail-val" id="resAttorney">—</p>
-              </div>
-              <div class="detail-cell">
-                <p class="detail-key">Last Updated</p>
-                <p class="detail-val" id="resUpdated">—</p>
-              </div>
-              <div class="detail-cell">
-                <p class="detail-key">Next Action</p>
-                <p class="detail-val" id="resNext">—</p>
-              </div>
-            </div>
-
-            <div class="result-actions">
-              <a class="wa-contact-btn" id="waContactLink" href="#">
-                💬 &nbsp;Message Attorney on WhatsApp
-              </a>
-              <button class="btn btn-outline" onclick="showPage('booking')">Book Another Consultation →</button>
-            </div>
-
-          </div>
-        </div>
-
-        <div class="notification-panel">
-          <div class="notif-text">
-            <strong>WhatsApp Notifications</strong>
-            <span>Receive automatic reminders and status updates directly to your WhatsApp for this matter.</span>
-          </div>
-          <div class="notif-toggle">
-            <div class="toggle-switch on" id="notifToggle" onclick="toggleNotif()">
-              <div class="toggle-knob"></div>
-            </div>
-            <span class="toggle-label" id="notifLabel">NOTIFICATIONS ON</span>
-          </div>
-        </div>
-
-      </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-red" onclick="saveMatterStatus()">Save Changes</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════════════════════════════════════ -->
 <script>
-  // ── PAGE ROUTING ──────────────────────────────────────────────────────────
-  function showPage(page, anchor) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    const target = document.getElementById('page-' + page);
-    if (target) {
-      target.classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      if (anchor) {
-        setTimeout(() => {
-          const el = document.getElementById(anchor);
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-      }
-    }
-    // If showing tracker with a stored ref from booking, pre-fill
-    if (page === 'tracker' && window._lastRef) {
-      document.getElementById('trackerInput').value = window._lastRef;
-      lookupMatter();
-    }
-  }
-
   // ═══════════════════════════════════════════════════════════════════════════
-  // CONVEX CLIENT (Real-time Backend)
+  // CONFIG
   // ═══════════════════════════════════════════════════════════════════════════
-  
-  // Convex deployment URL - set this after running `npx convex dev`
-  // Format: https://[deployment-name].convex.cloud
-  const CONVEX_URL = window.location.hostname === 'localhost' 
-    ? 'http://localhost:3000'  // Falls back to Express in dev, or set your Convex URL
-    : undefined;
-  
-  // Convex HTTP Client (for vanilla JS)
-  let convexClient = null;
-  if (CONVEX_URL) {
-    // Use Convex client if URL is configured
-    convexClient = {
-      async query(functionName, args = {}) {
-        const res = await fetch(`${CONVEX_URL}/api/get_matter_by_reference`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ reference: args.reference })
-        });
-        return res.json();
-      },
-      async mutation(functionName, args = {}) {
-        const res = await fetch(`${CONVEX_URL}/api/create_booking`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(args)
-        });
-        return res.json();
-      }
-    };
-  }
   
   const API_BASE = window.location.origin;
+  const DEMO_PASSWORD = 'lexislaw2026';
   
-  // Mock data for demo/offline mode
-  const MATTERS = {
-    'REF-00421': {
-      name: 'Sipho Mkhize',
-      matter: 'Family Law — Divorce',
-      date: '15 March 2026, 10:00',
-      attorney: 'Adv. T. Nkosi',
-      updated: '01 March 2026',
-      next: 'Attorney review in progress',
-      status: 2,
-      statusLabel: 'AWAITING DOCS',
-      statusClass: 'status-awaiting',
-      wa: '+27820000000'
-    },
-    'REF-00100': {
-      name: 'Thandi Khumalo',
-      matter: 'Commercial Law — Dispute',
-      date: '28 Feb 2026, 09:00',
-      attorney: 'Adv. S. Mokoena',
-      updated: '02 March 2026',
-      next: 'Hearing preparation underway',
-      status: 3,
-      statusLabel: 'HEARING SCHEDULED',
-      statusClass: 'status-scheduled',
-      wa: '+27820000001'
-    },
-    'REF-00311': {
-      name: 'Bongani Dlamini',
-      matter: 'Criminal Defence — Bail',
-      date: '10 March 2026, 14:00',
-      attorney: 'Adv. T. Nkosi',
-      updated: '10 March 2026',
-      next: 'Bail application lodged',
-      status: 1,
-      statusLabel: 'IN PROGRESS',
-      statusClass: 'status-in-progress',
-      wa: '+27820000002'
-    },
-    'REF-00299': {
-      name: 'Fatima Essop',
-      matter: 'Estate Planning — Will',
-      date: '05 Jan 2026, 11:00',
-      attorney: 'Adv. N. Pillay',
-      updated: '20 Feb 2026',
-      next: 'Matter successfully concluded',
-      status: 4,
-      statusLabel: 'RESOLVED',
-      statusClass: 'status-resolved',
-      wa: '+27820000003'
-    }
-  };
+  /* NOTE: Convex setup removed as this is a pure Express/Static hosting approach for the Admin */
   
-  const PROGRESS_PCT = [5, 28, 52, 75, 100];
+  // Mock data for admin views (Phase 1)
+  let bookingsData = [
+    { id: '1', reference: 'REF-00421', client_name: 'Sipho Mkhize', client_phone: '+27820000000', matter_type: 'Family Law — Divorce', preferred_date: '2026-03-15', preferred_time: '10:00', status: 'pending', attorney_name: 'Adv. T. Nkosi', attorney_id: '1' },
+    { id: '2', reference: 'REF-00100', client_name: 'Thandi Khumalo', client_phone: '+27820000001', matter_type: 'Commercial Law — Dispute', preferred_date: '2026-03-20', preferred_time: '09:00', status: 'confirmed', attorney_name: 'Adv. S. Mokoena', attorney_id: '2' },
+    { id: '3', reference: 'REF-00311', client_name: 'Bongani Dlamini', client_phone: '+27820000002', matter_type: 'Criminal Defence — Bail', preferred_date: '2026-03-10', preferred_time: '14:00', status: 'completed', attorney_name: 'Adv. T. Nkosi', attorney_id: '1' },
+    { id: '4', reference: 'REF-00001', client_name: 'Fatima Essop', client_phone: '+27820000003', matter_type: 'Property Law', preferred_date: '2026-03-03', preferred_time: '11:00', status: 'awaiting_docs', attorney_name: 'Adv. N. Pillay', attorney_id: '3' },
+  ];
   
-  // Convex-aware API helper
-  async function apiCall(endpoint, options = {}) {
-    // Try Convex if available
-    if (convexClient && endpoint.includes('matters')) {
-      try {
-        const ref = endpoint.match(/matters\/(.+)/)?.[1] || options.body ? JSON.parse(options.body)?.reference : null;
-        if (ref) {
-          const result = await convexClient.query('getMatterByReference', { reference: ref });
-          if (result) return result;
-        }
-      } catch (e) {
-        console.log('Convex query failed, trying Express...');
-      }
-    }
+  let mattersData = [
+    { reference: 'REF-00421', client_name: 'Sipho Mkhize', client_phone: '+27820000000', attorney_name: 'Adv. T. Nkosi', attorney_id: '1', status: 'awaiting_docs', next_action: 'Waiting for client ID scan' },
+    { reference: 'REF-00100', client_name: 'Thandi Khumalo', client_phone: '+27820000001', attorney_name: 'Adv. S. Mokoena', attorney_id: '2', status: 'in_progress', next_action: 'Drafting initial papers' },
+    { reference: 'REF-00311', client_name: 'Bongani Dlamini', client_phone: '+27820000002', attorney_name: 'Adv. T. Nkosi', attorney_id: '1', status: 'resolved', next_action: 'Case closed, filed judgement' },
+    { reference: 'REF-00001', client_name: 'Fatima Essop', client_phone: '+27820000003', attorney_name: 'Adv. N. Pillay', attorney_id: '3', status: 'pending', next_action: 'Requires initial review' },
+  ];
+
+  let docsData = [
+    { filename: 'ID_Document.pdf', client: 'Sipho Mkhize', matter: 'REF-00421', type: 'pdf', size: '245 KB', date: '2026-03-01', storage: 's_abc123' },
+    { filename: 'Marriage_Cert.jpg', client: 'Sipho Mkhize', matter: 'REF-00421', type: 'image', size: '1.2 MB', date: '2026-03-01', storage: 's_abc124' },
+    { filename: 'Contract_Signed.pdf', client: 'Thandi Khumalo', matter: 'REF-00100', type: 'pdf', size: '89 KB', date: '2026-02-28', storage: 's_xyz456' },
+  ];
+
+  let clientsData = [
+      { name: 'Sipho Mkhize', email: 'sipho@email.co.za', phone: '+27820000000', clerk: null, date: '2026-01-15' },
+      { name: 'Thandi Khumalo', email: 'thandi@email.co.za', phone: '+27820000001', clerk: null, date: '2026-02-01' },
+      { name: 'Bongani Dlamini', email: 'bongani@email.co.za', phone: '+27820000002', clerk: null, date: '2026-02-15' },
+      { name: 'Fatima Essop', email: 'fatima@email.co.za', phone: '+27820000003', clerk: null, date: '2026-01-20' },
+  ];
+
+  let smsLogsData = [
+      { to: '+27820000000', client: 'Sipho Mkhize', message: 'REMINDER: Appointment tomorrow at 10:00.', status: 'delivered', date: '2026-03-02 14:30' },
+      { to: '+27820000001', client: 'Thandi Khumalo', message: 'Status update: Hearing scheduled for 2026-03-25.', status: 'sent', date: '2026-03-01 09:15' },
+      { to: '+27820000002', client: 'Bongani Dlamini', message: 'Booking confirmed for REF-00311', status: 'delivered', date: '2026-02-28 16:45' },
+      { to: '+27820000000', client: 'Sipho Mkhize', message: 'Document request: Please upload ID', status: 'failed', date: '2026-02-25 11:20' },
+  ];
+  
+  // --- Attorney Mock Data for Admin Use ---
+  const attorneys = [
+      { id: '1', name: 'Adv. T. Nkosi', email: 'tnkosi@lexislaw.co.za' },
+      { id: '2', name: 'Adv. S. Mokoena', email: 'smokoena@lexislaw.co.za' },
+      { id: '3', name: 'Adv. N. Pillay', email: 'npillay@lexislaw.co.za' },
+      { id: '4', name: 'Adv. L. van der Merwe', email: 'lvdm@lexislaw.co.za' },
+  ];
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // LOGIN
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function attemptLogin() {
+    const password = document.getElementById('loginPassword').value;
+    const error = document.getElementById('loginError');
     
-    // Try Express API
-    try {
-      const res = await fetch(`${API_BASE}${endpoint}`, {
-        ...options,
-        headers: { 
-          'Content-Type': 'application/json',
-          ...options.headers 
-        }
-      });
-      
-      const data = await res.json();
-      
-      if (!res.ok) {
-        throw new Error(data.error || data.message || 'API Error');
-      }
-      
-      return data;
-    } catch (error) {
-      console.warn('API Error:', error.message);
-      throw error;
-    }
-  }
-
-  // Legacy API call for bookings (Express)
-  async function apiCallLegacy(endpoint, options = {}) {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers: { 
-        'Content-Type': 'application/json',
-        ...options.headers 
-      }
-    });
-    
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'API Error');
-    return data;
-  }
-
-  // Lookup matter (tries API first, falls back to mock)
-  async function lookupMatter() {
-    const raw = document.getElementById('trackerInput').value.trim().toUpperCase();
-    const ref = raw.startsWith('REF-') ? raw : ('REF-' + raw);
-
-    document.getElementById('trackerEmpty').style.display = 'none';
-    document.getElementById('trackerNotFound').style.display = 'none';
-    document.getElementById('trackerResult').classList.remove('visible');
-
-    // Show loading state
-    document.getElementById('trackerEmpty').innerHTML = `
-      <div class="tracker-empty-icon">⏳</div>
-      <h3>Searching...</h3>
-      <p>Looking up reference ${ref}</p>
-    `;
-    document.getElementById('trackerEmpty').style.display = 'flex';
-
-    try {
-      // Try API first
-      const m = await apiCall(`/api/matters/${ref.replace('REF-', '')}`);
-      
-      displayMatter(m, ref);
-    } catch (error) {
-      // Fall back to mock data for demo
-      if (MATTERS[ref]) {
-        displayMatter(MATTERS[ref], ref);
-      } else {
-        document.getElementById('trackerNotFound').style.display = 'block';
-      }
-    }
-  }
-  
-  function displayMatter(m, ref) {
-    // Populate
-    document.getElementById('resName').textContent = m.name;
-    document.getElementById('resMeta').textContent = `Ref: ${ref}  |  ${m.matter}`;
-    const badge = document.getElementById('resStatusBadge');
-    badge.textContent = m.statusLabel;
-    badge.className = 'status-badge ' + m.statusClass;
-    document.getElementById('resDate').textContent = m.date;
-    document.getElementById('resAttorney').textContent = m.attorney;
-    document.getElementById('resUpdated').textContent = m.updated;
-    document.getElementById('resNext').textContent = m.next;
-    document.getElementById('waContactLink').href = `https://wa.me/${m.wa}?text=Hello, I am following up on matter ${ref}`;
-
-    // Reset steps
-    for (let i = 0; i <= 4; i++) {
-      const ps = document.getElementById('ps-' + i);
-      ps.className = 'p-step';
-      if (i < m.status) ps.classList.add('done');
-      else if (i === m.status) ps.classList.add('active');
-    }
-
-    // Progress bar
-    setTimeout(() => {
-      document.getElementById('progressFill').style.width = PROGRESS_PCT[m.status] + '%';
-    }, 200);
-
-    document.getElementById('trackerResult').classList.add('visible');
-    document.getElementById('trackerResult').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  // Submit booking (tries API first, stores locally for demo)
-  async function submitBooking() {
-    let valid = true;
-    valid = validateField('field-name', 'inp-name', v => v.length >= 2) && valid;
-    valid = validateField('field-phone', 'inp-phone', v => v.replace(/\s/g, '').match(/^(\+27|0)[0-9]{9}$/)) && valid;
-    valid = validateField('field-matter', 'inp-matter', v => v !== '') && valid;
-    valid = validateField('field-date', 'inp-date', v => v !== '') && valid;
-    valid = validateField('field-time', 'inp-time', v => v !== '') && valid;
-
-    const popia = document.getElementById('chk-popia');
-    if (!popia.checked) {
-      alert('Please accept the POPIA consent to proceed.');
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    // Collect form data
-    const formData = {
-      name: document.getElementById('inp-name').value.trim(),
-      phone: document.getElementById('inp-phone').value.trim(),
-      email: document.getElementById('inp-email')?.value.trim() || '',
-      matter_type: document.getElementById('inp-matter').value,
-      preferred_date: document.getElementById('inp-date').value,
-      preferred_time: document.getElementById('inp-time').value,
-      description: document.getElementById('inp-desc').value.trim(),
-      whatsapp_consent: document.getElementById('chk-wa').checked,
-      popia_consent: popia.checked
-    };
-
-    const dateFormatted = new Date(formData.preferred_date).toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' });
-    let ref = null;
-
-    try {
-      // Try Convex first if available, otherwise Express
-      if (convexClient) {
-        try {
-          const result = await convexClient.mutation('createBooking', formData);
-          ref = result.reference;
-          console.log('✓ Booking created via Convex:', ref);
-        } catch (e) {
-          throw new Error('Convex failed'); // Fall through to Express
-        }
-      } else {
-        // Use Express API
-        const result = await apiCallLegacy('/api/bookings', {
-          method: 'POST',
-          body: JSON.stringify(formData)
-        });
-        ref = result.reference;
-        console.log('✓ Booking created via API:', ref);
-      }
-      
-      window._lastRef = ref;
-      
-    } catch (error) {
-      // Fall back to mock booking
-      console.warn('API unavailable, using mock booking:', error.message);
-      ref = 'REF-' + String(Math.floor(10000 + Math.random() * 89999));
-      window._lastRef = ref;
-      
-      // Store in mock for demo
-      MATTERS[ref] = {
-        name: formData.name,
-        matter: formData.matter_type,
-        date: `${dateFormatted}, ${formData.preferred_time}`,
-        attorney: 'To be assigned',
-        updated: new Date().toLocaleDateString('en-ZA', { day: 'numeric', month: 'long', year: 'numeric' }),
-        next: 'Awaiting initial consultation',
-        status: 0,
-        statusLabel: 'PENDING',
-        statusClass: 'status-pending',
-        wa: formData.phone.replace(/\s/g, '').replace(/^0/, '27')
-      };
-    }
-
-    // Show confirmation
-    document.getElementById('bookingFormView').style.display = 'none';
-    document.getElementById('confirmationView').classList.add('visible');
-    document.getElementById('confirmRef').textContent = ref;
-    document.getElementById('confName').textContent = formData.name;
-    document.getElementById('confMatter').textContent = formData.matter_type;
-    document.getElementById('confDateTime').textContent = `${dateFormatted} at ${formData.preferred_time}`;
-
-    // Update step indicator
-    document.querySelectorAll('.step-pill')[1].classList.remove('active');
-    document.querySelectorAll('.step-pill')[1].classList.add('done');
-    document.querySelectorAll('.step-pill')[2].classList.add('active');
-
-    showToast('✓ BOOKING CONFIRMED — ' + ref);
-  }
-
-  // ── TOAST ─────────────────────────────────────────────────────────────────
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 4000);
-  }
-
-  // ── NOTIFICATION TOGGLE ───────────────────────────────────────────────────
-  function toggleNotif() {
-    const sw = document.getElementById('notifToggle');
-    const lbl = document.getElementById('notifLabel');
-    sw.classList.toggle('on');
-    if (sw.classList.contains('on')) {
-      lbl.textContent = 'NOTIFICATIONS ON';
-      showToast('✓ WHATSAPP NOTIFICATIONS ENABLED');
+    if (password === DEMO_PASSWORD) {
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('adminDashboard').classList.remove('hidden');
+      switchView('bookings'); // Load initial view
     } else {
-      lbl.textContent = 'NOTIFICATIONS OFF';
+      error.classList.add('show');
     }
   }
 
-  // ── ENTER KEY ON TRACKER ──────────────────────────────────────────────────
-  document.getElementById('trackerInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') lookupMatter();
+  document.getElementById('loginPassword').addEventListener('keydown', e => {
+    if (e.key === 'Enter') attemptLogin();
   });
 
-  // ── CLEAR ERRORS ON INPUT ─────────────────────────────────────────────────
-  document.querySelectorAll('.form-input, .form-select').forEach(el => {
-    el.addEventListener('input', () => {
-      el.closest('.form-field')?.classList.remove('has-error');
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NAVIGATION
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function switchView(view) {
+    // Update sidebar
+    document.querySelectorAll('.sidebar-item').forEach(el => {
+      el.classList.toggle('active', el.dataset.view === view);
     });
-  });
 
-  // ── SCROLL ANIMATION ─────────────────────────────────────────────────────
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
+    // Show/hide views
+    ['bookings', 'matters', 'documents', 'clients', 'sms'].forEach(v => {
+      document.getElementById(`view-${v}`).classList.toggle('hidden', v !== view);
+    });
+
+    // Load data specific to the view
+    if (view === 'bookings') loadBookings();
+    if (view === 'matters') loadMatters();
+    if (view === 'documents') loadDocuments();
+    if (view === 'clients') loadClients();
+    if (view === 'sms') loadSMS();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DOCUMENTS (Task 6.1)
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function loadDocuments() {
+    const tbody = document.getElementById('docsTable');
+    
+    tbody.innerHTML = docsData.map(d => `
+      <tr>
+        <td><strong>${d.filename}</strong></td>
+        <td>${d.client}</td>
+        <td>${d.matter}</td>
+        <td>${d.type.toUpperCase()}</td>
+        <td>${d.size}</td>
+        <td>${d.date}</td>
+        <td>
+            <button class="btn btn-outline btn-small" onclick="downloadDoc('${d.storage}')">Download</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="7" style="text-align: center; color: var(--grey);">No documents found</td></tr>';
+  }
+
+  function filterDocs() {
+    loadDocuments(); // Simple implementation: reload all for now
+  }
+  
+  function downloadDoc(storageId) {
+    // In production, this would call API to get temporary link from Convex storageId
+    alert(`Demo: Requesting download URL for storage ID: ${storageId}`);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CLIENTS (Task 6.2)
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function loadClients() {
+    const tbody = document.getElementById('clientsTable');
+    
+    tbody.innerHTML = clientsData.map(c => `
+      <tr>
+        <td><strong>${c.name}</strong></td>
+        <td>${c.email || '<span class="text-grey">—</span>'}</td>
+        <td>${c.phone}</td>
+        <td>${c.clerk || '<span class="text-grey">—</span>'}</td>
+        <td>${c.date}</td>
+        <td><button class="btn btn-outline btn-small" onclick="viewClientDetails('${c.phone}')">View/Edit</button></td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align: center; color: var(--grey);">No clients found</td></tr>';
+  }
+  
+  function viewClientDetails(phone) {
+      const client = clientsData.find(c => c.phone === phone);
+      if (client) {
+          alert(`Viewing Client: ${client.name} (${client.phone}). Clerk ID: ${client.clerk || 'N/A'}`);
       }
-    });
-  }, { threshold: 0.1 });
+  }
 
-  document.querySelectorAll('.service-card, .about-value, .process-step').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    observer.observe(el);
+  // ═══════════════════════════════════════════════════════════════════════════
+  // SMS LOGS (Task 6.3)
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function loadSMS() {
+    const sent = smsLogsData.filter(s => s.status === 'sent' || s.status === 'delivered').length;
+    const delivered = smsLogsData.filter(s => s.status === 'delivered').length;
+    const failed = smsLogsData.filter(s => s.status === 'failed').length;
+
+    document.getElementById('smsTotal').textContent = smsLogsData.length;
+    document.getElementById('smsDelivered').textContent = delivered;
+    document.getElementById('smsFailed').textContent = failed;
+
+    const tbody = document.getElementById('smsTable');
+    const filter = document.getElementById('smsFilter').value;
+    
+    let filteredLogs = smsLogsData;
+    if (filter) {
+        filteredLogs = smsLogsData.filter(l => l.status === filter);
+    }
+    
+    tbody.innerHTML = filteredLogs.map(s => `
+      <tr>
+        <td>${s.to}</td>
+        <td>${s.client}</td>
+        <td>${s.message.substring(0, 40)}...</td>
+        <td><span class="status-badge status-${s.status}">${s.status}</span></td>
+        <td>${s.date}</td>
+      </tr>
+    `).join('') || '<tr><td colspan="5" style="text-align: center; color: var(--grey);">No SMS logs found</td></tr>';
+  }
+
+  function filterSMS() {
+    loadSMS();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // BOOKINGS & MATTERS (Existing Logic)
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  async function loadBookings() {
+    // NOTE: In production, this calls /api/bookings. Here, we use mock data.
+    updateStats();
+    renderBookings();
+  }
+  
+  function updateStats() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('statTotal').textContent = bookingsData.length;
+    document.getElementById('statPending').textContent = bookingsData.filter(b => b.status === 'pending').length;
+    document.getElementById('statConfirmed').textContent = bookingsData.filter(b => b.status === 'confirmed').length;
+    document.getElementById('statToday').textContent = bookingsData.filter(b => b.preferred_date === today).length;
+    document.getElementById('pendingCount').textContent = bookingsData.filter(b => b.status === 'pending').length;
+  }
+
+  function renderBookings() {
+    const tbody = document.getElementById('bookingsTable');
+    const filter = document.getElementById('statusFilter').value;
+    
+    let filtered = bookingsData;
+    if (filter) filtered = bookingsData.filter(b => b.status === filter);
+
+    tbody.innerHTML = filtered.map(booking => `
+      <tr>
+        <td><strong>${booking.reference}</strong></td>
+        <td>
+          ${booking.client_name}<br>
+          <span class="text-grey" style="font-size: 12px;">${booking.client_phone}</span>
+        </td>
+        <td>${booking.matter_type}</td>
+        <td>${formatDate(booking.preferred_date)}<br><span class="text-grey" style="font-size: 12px;">${booking.preferred_time}</span></td>
+        <td><span class="status-badge status-${booking.status}">${booking.status}</span></td>
+        <td>
+          <button class="btn btn-outline btn-small" onclick="openMatterModal('${booking.reference}', '${booking.status}')">Update</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align: center; color: var(--grey);">No bookings found</td></tr>';
+  }
+
+  function filterBookings() {
+    renderBookings();
+  }
+
+  function refreshBookings() {
+    // In production: loadBookings() which calls API
+    loadBookings();
+    showToast('Data refreshed.');
+  }
+
+  function loadMatters() {
+    const tbody = document.getElementById('mattersTable');
+    
+    tbody.innerHTML = mattersData.map(matter => `
+      <tr>
+        <td><strong>${matter.reference}</strong></td>
+        <td>
+          ${matter.client_name}<br>
+          <span class="text-grey" style="font-size: 12px;">${matter.client_phone}</span>
+        </td>
+        <td>${matter.attorney_name || '<span class="text-grey">Unassigned</span>'}</td>
+        <td><span class="status-badge status-${matter.status}">${formatStatus(matter.status)}</span></td>
+        <td class="text-grey">${matter.next_action || '-'}</td>
+        <td>
+          <button class="btn btn-outline btn-small" onclick="openMatterModal('${matter.reference}', '${matter.status}')">Update</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="6" style="text-align: center; color: var(--grey);">No matters found</td></tr>';
+  }
+
+  function formatStatus(status) {
+    return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
+  }
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-ZA', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MATTER MODAL
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function openMatterModal(ref, status) {
+    document.getElementById('modalMatterRef').value = ref;
+    document.getElementById('modalCurrentStatus').textContent = formatStatus(status);
+    document.getElementById('modalStatus').value = status === 'confirmed' ? 'in_progress' : status;
+    document.getElementById('modalNextAction').value = '';
+    // Demo: Select an attorney based on status
+    const attorneyId = (status === 'pending' || status === 'resolved') ? '' : (status === 'awaiting_docs' ? '3' : '1');
+    document.getElementById('modalAttorney').value = attorneyId;
+    document.getElementById('matterModal').classList.add('show');
+  }
+
+  function closeModal() {
+    document.getElementById('matterModal').classList.remove('show');
+  }
+
+  async function saveMatterStatus() {
+    const ref = document.getElementById('modalMatterRef').value;
+    const status = document.getElementById('modalStatus').value;
+    const next_action = document.getElementById('modalNextAction').value;
+    const attorney_id = document.getElementById('modalAttorney').value || null;
+
+    try {
+      // API Call to update status (Task 1)
+      await apiCall(`/api/matters/${ref.replace('REF-', '')}/status`, {
+        method: 'PATCH',
+        body: JSON.stringify({ status, next_action, attorney_id })
+      });
+      showToast(`Matter ${ref} updated! SMS notifications triggered.`);
+    } catch (e) {
+      showToast(`Update Failed: ${e.message}`, 'error');
+      // For demo resilience:
+      const matterIndex = mattersData.findIndex(m => m.reference === ref);
+      if(matterIndex !== -1) {
+          mattersData[matterIndex].status = status;
+          mattersData[matterIndex].next_action = next_action;
+          mattersData[matterIndex].attorney_name = attorneys.find(a => a.id === attorney_id)?.name || 'Unassigned';
+      }
+    }
+
+    closeModal();
+    loadMatters();
+  }
+
+  // Close modal on overlay click
+  document.getElementById('matterModal').addEventListener('click', e => {
+    if (e.target.id === 'matterModal') closeModal();
   });
+
+  // Close modal on Escape
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // INITIALIZATION
+  // ═══════════════════════════════════════════════════════════════════════════
+  
+  function init() {
+    loadBookings();
+    loadMatters();
+    loadDocuments();
+    loadClients();
+    loadSMS();
+  }
+  
+  init();
 </script>
+
 </body>
 </html>
