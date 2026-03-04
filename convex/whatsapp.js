@@ -5,7 +5,7 @@ import { action } from "./_generated/server";
 import { v } from "convex/values";
 
 // Admin phone number
-const ADMIN_PHONE = "+2785962689";
+const ADMIN_PHONE = "+27785962689"; // 0785962689 formatted for WhatsApp
 
 // Twilio WhatsApp configuration
 const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;

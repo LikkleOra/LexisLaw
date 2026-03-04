@@ -7,7 +7,7 @@ import { v } from "convex/values";
 import { api } from "./_generated/api";
 
 // Admin phone number for notifications
-const ADMIN_PHONE = "+2785962689";
+const ADMIN_PHONE = "+27785962689";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // QUERIES
@@ -126,8 +126,8 @@ export const getAttorneys = query({
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Admin phone number for notifications
-const ADMIN_PHONE = "+2785962689";
-const ADMIN_WHATSAPP = "whatsapp:+2785962689";
+const ADMIN_PHONE = "+27785962689";
+const ADMIN_WHATSAPP = "whatsapp:+27785962689";
 
 // Create a new booking
 export const createBooking = mutation({
