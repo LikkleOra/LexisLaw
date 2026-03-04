@@ -9,7 +9,11 @@ export default defineSchema({
   attorneys: defineTable({
     name: v.string(),
     email: v.string(),
-    specializations: v.array(v.string()),
+    initials: v.string(),
+    specialty: v.string(),
+    activeCases: v.number(),
+    resolvedCases: v.number(),
+    specializations: v.array(v.string()), // Existing field, keeping for compatibility
   }).index("by_email", ["email"]),
 
   // Clients who book consultations (linked to Clerk)
