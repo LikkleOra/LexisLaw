@@ -40,7 +40,7 @@ export function initConvexWithClerk() {
   // Check if Clerk is available
   if (typeof window !== "undefined" && window.Clerk) {
     Clerk.configureClerk(window.__Clerk);
-    
+
     // Listen for auth changes
     Clerk.addListener("clerk:user", (session) => {
       if (session) {
@@ -54,7 +54,7 @@ export function initConvexWithClerk() {
       }
     });
   }
-  
+
   return convex;
 }
 
@@ -63,24 +63,26 @@ export const api = {
   // Bookings
   createBooking: (data) => convex.mutation("createBooking", data),
   getBookings: (filters) => convex.query("getBookings", filters || {}),
-  
+
   // Matters
   getMatterByReference: (ref) => convex.query("getMatterByReference", { reference: ref }),
-  updateMatterStatus: (data) => convex.mutation("updateMatterStatus", data),
-  
+  getMatters: () => convex.query("getMatters", {}),
+  updateMatterStatus: (ref, status, next) => convex.mutation("updateMatterStatus", { reference: ref, status, next_action: next }),
+  approveBooking: (id) => convex.mutation("approveBooking", { id }),
+
   // Attorneys
   getAttorneys: () => convex.query("getAttorneys", {}),
-  
+
   // Auth
   getClientByClerk: (clerkId) => convex.query("getClientByClerk", { clerk_id: clerkId }),
   syncClerkUser: (data) => convex.mutation("syncClerkUser", data),
-  
+
   // Documents
   uploadDocument: (data) => convex.mutation("uploadDocument", data),
   getClientDocuments: (clientId) => convex.query("getClientDocuments", { client_id: clientId }),
   getMatterDocuments: (ref) => convex.query("getMatterDocuments", { matter_reference: ref }),
   getDownloadUrl: (docId) => convex.query("getDownloadUrl", { document_id: docId }),
-  
+
   // SMS
   sendSMS: (data) => convex.mutation("sendSMS", data),
   getClientSMSLogs: (clientId) => convex.query("getClientSMSLogs", { client_id: clientId }),

@@ -2,17 +2,17 @@
 
 ## Current Position
 
-**Phase:** Planning / Foundation  
-**Last Activity:** Project initialized, MVP HTML saved  
-**Status:** 🟡 Planning - Ready for Phase 1 execution
+**Phase:** Phase 1 - Foundation  
+**Last Activity:** Redundant backend removed, Booking UI fixed  
+**Status:** 🟢 Execution - Convex architecture finalized
 
 ## Decisions Made
 
 | Decision | Status | Notes |
 |----------|--------|-------|
-| Tech stack: Vanilla JS → Node.js | ✅ Locked | Phase 1 moves to full-stack |
-| Database: PostgreSQL | ✅ Locked | Using Supabase for easy setup |
-| WhatsApp: Business API | ✅ Locked | Using Twilio for WhatsApp |
+| Tech stack: Convex (Action & DB) | ✅ Locked | Express/Postgres backend removed |
+| Database: Convex | ✅ Locked | No longer using Supabase |
+| WhatsApp: Twilio API | ✅ Locked | Integrated via Convex mutations |
 | Design: Brutalist (black/red/green) | ✅ Locked | No changes to design system |
 
 ## Deferred Ideas

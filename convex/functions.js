@@ -224,42 +224,86 @@ export const createBooking = mutation({
   },
 });
 
+// Get all matters (for admin)
+export const getMatters = query({
+  args: {},
+  handler: async (ctx) => {
+    const matters = await ctx.db.query("matters").collect();
+    
+    return await Promise.all(
+      matters.map(async (matter) => {
+        const client = await ctx.db.get(matter.client_id);
+        const booking = await ctx.db.get(matter.booking_id);
+        const attorney = matter.attorney_id
+          ? await ctx.db.get(matter.attorney_id)
+          : null;
+
+        return {
+          _id: matter._id,
+          reference: matter.reference,
+          name: client?.name || "Unknown",
+          matter: booking?.matter_type || "General",
+          attorney: attorney?.name || "Unassigned",
+          status: getStatusNumber(matter.status),
+          statusLabel: getStatusLabel(matter.status),
+          next: matter.next_action || "Pending review",
+        };
+      })
+    );
+  },
+});
+
 // Update matter status (admin)
 export const updateMatterStatus = mutation({
   args: {
     reference: v.string(),
-    status: v.union(
-      v.literal("pending"),
-      v.literal("in_progress"),
-      v.literal("awaiting_docs"),
-      v.literal("hearing"),
-      v.literal("resolved")
-    ),
+    status: v.number(), // Accepts 0-4
     next_action: v.optional(v.string()),
     attorney_id: v.optional(v.id("attorneys")),
   },
   handler: async (ctx, args) => {
-    // Find matter by reference
+    const statusMap = ["pending", "in_progress", "awaiting_docs", "hearing", "resolved"];
+    const statusString = statusMap[args.status] || "pending";
+
     const matters = await ctx.db
       .query("matters")
       .withIndex("by_reference", (q) => q.eq("reference", args.reference))
       .collect();
 
-    if (matters.length === 0) {
-      throw new Error("Matter not found");
-    }
+    if (matters.length === 0) throw new Error("Matter not found");
 
-    const matter = matters[0];
-
-    // Update matter
-    await ctx.db.patch(matter._id, {
-      status: args.status,
+    await ctx.db.patch(matters[0]._id, {
+      status: statusString,
       next_action: args.next_action,
       attorney_id: args.attorney_id,
     });
 
-    return { success: true, reference: args.reference };
+    return { success: true };
   },
+});
+
+// Approve booking (placeholder for more complex logic if needed)
+export const approveBooking = mutation({
+    args: { id: v.id("bookings") },
+    handler: async (ctx, args) => {
+        const booking = await ctx.db.get(args.id);
+        if (!booking) throw new Error("Booking not found");
+        
+        // Find associated matter
+        const matters = await ctx.db.query("matters")
+            .filter(q => q.eq(q.field("booking_id"), args.id))
+            .collect();
+            
+        if (matters.length > 0) {
+            await ctx.db.patch(matters[0]._id, {
+                status: "in_progress",
+                next_action: "Consultation approved"
+            });
+        }
+        
+        await ctx.db.patch(args.id, { status: "confirmed" });
+        return { success: true };
+    }
 });
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -272,46 +316,21 @@ function generateReference() {
 
 function formatDate(timestampOrDate) {
   if (!timestampOrDate) return "—";
-  const date =
-    typeof timestampOrDate === "number"
-      ? new Date(timestampOrDate)
-      : new Date(timestampOrDate);
-  return date.toLocaleDateString("en-ZA", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const date = typeof timestampOrDate === "number" ? new Date(timestampOrDate) : new Date(timestampOrDate);
+  return date.toLocaleDateString("en-ZA", { day: "numeric", month: "long", year: "numeric" });
 }
 
 function getStatusNumber(status) {
-  const map = {
-    pending: 0,
-    in_progress: 1,
-    awaiting_docs: 2,
-    hearing: 3,
-    resolved: 4,
-  };
+  const map = { pending: 0, in_progress: 1, awaiting_docs: 2, hearing: 3, resolved: 4 };
   return map[status] || 0;
 }
 
 function getStatusLabel(status) {
-  const labels = {
-    pending: "PENDING",
-    in_progress: "IN PROGRESS",
-    awaiting_docs: "AWAITING DOCS",
-    hearing: "HEARING SCHEDULED",
-    resolved: "RESOLVED",
-  };
+  const labels = { pending: "PENDING", in_progress: "IN PROGRESS", awaiting_docs: "AWAITING DOCS", hearing: "HEARING SCHEDULED", resolved: "RESOLVED" };
   return labels[status] || "PENDING";
 }
 
 function getStatusClass(status) {
-  const classes = {
-    pending: "status-pending",
-    in_progress: "status-in-progress",
-    awaiting_docs: "status-awaiting",
-    hearing: "status-scheduled",
-    resolved: "status-resolved",
-  };
+  const classes = { pending: "status-pending", in_progress: "status-in-progress", awaiting_docs: "status-awaiting", hearing: "status-scheduled", resolved: "status-resolved" };
   return classes[status] || "status-pending";
 }
