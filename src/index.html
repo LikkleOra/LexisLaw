@@ -11,6 +11,13 @@
     href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
     rel="stylesheet">
   <!-- Convex API Client -->
+  <!-- Set Convex URL from Netlify env var (exposed via window.CONVEX_SITE_URL) -->
+  <script>
+    // Netlify exposes env vars prefixed with VITE_ as window.VITE_* 
+    // If not available, fallback to the default
+    window.CONVEX_SITE_URL = window.VITE_CONVEX_URL || window.CONVEX_SITE_URL || 'https://striped-meadowlark-10.convex.cloud';
+    console.log('Convex URL:', window.CONVEX_SITE_URL);
+  </script>
   <script src="./convex.js"></script>
 
   <style>

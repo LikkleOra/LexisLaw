@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Lora", serif;
+
+  --color-primary-red: #C0392B;
+  --color-green-accent: #27AE60;
+  --color-bg-dark: #0E0F0E;
+  --color-bg-card: #141614;
+  --color-text-primary: #F0F5F0;
+  --color-text-muted: #7A8C7A;
+  --color-border-subtle: rgba(192, 57, 43, 0.2);
+}
+
+@layer base {
+  body {
+    @apply bg-bg-dark text-text-primary font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+.glass-panel {
+  @apply bg-bg-card border border-border-subtle rounded-xl shadow-lg;
+}
+
+.btn-primary {
+  @apply bg-primary-red hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors font-medium flex items-center gap-2;
+}
+
+.btn-secondary {
+  @apply border border-primary-red text-primary-red hover:bg-primary-red/10 px-4 py-2 rounded-lg transition-colors font-medium flex items-center gap-2;
+}

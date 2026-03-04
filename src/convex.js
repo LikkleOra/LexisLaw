@@ -3,7 +3,9 @@
 // Works in plain static HTML pages.
 
 (function () {
-  const CONVEX_URL = "https://striped-meadowlark-10.convex.cloud"; // ← your deployment URL
+  // Use URL from global (set by Netlify env var) or fallback to default
+  const CONVEX_URL = window.CONVEX_SITE_URL || 'https://striped-meadowlark-10.convex.cloud';
+  console.log('Initializing LexisLaw API with:', CONVEX_URL);
 
   /**
    * Call a Convex query via HTTP.
