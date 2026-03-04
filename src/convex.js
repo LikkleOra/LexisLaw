@@ -73,14 +73,28 @@
     /**
      * Update matter status (admin).
      */
-    updateMatterStatus: (reference, status, next_action) =>
-      convexMutation("functions:updateMatterStatus", { reference, status, next_action }),
+    updateMatterStatus: (reference, status, next_action, attorney_id) =>
+      convexMutation("functions:updateMatterStatus", {
+        reference,
+        status,
+        next_action,
+        attorney_id,
+      }),
 
     /**
      * Approve a booking (admin).
      */
-    approveBooking: (id) =>
-      convexMutation("functions:approveBooking", { id }),
+    approveBooking: (id) => convexMutation("functions:approveBooking", { id }),
+
+    /**
+     * Reject a booking (admin).
+     */
+    rejectBooking: (id) => convexMutation("functions:rejectBooking", { id }),
+
+    /**
+     * Delete a matter (admin).
+     */
+    deleteMatter: (id) => convexMutation("functions:deleteMatter", { id }),
 
     /**
      * Get all attorneys.

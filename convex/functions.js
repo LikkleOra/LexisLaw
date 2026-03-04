@@ -283,6 +283,41 @@ export const approveBooking = mutation({
   }
 });
 
+// Reject booking
+export const rejectBooking = mutation({
+  args: { id: v.id("bookings") },
+  handler: async (ctx, args) => {
+    const booking = await ctx.db.get(args.id);
+    if (!booking) throw new Error("Booking not found");
+
+    // Clear associated matter if exists
+    const matters = await ctx.db.query("matters")
+      .filter(q => q.eq(q.field("booking_id"), args.id))
+      .collect();
+
+    for (const matter of matters) {
+      await ctx.db.delete(matter._id);
+    }
+
+    await ctx.db.patch(args.id, { status: "rejected" });
+    return { success: true };
+  }
+});
+
+// Delete matter
+export const deleteMatter = mutation({
+  args: { id: v.id("matters") },
+  handler: async (ctx, args) => {
+    const matter = await ctx.db.get(args.id);
+    if (!matter) throw new Error("Matter not found");
+
+    // Optional: Also mark booking as pending or cancelled? 
+    // For now just delete the matter.
+    await ctx.db.delete(args.id);
+    return { success: true };
+  }
+});
+
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER FUNCTIONS
 // ═══════════════════════════════════════════════════════════════════════════
