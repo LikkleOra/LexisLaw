@@ -3,7 +3,7 @@
 // Works in plain static HTML pages.
 
 (function () {
-  const CONVEX_URL = "https://unique-bird-421.convex.cloud"; // ← your deployment URL
+  const CONVEX_URL = "https://striped-meadowlark-10.convex.cloud"; // ← your deployment URL
 
   /**
    * Call a Convex query via HTTP.
