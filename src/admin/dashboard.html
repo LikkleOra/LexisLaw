@@ -345,6 +345,121 @@
   border-color: var(--grey);
   color: var(--grey);
   }
+
+  /* ─── MODULES ────────────────────────────────────────────────────────────── */
+  .kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-bottom: 48px;
+  }
+
+  .kpi-card {
+  background: var(--black2);
+  border: 2px solid var(--border);
+  padding: 32px;
+  position: relative;
+  overflow: hidden;
+  }
+
+  .kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--border);
+  }
+
+  .kpi-card.active::before { background: var(--red); }
+  .kpi-card.positive::before { background: var(--green); }
+
+  .kpi-label {
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  color: var(--grey);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  }
+
+  .kpi-value {
+  font-family: var(--ff-display);
+  font-size: 40px;
+  color: var(--white);
+  line-height: 1;
+  }
+
+  .kpi-sub {
+  font-family: var(--ff-mono);
+  font-size: 11px;
+  color: var(--grey);
+  margin-top: 8px;
+  }
+
+  /* Document Vault */
+  .doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  }
+
+  .doc-item {
+  background: var(--black2);
+  border: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  }
+
+  .doc-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  }
+
+  .doc-icon {
+  font-size: 24px;
+  color: var(--red);
+  }
+
+  .doc-name {
+  font-weight: 600;
+  font-size: 14px;
+  }
+
+  .doc-meta {
+  font-family: var(--ff-mono);
+  font-size: 10px;
+  color: var(--grey);
+  margin-top: 4px;
+  }
+
+  /* Schedule */
+  .calendar-strip {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  }
+
+  .day-card {
+  min-width: 100px;
+  background: var(--black2);
+  border: 1px solid var(--border);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  }
+
+  .day-card.active {
+  border-color: var(--red);
+  background: rgba(230, 51, 41, 0.1);
+  }
+
+  .day-name { font-size: 10px; color: var(--grey); text-transform: uppercase; }
+  .day-num { font-family: var(--ff-display); font-size: 24px; margin: 4px 0; }
+
   </style>
 </head>
 
@@ -361,15 +476,82 @@
   <div class="dashboard hidden" id="dashboard">
     <aside>
       <div class="aside-logo">LEXIS<span>LAW</span></div>
-      <button class="nav-btn active" onclick="switchTab('bookings')">NEW BOOKINGS</button>
+      <button class="nav-btn active" onclick="switchTab('overview')">OVERVIEW</button>
+      <button class="nav-btn" onclick="switchTab('bookings')">NEW REQUESTS</button>
       <button class="nav-btn" onclick="switchTab('matters')">ACTIVE MATTERS</button>
+      <button class="nav-btn" onclick="switchTab('documents')">DOCUMENTS</button>
+      <button class="nav-btn" onclick="switchTab('schedule')">SCHEDULE</button>
+      <button class="nav-btn" onclick="switchTab('waLogs')">WA LOGS</button>
       <div style="margin-top: auto; padding: 40px;">
         <button class="nav-btn" style="padding: 0; color: var(--red);" onclick="location.reload()">LOGOUT</button>
       </div>
     </aside>
 
     <main>
-      <div id="bookingsView">
+      <div id="overviewView">
+        <div class="header">
+          <h1 class="title">Practice <span>Overview.</span></h1>
+          <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">REAL-TIME ANALYTICS</div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card active">
+            <div class="kpi-label">Active Matters</div>
+            <div class="kpi-value" id="statActiveCases">0</div>
+            <div class="kpi-sub">Across 4 practice areas</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Unbilled Amount</div>
+            <div class="kpi-value">R<span id="statUnbilled">0</span></div>
+            <div class="kpi-sub">Estimated legal fees</div>
+          </div>
+          <div class="kpi-card positive">
+            <div class="kpi-label">Resolved (MTD)</div>
+            <div class="kpi-value" id="statResolved">0</div>
+            <div class="kpi-sub">Cases closed this month</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">New Requests</div>
+            <div class="kpi-value" id="statNewBookings">0</div>
+            <div class="kpi-sub">Awaiting review</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 48px;">
+          <div>
+            <h2
+              style="font-family: var(--ff-mono); font-size: 12px; letter-spacing: 2px; color: var(--red); margin-bottom: 24px; text-transform: uppercase;">
+              Recent Activity</h2>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Action</th>
+                    <th>Ref</th>
+                  </tr>
+                </thead>
+                <tbody id="recentActivityTable">
+                  <tr>
+                    <td colspan="3" style="text-align:center; padding: 40px; color: var(--grey);">Connecting to
+                      Convex...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div>
+            <h2
+              style="font-family: var(--ff-mono); font-size: 12px; letter-spacing: 2px; color: var(--red); margin-bottom: 24px; text-transform: uppercase;">
+              Team Capacity</h2>
+            <div id="teamCapacityList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="bookingsView" class="hidden">
         <div class="header">
           <h1 class="title">New <span>Requests.</span></h1>
           <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">ADMIN PORTAL // 2026</div>
@@ -407,6 +589,76 @@
               </tr>
             </thead>
             <tbody id="mattersTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="documentsView" class="hidden">
+        <div class="header">
+          <h1 class="title">Document <span>Vault.</span></h1>
+          <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">SECURE FILE MANAGEMENT</div>
+        </div>
+        <div class="table-wrap" style="padding: 40px;">
+          <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-family: var(--ff-mono); font-size: 11px; color: var(--grey);">Showing recent files for all
+              matters</div>
+            <button class="action-btn" style="border-color: var(--red); color: var(--red);" onclick="uploadDoc()">+
+              UPLOAD NEW DOC</button>
+          </div>
+          <div class="doc-list" id="docList">
+            <div style="text-align:center; padding: 40px; color: var(--grey);">Module integration in progress.</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="scheduleView" class="hidden">
+        <div class="header">
+          <h1 class="title">Lawyer <span>Schedule.</span></h1>
+          <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">CALENDAR & APPOINTMENTS</div>
+        </div>
+        <div class="calendar-strip" id="calendarStrip">
+          <!-- Rendered via JS -->
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Event</th>
+                <th>With</th>
+                <th>Location</th>
+              </tr>
+            </thead>
+            <tbody id="scheduleTable">
+              <tr>
+                <td colspan="4" style="text-align:center; padding: 40px; color: var(--grey);">No events for today.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="waLogsView" class="hidden">
+        <div class="header">
+          <h1 class="title">WhatsApp <span>Logs.</span></h1>
+          <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">COMMUNICATION AUDIT TRAIL</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Client</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Message Snippet</th>
+              </tr>
+            </thead>
+            <tbody id="waLogsTable">
+              <tr>
+                <td colspan="5" style="text-align:center; padding: 40px; color: var(--grey);">No logs found.</td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -464,11 +716,21 @@
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
       event.currentTarget.classList.add('active');
 
-      document.getElementById('bookingsView').classList.toggle('hidden', tab !== 'bookings');
-      document.getElementById('mattersView').classList.toggle('hidden', tab !== 'matters');
+      document.getElementById('overviewView').classList.add('hidden');
+      document.getElementById('bookingsView').classList.add('hidden');
+      document.getElementById('mattersView').classList.add('hidden');
+      document.getElementById('documentsView').classList.add('hidden');
+      document.getElementById('scheduleView').classList.add('hidden');
+      document.getElementById('waLogsView').classList.add('hidden');
 
+      document.getElementById(tab + 'View').classList.remove('hidden');
+
+      if (tab === 'overview') loadOverview();
       if (tab === 'bookings') loadBookings();
-      else loadMatters();
+      if (tab === 'matters') loadMatters();
+      if (tab === 'documents') loadDocs();
+      if (tab === 'schedule') loadSchedule();
+      if (tab === 'waLogs') loadWALogs();
     }
 
     async function init() {
@@ -494,6 +756,125 @@
         }
       }, 500);
     }
+
+    async function loadOverview() {
+      if (!api) return;
+      try {
+        const bookings = await api.getBookings();
+        const matters = await api.getMatters();
+
+        document.getElementById('statActiveCases').textContent = matters.filter(m => m.status < 4).length;
+        document.getElementById('statNewBookings').textContent = bookings.length;
+        document.getElementById('statResolved').textContent = matters.filter(m => m.status === 4).length;
+
+        // Mock unbilled for now (Phase 4 integration)
+        document.getElementById('statUnbilled').textContent = (matters.filter(m => m.status < 4).length * 1500).toLocaleString();
+
+        // Render Team Capacity
+        const teamList = document.getElementById('teamCapacityList');
+        teamList.innerHTML = attorneysList.map(a => `
+          <div style="background: var(--black2); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 700; font-size: 14px;">${a.name}</div>
+              <div style="font-family: var(--ff-mono); font-size: 10px; color: var(--grey);">${a.specialty || 'General'}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--ff-display); font-size: 20px; color: var(--red);">${a.activeCases || 0}</div>
+              <div style="font-family: var(--ff-mono); font-size: 9px; color: var(--grey);">ACTIVE MATTERS</div>
+            </div>
+          </div>
+        `).join('');
+
+        // Recent Activity
+        const activityTable = document.getElementById('recentActivityTable');
+        activityTable.innerHTML = matters.slice(0, 5).map(m => `
+          <tr>
+            <td style="font-family: var(--ff-mono); font-size: 11px;">RECENT</td>
+            <td>Status updated to ${m.statusLabel}</td>
+            <td class="ref">${m.reference}</td>
+          </tr>
+        `).join('');
+
+      } catch (e) {
+        console.error("Overview load error:", e);
+      }
+    }
+
+    async function loadDocs() {
+      if (!api) return;
+      try {
+        const docs = await api.getDocuments();
+        const list = document.getElementById('docList');
+        if (!docs || docs.length === 0) {
+          list.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--grey);">No documents in vault.</div>';
+          return;
+        }
+        list.innerHTML = docs.map(d => `
+          <div class="doc-item">
+            <div class="doc-info">
+              <span class="doc-icon">${d.file_type && d.file_type.includes('pdf') ? '📄' : '📁'}</span>
+              <div>
+                <div class="doc-name">${d.filename}</div>
+                <div class="doc-meta">${(d.file_size / 1024).toFixed(1)}KB · REF: ${d.matter_reference}</div>
+              </div>
+            </div>
+            <button class="action-btn" onclick="window.open('${d.url || '#'}', '_blank')">VIEW</button>
+          </div>
+        `).join('');
+      } catch (e) {
+        console.error("Doc load error:", e);
+      }
+    }
+
+    async function loadSchedule() {
+      if (!api) return;
+      try {
+        const bookings = await api.getBookings(); // Get all confirmed bookings
+        const scheduleTable = document.getElementById('scheduleTable');
+        const confirmed = bookings.filter(b => b.status === 'confirmed' || b.status === 'approved');
+
+        if (confirmed.length === 0) {
+          scheduleTable.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: var(--grey);">No confirmed appointments.</td></tr>';
+          return;
+        }
+
+        scheduleTable.innerHTML = confirmed.map(b => `
+          <tr>
+            <td style="font-family: var(--ff-mono); font-size: 12px; color: var(--red);">${b.preferred_time || '—'}</td>
+            <td style="font-weight: 700;">${b.matter_type || 'General'} Consultation</td>
+            <td>${b.client_name || 'Client'}</td>
+            <td style="font-family: var(--ff-mono); font-size: 11px; color: var(--grey);">OFFICE 4A</td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error("Schedule load error:", e);
+      }
+    }
+
+    async function loadWALogs() {
+      if (!api) return;
+      try {
+        const logs = await api.getWhatsAppLogs();
+        const table = document.getElementById('waLogsTable');
+        if (!logs || logs.length === 0) {
+          table.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color: var(--grey);">No communication logs found.</td></tr>';
+          return;
+        }
+
+        table.innerHTML = logs.map(l => `
+          <tr>
+            <td style="font-family: var(--ff-mono); font-size: 11px;">${new Date(l.timestamp).toLocaleString()}</td>
+            <td style="font-weight: 700;">${l.clientName}</td>
+            <td><span class="badge" style="background: var(--border); color: var(--white);">${l.type}</span></td>
+            <td><span class="badge" style="background: ${l.status === 'delivered' ? 'var(--green)' : 'var(--red)'}; color: var(--white);">${l.status}</span></td>
+            <td style="font-family: var(--ff-mono); font-size: 11px; color: var(--grey); max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${l.message}</td>
+          </tr>
+        `).join('');
+      } catch (e) {
+        console.error("WA Logs load error:", e);
+      }
+    }
+
 
     async function loadBookings() {
       if (!api) return;
@@ -577,8 +958,23 @@
 
       try {
         await api.updateMatterStatus(ref, status, next, attorneyId);
+
+        // Log WA notification
+        const matter = (await api.getMatters()).find(m => m.reference === ref);
+        if (matter) {
+          await api.addWALog({
+            bookingRef: ref,
+            clientName: matter.name,
+            phone: matter.phone || "000",
+            type: "Status Update",
+            message: `Matter ${ref} updated to ${matter.statusLabel}. Next: ${next}`,
+            status: "delivered"
+          });
+        }
+
         closeModal();
         loadMatters();
+        loadWALogs();
       } catch (e) {
         alert('Error updating case');
       }
@@ -587,14 +983,53 @@
     async function approveBooking(id) {
       if (confirm('Approve this request and create a matter?')) {
         try {
+          const bookings = await api.getBookings();
+          const booking = bookings.find(b => b._id === id);
+
           await api.approveBooking(id);
+
+          // Log WA notification
+          if (booking) {
+            await api.addWALog({
+              bookingRef: booking.ref || "NEW",
+              clientName: booking.client_name,
+              phone: booking.client_phone,
+              type: "Confirmation",
+              message: `Booking approved for ${booking.matter_type}. Reference: ${booking.ref}`,
+              status: "delivered"
+            });
+          }
+
           loadBookings();
+          loadWALogs();
           alert('Booking approved. Matter created.');
         } catch (e) {
           alert('Error approving booking');
         }
       }
     }
+
+    async function uploadDoc() {
+      const ref = prompt("Enter Matter Reference (e.g. REF-12345):");
+      if (!ref) return;
+      const filename = prompt("Enter Filename:");
+      if (!filename) return;
+
+      try {
+        await api.addDocument({
+          matter_reference: ref,
+          filename: filename,
+          file_type: filename.endsWith('.pdf') ? 'application/pdf' : 'text/plain',
+          file_size: Math.floor(Math.random() * 5000) + 100,
+          storage_id: "mock_storage_id"
+        });
+        alert('Document metadata recorded.');
+        loadDocs();
+      } catch (e) {
+        alert('Error recording document: ' + e.message);
+      }
+    }
+
 
     async function rejectBooking(id) {
       if (confirm('Reject this request? This will clear it from the list.')) {
@@ -618,8 +1053,6 @@
       }
     }
   </script>
-  </script>
-
 </body>
 
 </html>

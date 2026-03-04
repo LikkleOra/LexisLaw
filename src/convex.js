@@ -100,6 +100,26 @@
      * Get all attorneys.
      */
     getAttorneys: () => convexQuery("functions:getAttorneys", {}),
+
+    /**
+     * Get WhatsApp logs.
+     */
+    getWhatsAppLogs: () => convexQuery("functions:getWhatsAppLogs", {}),
+
+    /**
+     * Get all documents.
+     */
+    getDocuments: () => convexQuery("functions:getDocuments", {}),
+
+    /**
+     * Add a WhatsApp log.
+     */
+    addWALog: (data) => convexMutation("functions:addWALog", data),
+
+    /**
+     * Add a document record.
+     */
+    addDocument: (data) => convexMutation("functions:addDocument", data),
   };
 
   // Expose globally so index.html and dashboard.html can call window.lexisLawApi.*

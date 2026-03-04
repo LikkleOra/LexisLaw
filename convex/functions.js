@@ -118,6 +118,24 @@ export const getAttorneys = query({
   },
 });
 
+// Get WhatsApp logs
+export const getWhatsAppLogs = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("whatsapp_logs").order("desc").collect();
+  },
+});
+
+// Get all documents
+export const getDocuments = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("documents").collect();
+  },
+});
+
+
+
 // ═══════════════════════════════════════════════════════════════════════════
 // MUTATIONS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -317,6 +335,50 @@ export const deleteMatter = mutation({
     return { success: true };
   }
 });
+
+// Add a WhatsApp communication log
+export const addWALog = mutation({
+  args: {
+    bookingRef: v.string(),
+    clientName: v.string(),
+    phone: v.string(),
+    type: v.string(),
+    message: v.string(),
+    status: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("whatsapp_logs", {
+      ...args,
+      status: args.status,
+      timestamp: new Date().toISOString(),
+    });
+  },
+});
+
+// Add a document record (metadata)
+export const addDocument = mutation({
+  args: {
+    matter_reference: v.string(),
+    filename: v.string(),
+    file_type: v.string(),
+    file_size: v.number(),
+    storage_id: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const matter = await ctx.db
+      .query("matters")
+      .withIndex("by_reference", (q) => q.eq("reference", args.matter_reference))
+      .first();
+
+    if (!matter) throw new Error("Matter not found");
+
+    return await ctx.db.insert("documents", {
+      client_id: matter.client_id,
+      ...args,
+    });
+  },
+});
+
 
 // ═══════════════════════════════════════════════════════════════════════════
 // HELPER FUNCTIONS
