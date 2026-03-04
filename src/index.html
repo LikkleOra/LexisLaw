@@ -1652,6 +1652,205 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* ─── ADMIN DASHBOARD STYLES ─────────────────────────────────────────────── */
+    #adminView.hidden {
+      display: none !important;
+    }
+
+    #clientView.hidden {
+      display: none !important;
+    }
+
+    #adminView {
+      background: var(--black);
+      min-height: 100vh;
+      color: var(--white);
+    }
+
+    .dashboard {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    aside {
+      width: 280px;
+      background: var(--black2);
+      border-right: 2px solid var(--border);
+      padding: 40px 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .aside-logo {
+      font-family: var(--ff-display);
+      font-size: 32px;
+      letter-spacing: 2px;
+      padding: 0 40px;
+      margin-bottom: 60px;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--grey);
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-align: left;
+      padding: 20px 40px;
+      cursor: pointer;
+      border-left: 4px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: var(--white);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .nav-btn.active {
+      color: var(--red);
+      border-left-color: var(--red);
+      background: rgba(230, 51, 41, 0.05);
+    }
+
+    .dashboard main {
+      flex: 1;
+      padding: 60px;
+      background: var(--black);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .kpi-card {
+      background: var(--black2);
+      border: 2px solid var(--border);
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--border);
+    }
+
+    .kpi-card.active::before {
+      background: var(--red);
+    }
+
+    .kpi-card.positive::before {
+      background: var(--green);
+    }
+
+    .kpi-label {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      color: var(--grey);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+    }
+
+    .kpi-value {
+      font-family: var(--ff-display);
+      font-size: 40px;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .table-wrap {
+      background: var(--black2);
+      border: 2px solid var(--border);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: var(--black);
+      text-align: left;
+      padding: 16px 24px;
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      color: var(--grey);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    td {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border: 1px solid currentColor;
+    }
+
+    .action-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 8px 12px;
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    /* Info Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100000;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--black2);
+      border: 2px solid var(--border);
+      width: 500px;
+      padding: 48px;
+    }
   </style>
 </head>
 
@@ -1686,386 +1885,593 @@
     </div>
   </div>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="nav-logo" onclick="showPage('home')">LEXIS<span>LAW</span></a>
-    <div class="nav-links">
-      <a href="#services" class="nav-link" onclick="showPage('home')">SERVICES</a>
-      <a href="#about" class="nav-link" onclick="showPage('home')">ABOUT</a>
-      <a href="#" class="nav-link" onclick="showPage('tracker')">TRACKER</a>
-      <a href="./admin/dashboard.html" class="nav-link">ADMIN</a>
+  <div id="clientView">
+    <!-- NAV -->
+    <nav>
+      <a href="#" class="nav-logo" onclick="showPage('home')">LEXIS<span>LAW</span></a>
+      <div class="nav-links">
+        <a href="#services" class="nav-link" onclick="showPage('home')">SERVICES</a>
+        <a href="#about" class="nav-link" onclick="showPage('home')">ABOUT</a>
+        <a href="#" class="nav-link" onclick="showPage('tracker')">TRACKER</a>
+        <a href="#" class="nav-link" onclick="showAdmin()">ADMIN LOGIN</a>
+      </div>
+      <button class="nav-cta" onclick="showPage('booking')">BOOK NOW</button>
+    </nav>
+
+    <!-- HOME PAGE -->
+    <div id="homePage" class="page active">
+      <section class="hero">
+        <div class="hero-left reveal">
+          <div class="hero-eyebrow">PREMIUM LEGAL SERVICES</div>
+          <h1 class="hero-h1">Justice <span class="accent">Simplified.</span></h1>
+          <p class="hero-sub">Providing expert legal counsel for individuals and businesses. Modern solutions for
+            complex
+            legal challenges in South Africa.</p>
+          <div class="hero-btns">
+            <button class="btn-primary" onclick="showPage('booking')">Start Consultation</button>
+            <button class="btn-secondary" onclick="showPage('tracker')">Track My Matter</button>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-num">18<span>+</span></div>
+              <div class="stat-label">Years Exp.</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">2.4k<span>+</span></div>
+              <div class="stat-label">Resolved</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-num">98<span>%</span></div>
+              <div class="stat-label">Success</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-right">
+          <div class="hero-bg-text">LEXIS</div>
+          <div class="hero-card reveal reveal-delay-2">
+            <div class="hero-card-label">Why Choose Us</div>
+            <div class="hero-card-item">
+              <div class="hero-card-icon">⚖️</div>
+              <div class="hero-card-text"><strong>Expert Advocates</strong> Specialized legal teams for every case.
+              </div>
+            </div>
+            <div class="hero-card-item">
+              <div class="hero-card-icon">⚡</div>
+              <div class="hero-card-text"><strong>Real-time Tracking</strong> Knowledge is power. Track your case 24/7.
+              </div>
+            </div>
+            <div class="hero-card-item">
+              <div class="hero-card-icon">📱</div>
+              <div class="hero-card-text"><strong>WhatsApp Updates</strong> Get instant notifications on your phone.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="services">
+        <div class="section-header reveal">
+          <h2 class="section-title">Legal <span class="red">Specialties.</span></h2>
+          <div class="section-num">Section 01</div>
+        </div>
+        <div class="services-grid">
+          <div class="service-card reveal" onclick="showPage('booking')">
+            <span class="service-num">01</span>
+            <span class="service-icon">🏠</span>
+            <h3 class="service-name">Family Law</h3>
+            <p class="service-desc">Divorce, maintenance, custody and domestic partnership agreements.</p>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-card reveal reveal-delay-1" onclick="showPage('booking')">
+            <span class="service-num">02</span>
+            <span class="service-icon">💼</span>
+            <h3 class="service-name">Commercial</h3>
+            <p class="service-desc">Contract preparation, dispute resolution, and business litigation.</p>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-card reveal reveal-delay-2" onclick="showPage('booking')">
+            <span class="service-num">03</span>
+            <span class="service-icon">🚨</span>
+            <h3 class="service-name">Criminal</h3>
+            <p class="service-desc">Expert defence and representation in all criminal matters.</p>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-card reveal reveal-delay-3" onclick="showPage('booking')">
+            <span class="service-num">04</span>
+            <span class="service-icon">🏗️</span>
+            <h3 class="service-name">Property Law</h3>
+            <p class="service-desc">Conveyancing, tenant disputes, and property litigation.</p>
+            <span class="service-arrow">→</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-banner">
+        <h2 class="cta-text">Ready to protect <span>your rights?</span></h2>
+        <button class="btn-dark" onclick="showPage('booking')">Book Consultation Now</button>
+      </section>
+
+      <section class="section" id="about">
+        <div class="about-grid">
+          <div class="about-content reveal">
+            <div class="about-label">The Firm</div>
+            <h2 class="about-title">Modern Law for a Digital Age.</h2>
+            <p class="about-body">At Lexis Law, we believe legal counsel should be accessible, transparent, and
+              efficient.
+              We use cutting-edge technology to keep you informed every step of the way.</p>
+            <div class="about-values">
+              <div class="value-item">
+                <div class="value-name">Intergrity</div>
+                <div class="value-desc">Upholding the highest ethical standards in every case.</div>
+              </div>
+              <div class="value-item">
+                <div class="value-name">Innovation</div>
+                <div class="value-desc">Using technology to streamline the legal process.</div>
+              </div>
+            </div>
+          </div>
+          <div class="about-visual reveal reveal-delay-2">
+            <div class="team-member">
+              <div class="team-avatar">TN</div>
+              <div>
+                <div class="team-name">Adv. Thabo Nkosi</div>
+                <div class="team-role">Senior Partner — Litigation</div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">SM</div>
+              <div>
+                <div class="team-name">Adv. Sarah Mokoena</div>
+                <div class="team-role">Partner — Family Law</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-    <button class="nav-cta" onclick="showPage('booking')">BOOK NOW</button>
-  </nav>
 
-  <!-- HOME PAGE -->
-  <div id="homePage" class="page active">
-    <section class="hero">
-      <div class="hero-left reveal">
-        <div class="hero-eyebrow">PREMIUM LEGAL SERVICES</div>
-        <h1 class="hero-h1">Justice <span class="accent">Simplified.</span></h1>
-        <p class="hero-sub">Providing expert legal counsel for individuals and businesses. Modern solutions for complex
-          legal challenges in South Africa.</p>
-        <div class="hero-btns">
-          <button class="btn-primary" onclick="showPage('booking')">Start Consultation</button>
-          <button class="btn-secondary" onclick="showPage('tracker')">Track My Matter</button>
+    <!-- BOOKING PAGE -->
+    <div id="bookingPage" class="page">
+      <div class="booking-page">
+        <div class="booking-page-header">
+          <div class="booking-eyebrow">STEP 01 — CONSULTATION</div>
+          <h1 class="booking-title">Secure Your <br>Appointment.</h1>
         </div>
-        <div class="hero-stats">
-          <div class="stat-item">
-            <div class="stat-num">18<span>+</span></div>
-            <div class="stat-label">Years Exp.</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num">2.4k<span>+</span></div>
-            <div class="stat-label">Resolved</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-num">98<span>%</span></div>
-            <div class="stat-label">Success</div>
-          </div>
-        </div>
-      </div>
-      <div class="hero-right">
-        <div class="hero-bg-text">LEXIS</div>
-        <div class="hero-card reveal reveal-delay-2">
-          <div class="hero-card-label">Why Choose Us</div>
-          <div class="hero-card-item">
-            <div class="hero-card-icon">⚖️</div>
-            <div class="hero-card-text"><strong>Expert Advocates</strong> Specialized legal teams for every case.</div>
-          </div>
-          <div class="hero-card-item">
-            <div class="hero-card-icon">⚡</div>
-            <div class="hero-card-text"><strong>Real-time Tracking</strong> Knowledge is power. Track your case 24/7.
-            </div>
-          </div>
-          <div class="hero-card-item">
-            <div class="hero-card-icon">📱</div>
-            <div class="hero-card-text"><strong>WhatsApp Updates</strong> Get instant notifications on your phone.</div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="services">
-      <div class="section-header reveal">
-        <h2 class="section-title">Legal <span class="red">Specialties.</span></h2>
-        <div class="section-num">Section 01</div>
-      </div>
-      <div class="services-grid">
-        <div class="service-card reveal" onclick="showPage('booking')">
-          <span class="service-num">01</span>
-          <span class="service-icon">🏠</span>
-          <h3 class="service-name">Family Law</h3>
-          <p class="service-desc">Divorce, maintenance, custody and domestic partnership agreements.</p>
-          <span class="service-arrow">→</span>
-        </div>
-        <div class="service-card reveal reveal-delay-1" onclick="showPage('booking')">
-          <span class="service-num">02</span>
-          <span class="service-icon">💼</span>
-          <h3 class="service-name">Commercial</h3>
-          <p class="service-desc">Contract preparation, dispute resolution, and business litigation.</p>
-          <span class="service-arrow">→</span>
-        </div>
-        <div class="service-card reveal reveal-delay-2" onclick="showPage('booking')">
-          <span class="service-num">03</span>
-          <span class="service-icon">🚨</span>
-          <h3 class="service-name">Criminal</h3>
-          <p class="service-desc">Expert defence and representation in all criminal matters.</p>
-          <span class="service-arrow">→</span>
-        </div>
-        <div class="service-card reveal reveal-delay-3" onclick="showPage('booking')">
-          <span class="service-num">04</span>
-          <span class="service-icon">🏗️</span>
-          <h3 class="service-name">Property Law</h3>
-          <p class="service-desc">Conveyancing, tenant disputes, and property litigation.</p>
-          <span class="service-arrow">→</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="cta-banner">
-      <h2 class="cta-text">Ready to protect <span>your rights?</span></h2>
-      <button class="btn-dark" onclick="showPage('booking')">Book Consultation Now</button>
-    </section>
-
-    <section class="section" id="about">
-      <div class="about-grid">
-        <div class="about-content reveal">
-          <div class="about-label">The Firm</div>
-          <h2 class="about-title">Modern Law for a Digital Age.</h2>
-          <p class="about-body">At Lexis Law, we believe legal counsel should be accessible, transparent, and efficient.
-            We use cutting-edge technology to keep you informed every step of the way.</p>
-          <div class="about-values">
-            <div class="value-item">
-              <div class="value-name">Intergrity</div>
-              <div class="value-desc">Upholding the highest ethical standards in every case.</div>
-            </div>
-            <div class="value-item">
-              <div class="value-name">Innovation</div>
-              <div class="value-desc">Using technology to streamline the legal process.</div>
-            </div>
+        <div class="progress-bar">
+          <div class="progress-step active" id="step1">
+            <div class="step-num">1</div> Details
+          </div>
+          <div class="progress-step" id="step2">
+            <div class="step-num">2</div> Confirm
           </div>
         </div>
-        <div class="about-visual reveal reveal-delay-2">
-          <div class="team-member">
-            <div class="team-avatar">TN</div>
-            <div>
-              <div class="team-name">Adv. Thabo Nkosi</div>
-              <div class="team-role">Senior Partner — Litigation</div>
-            </div>
-          </div>
-          <div class="team-member">
-            <div class="team-avatar">SM</div>
-            <div>
-              <div class="team-name">Adv. Sarah Mokoena</div>
-              <div class="team-role">Partner — Family Law</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
 
-  <!-- BOOKING PAGE -->
-  <div id="bookingPage" class="page">
-    <div class="booking-page">
-      <div class="booking-page-header">
-        <div class="booking-eyebrow">STEP 01 — CONSULTATION</div>
-        <h1 class="booking-title">Secure Your <br>Appointment.</h1>
-      </div>
-
-      <div class="progress-bar">
-        <div class="progress-step active" id="step1">
-          <div class="step-num">1</div> Details
-        </div>
-        <div class="progress-step" id="step2">
-          <div class="step-num">2</div> Confirm
-        </div>
-      </div>
-
-      <div class="booking-layout">
-        <div class="booking-form-wrap">
-          <h3 class="form-section-title">Personal Information</h3>
-          <form id="bookingForm" onsubmit="submitBooking(event)">
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Full Name</label>
-                <input type="text" id="clientName" class="form-input" placeholder="e.g. Sipho Mkhize" required>
+        <div class="booking-layout">
+          <div class="booking-form-wrap">
+            <h3 class="form-section-title">Personal Information</h3>
+            <form id="bookingForm" onsubmit="submitBooking(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" id="clientName" class="form-input" placeholder="e.g. Sipho Mkhize" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone <span>(WhatsApp)</span></label>
+                  <input type="tel" id="clientPhone" class="form-input" placeholder="e.g. 082 123 4567" required>
+                </div>
               </div>
-              <div class="form-group">
-                <label class="form-label">Phone <span>(WhatsApp)</span></label>
-                <input type="tel" id="clientPhone" class="form-input" placeholder="e.g. 082 123 4567" required>
+              <div class="form-group full">
+                <label class="form-label">Email Address <span>(Optional)</span></label>
+                <input type="email" id="clientEmail" class="form-input" placeholder="e.g. sipho@email.co.za">
               </div>
-            </div>
-            <div class="form-group full">
-              <label class="form-label">Email Address <span>(Optional)</span></label>
-              <input type="email" id="clientEmail" class="form-input" placeholder="e.g. sipho@email.co.za">
-            </div>
-            <div class="form-group full">
-              <label class="form-label">Legal Matter Type</label>
-              <select id="matterType" class="form-select" required>
-                <option value="" disabled selected>Select a category</option>
-                <option value="Family Law">Family Law — Divorce & Custody</option>
-                <option value="Commercial Law">Commercial Law — Business & Contracts</option>
-                <option value="Criminal Defence">Criminal Defence</option>
-                <option value="Property Law">Property Law — Conveyancing & Disputes</option>
-                <option value="Civil Litigation">Civil Litigation — General</option>
-              </select>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Preferred Date</label>
-                <input type="date" id="bookingDate" class="form-input" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Preferred Time</label>
-                <select id="bookingTime" class="form-select" required>
-                  <option value="09:00">09:00 AM</option>
-                  <option value="10:00">10:00 AM</option>
-                  <option value="11:00">11:00 AM</option>
-                  <option value="12:00">12:00 PM</option>
-                  <option value="14:00">02:00 PM</option>
-                  <option value="15:00">03:00 PM</option>
+              <div class="form-group full">
+                <label class="form-label">Legal Matter Type</label>
+                <select id="matterType" class="form-select" required>
+                  <option value="" disabled selected>Select a category</option>
+                  <option value="Family Law">Family Law — Divorce & Custody</option>
+                  <option value="Commercial Law">Commercial Law — Business & Contracts</option>
+                  <option value="Criminal Defence">Criminal Defence</option>
+                  <option value="Property Law">Property Law — Conveyancing & Disputes</option>
+                  <option value="Civil Litigation">Civil Litigation — General</option>
                 </select>
               </div>
-            </div>
-            <div class="form-group full">
-              <label class="form-label">Brief Description <span>(Optional)</span></label>
-              <textarea id="briefDesc" class="form-textarea" placeholder="Tell us a bit about your case..."></textarea>
-            </div>
-
-            <div class="notification-strip">
-              <div class="notif-text">
-                <strong>WhatsApp Integration</strong>
-                Confirmations and tracking updates are sent via WhatsApp.
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Preferred Date</label>
+                  <input type="date" id="bookingDate" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Preferred Time</label>
+                  <select id="bookingTime" class="form-select" required>
+                    <option value="09:00">09:00 AM</option>
+                    <option value="10:00">10:00 AM</option>
+                    <option value="11:00">11:00 AM</option>
+                    <option value="12:00">12:00 PM</option>
+                    <option value="14:00">02:00 PM</option>
+                    <option value="15:00">03:00 PM</option>
+                  </select>
+                </div>
               </div>
-              <label class="notif-checkbox-label">
-                <input type="checkbox" id="whatsappConsent" class="notif-checkbox" checked>
-                I consent to WhatsApp notifications
-              </label>
-            </div>
+              <div class="form-group full">
+                <label class="form-label">Brief Description <span>(Optional)</span></label>
+                <textarea id="briefDesc" class="form-textarea"
+                  placeholder="Tell us a bit about your case..."></textarea>
+              </div>
 
-            <button type="submit" class="form-submit" id="submitBtn">Request Appointment</button>
-          </form>
-        </div>
+              <div class="notification-strip">
+                <div class="notif-text">
+                  <strong>WhatsApp Integration</strong>
+                  Confirmations and tracking updates are sent via WhatsApp.
+                </div>
+                <label class="notif-checkbox-label">
+                  <input type="checkbox" id="whatsappConsent" class="notif-checkbox" checked>
+                  I consent to WhatsApp notifications
+                </label>
+              </div>
 
-        <div class="booking-sidebar">
-          <div class="sidebar-card">
-            <h4 class="sidebar-card-title">What Happens Next</h4>
-            <div class="sidebar-step">
-              <div class="sidebar-step-num">1</div>
-              <div class="sidebar-step-text"><strong>Request Received</strong> Our team reviews your matter for conflict
-                of interest.</div>
+              <button type="submit" class="form-submit" id="submitBtn">Request Appointment</button>
+            </form>
+          </div>
+
+          <div class="booking-sidebar">
+            <div class="sidebar-card">
+              <h4 class="sidebar-card-title">What Happens Next</h4>
+              <div class="sidebar-step">
+                <div class="sidebar-step-num">1</div>
+                <div class="sidebar-step-text"><strong>Request Received</strong> Our team reviews your matter for
+                  conflict
+                  of interest.</div>
+              </div>
+              <div class="sidebar-step">
+                <div class="sidebar-step-num">2</div>
+                <div class="sidebar-step-text"><strong>Confirmation</strong> You'll receive a WhatsApp with your
+                  reference
+                  number.</div>
+              </div>
+              <div class="sidebar-step">
+                <div class="sidebar-step-num">3</div>
+                <div class="sidebar-step-text"><strong>Consultation</strong> Meet with your assigned advocate to discuss
+                  the case.</div>
+              </div>
             </div>
-            <div class="sidebar-step">
-              <div class="sidebar-step-num">2</div>
-              <div class="sidebar-step-text"><strong>Confirmation</strong> You'll receive a WhatsApp with your reference
-                number.</div>
-            </div>
-            <div class="sidebar-step">
-              <div class="sidebar-step-num">3</div>
-              <div class="sidebar-step-text"><strong>Consultation</strong> Meet with your assigned advocate to discuss
-                the case.</div>
+            <div class="wa-card">
+              <div class="wa-icon">📲</div>
+              <div>
+                <div class="wa-title">Legal Tracker</div>
+                <div class="wa-sub">Once booked, track your status via our digital portal.</div>
+              </div>
             </div>
           </div>
-          <div class="wa-card">
-            <div class="wa-icon">📲</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONFIRMATION PAGE -->
+    <div id="confirmationPage" class="page">
+      <div class="confirmation-page" id="confView">
+        <div class="conf-check">✓</div>
+        <h1 class="conf-title">Request Sent.</h1>
+        <p class="conf-sub">We have received your request. Please save your reference number for tracking.</p>
+        <div class="conf-ref" id="displayRef">REF-XXXXX</div>
+        <div class="conf-wa">
+          <span>📲</span> WhatsApp confirmation pending...
+        </div>
+        <div class="conf-actions">
+          <button class="btn-primary" onclick="showPage('tracker')">Go to Tracker</button>
+          <button class="btn-secondary" onclick="showPage('home')">Back to Home</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRACKER PAGE -->
+    <div id="trackerPage" class="page">
+      <div class="tracker-page">
+        <div class="tracker-lookup">
+          <h2 class="tracker-lookup-title">Track Case.</h2>
+          <p class="tracker-lookup-sub">Enter your 5-digit reference number to view real-time status.</p>
+          <div class="lookup-row">
+            <input type="text" id="trackerInput" class="lookup-input" placeholder="REF-#####" maxlength="9">
+            <button class="lookup-btn" onclick="lookupMatter()">Track</button>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="tracker-result" id="trackerResult">
+          <div class="result-header">
+            <div class="result-ref" id="resRef">REF-00421</div>
+            <div class="result-badge" id="resStatusLabel">IN PROGRESS</div>
+          </div>
+          <div class="result-body">
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>Client</label>
+                <p id="resClient">Sipho Mkhize</p>
+              </div>
+              <div class="detail-item">
+                <label>Matter</label>
+                <p id="resMatter">Family Law — Divorce</p>
+              </div>
+              <div class="detail-item">
+                <label>Assigned Advocate</label>
+                <p id="resAttorney">Adv. Thabo Nkosi</p>
+              </div>
+              <div class="detail-item">
+                <label>Appointment</label>
+                <p id="resDate">15 March 2026, 10:00 AM</p>
+              </div>
+              <div class="detail-item">
+                <label>Next Action</label>
+                <p id="resNext">Awaiting initial consultation</p>
+              </div>
+              <div class="detail-item">
+                <label>Firm Contact</label>
+                <p>+27 11 455 0988</p>
+              </div>
+            </div>
+
+            <div class="status-timeline">
+              <div class="timeline-track">
+                <div class="timeline-progress" id="progressLine"></div>
+                <div class="timeline-steps">
+                  <div class="timeline-step" data-label="Pending" id="step_pending"></div>
+                  <div class="timeline-step" data-label="Working" id="step_in_progress"></div>
+                  <div class="timeline-step" data-label="Documents" id="step_awaiting_docs"></div>
+                  <div class="timeline-step" data-label="Hearing" id="step_hearing"></div>
+                  <div class="timeline-step" data-label="Resolved" id="step_resolved"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="result-actions">
+              <a href="#" id="waLink" class="wa-action-btn">
+                <span>💬</span> Message Advocate on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracker-notfound" id="trackerError">
+          <div class="notfound-icon">⚠️</div>
+          <h3 class="notfound-title">Matter Not Found</h3>
+          <p class="notfound-sub">We couldn't find a case with that reference. Please check your spelling and try again.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    </footer>
+  </div>
+
+  <div id="adminView" class="hidden">
+    <div id="loginScreen">
+      <div class="login-card">
+        <div class="login-logo">LEXIS<span>LAW</span></div>
+        <input type="password" id="passInput" class="login-input" placeholder="ACCESS CODE">
+        <button class="login-btn" onclick="checkLogin()">AUTHORIZE</button>
+        <button class="nav-btn" style="margin-top: 20px; width: 100%; text-align: center; border:0;"
+          onclick="showClient()">← BACK TO WEBSITE</button>
+      </div>
+    </div>
+
+    <div class="dashboard hidden" id="dashboard">
+      <aside>
+        <div class="aside-logo">LEXIS<span>LAW</span></div>
+        <button class="nav-btn active" onclick="switchDashboardTab('overview')">OVERVIEW</button>
+        <button class="nav-btn" onclick="switchDashboardTab('bookings')">NEW REQUESTS</button>
+        <button class="nav-btn" onclick="switchDashboardTab('matters')">ACTIVE MATTERS</button>
+        <button class="nav-btn" onclick="switchDashboardTab('documents')">DOCUMENTS</button>
+        <button class="nav-btn" onclick="switchDashboardTab('schedule')">SCHEDULE</button>
+        <button class="nav-btn" onclick="switchDashboardTab('waLogs')">WA LOGS</button>
+        <div style="margin-top: auto; padding: 40px;">
+          <button class="nav-btn" style="padding: 0; color: var(--grey); margin-bottom: 20px;" onclick="showClient()">←
+            BACK TO SITE</button>
+          <button class="nav-btn" style="padding: 0; color: var(--red);" onclick="location.reload()">LOGOUT</button>
+        </div>
+      </aside>
+
+      <main>
+        <div id="overviewView">
+          <div class="header">
+            <h1 class="title">Practice <span>Overview.</span></h1>
+            <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">REAL-TIME ANALYTICS</div>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-card active">
+              <div class="kpi-label">Active Matters</div>
+              <div class="kpi-value" id="statActiveCases">0</div>
+              <div class="kpi-sub">Across 4 practice areas</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">Unbilled Amount</div>
+              <div class="kpi-value">R<span id="statUnbilled">0</span></div>
+              <div class="kpi-sub">Estimated legal fees</div>
+            </div>
+            <div class="kpi-card positive">
+              <div class="kpi-label">Resolved (MTD)</div>
+              <div class="kpi-value" id="statResolved">0</div>
+              <div class="kpi-sub">Cases closed this month</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-label">New Requests</div>
+              <div class="kpi-value" id="statNewBookings">0</div>
+              <div class="kpi-sub">Awaiting review</div>
+            </div>
+          </div>
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 48px;">
             <div>
-              <div class="wa-title">Legal Tracker</div>
-              <div class="wa-sub">Once booked, track your status via our digital portal.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- CONFIRMATION PAGE -->
-  <div id="confirmationPage" class="page">
-    <div class="confirmation-page" id="confView">
-      <div class="conf-check">✓</div>
-      <h1 class="conf-title">Request Sent.</h1>
-      <p class="conf-sub">We have received your request. Please save your reference number for tracking.</p>
-      <div class="conf-ref" id="displayRef">REF-XXXXX</div>
-      <div class="conf-wa">
-        <span>📲</span> WhatsApp confirmation pending...
-      </div>
-      <div class="conf-actions">
-        <button class="btn-primary" onclick="showPage('tracker')">Go to Tracker</button>
-        <button class="btn-secondary" onclick="showPage('home')">Back to Home</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TRACKER PAGE -->
-  <div id="trackerPage" class="page">
-    <div class="tracker-page">
-      <div class="tracker-lookup">
-        <h2 class="tracker-lookup-title">Track Case.</h2>
-        <p class="tracker-lookup-sub">Enter your 5-digit reference number to view real-time status.</p>
-        <div class="lookup-row">
-          <input type="text" id="trackerInput" class="lookup-input" placeholder="REF-#####" maxlength="9">
-          <button class="lookup-btn" onclick="lookupMatter()">Track</button>
-        </div>
-      </div>
-
-      <!-- Results Section -->
-      <div class="tracker-result" id="trackerResult">
-        <div class="result-header">
-          <div class="result-ref" id="resRef">REF-00421</div>
-          <div class="result-badge" id="resStatusLabel">IN PROGRESS</div>
-        </div>
-        <div class="result-body">
-          <div class="details-grid">
-            <div class="detail-item">
-              <label>Client</label>
-              <p id="resClient">Sipho Mkhize</p>
-            </div>
-            <div class="detail-item">
-              <label>Matter</label>
-              <p id="resMatter">Family Law — Divorce</p>
-            </div>
-            <div class="detail-item">
-              <label>Assigned Advocate</label>
-              <p id="resAttorney">Adv. Thabo Nkosi</p>
-            </div>
-            <div class="detail-item">
-              <label>Appointment</label>
-              <p id="resDate">15 March 2026, 10:00 AM</p>
-            </div>
-            <div class="detail-item">
-              <label>Next Action</label>
-              <p id="resNext">Awaiting initial consultation</p>
-            </div>
-            <div class="detail-item">
-              <label>Firm Contact</label>
-              <p>+27 11 455 0988</p>
-            </div>
-          </div>
-
-          <div class="status-timeline">
-            <div class="timeline-track">
-              <div class="timeline-progress" id="progressLine"></div>
-              <div class="timeline-steps">
-                <div class="timeline-step" data-label="Pending" id="step_pending"></div>
-                <div class="timeline-step" data-label="Working" id="step_in_progress"></div>
-                <div class="timeline-step" data-label="Documents" id="step_awaiting_docs"></div>
-                <div class="timeline-step" data-label="Hearing" id="step_hearing"></div>
-                <div class="timeline-step" data-label="Resolved" id="step_resolved"></div>
+              <h2
+                style="font-family: var(--ff-mono); font-size: 12px; letter-spacing: 2px; color: var(--red); margin-bottom: 24px; text-transform: uppercase;">
+                Recent Activity</h2>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Action</th>
+                      <th>Ref</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentActivityTable"></tbody>
+                </table>
               </div>
             </div>
-          </div>
-
-          <div class="result-actions">
-            <a href="#" id="waLink" class="wa-action-btn">
-              <span>💬</span> Message Advocate on WhatsApp
-            </a>
+            <div>
+              <h2
+                style="font-family: var(--ff-mono); font-size: 12px; letter-spacing: 2px; color: var(--red); margin-bottom: 24px; text-transform: uppercase;">
+                Team Capacity</h2>
+              <div id="teamCapacityList"></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="tracker-notfound" id="trackerError">
-        <div class="notfound-icon">⚠️</div>
-        <h3 class="notfound-title">Matter Not Found</h3>
-        <p class="notfound-sub">We couldn't find a case with that reference. Please check your spelling and try again.
-        </p>
+        <div id="bookingsView" class="hidden">
+          <div class="header">
+            <h1 class="title">New <span>Requests.</span></h1>
+            <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">ADMIN PORTAL // 2026</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Category</th>
+                  <th>Date/Time</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="bookingsTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="mattersView" class="hidden">
+          <div class="header">
+            <h1 class="title">Active <span>Matters.</span></h1>
+            <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">CASE TRACKING SYSTEM</div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ref</th>
+                  <th>Client</th>
+                  <th>Attorney</th>
+                  <th>Status</th>
+                  <th>Update</th>
+                </tr>
+              </thead>
+              <tbody id="mattersTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="documentsView" class="hidden">
+          <div class="header">
+            <h1 class="title">Document <span>Vault.</span></h1>
+            <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">SECURE FILE MANAGEMENT</div>
+          </div>
+          <div class="table-wrap" style="padding: 40px;">
+            <div style="margin-bottom: 32px; display: flex; justify-content: space-between; align-items: center;">
+              <div style="font-family: var(--ff-mono); font-size: 11px; color: var(--grey);">Showing recent files for
+                all matters</div>
+              <button class="action-btn" style="border-color: var(--red); color: var(--red);" onclick="uploadDoc()">+
+                UPLOAD NEW DOC</button>
+            </div>
+            <div class="doc-list" id="docList"></div>
+          </div>
+        </div>
+
+        <div id="scheduleView" class="hidden">
+          <div class="header">
+            <h1 class="title">Lawyer <span>Schedule.</span></h1>
+            <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">CALENDAR & APPOINTMENTS</div>
+          </div>
+          <div class="calendar-strip" id="calendarStrip"></div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Event</th>
+                  <th>With</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="waLogsView" class="hidden">
+          <div class="header">
+            <h1 class="title">WhatsApp <span>Logs.</span></h1>
+            <div style="font-family: var(--ff-mono); font-size: 12px; color: var(--grey);">COMMUNICATION AUDIT TRAIL
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Client</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th>Message Snippet</th>
+                </tr>
+              </thead>
+              <tbody id="waLogsTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Admin Modal -->
+    <div class="modal-overlay" id="adminModal">
+      <div class="modal">
+        <div class="modal-title" style="font-family: var(--ff-display); font-size: 32px; margin-bottom: 24px;">Update
+          Case</div>
+        <input type="hidden" id="editRef">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label
+            style="display: block; font-family: var(--ff-mono); font-size: 10px; color: var(--red); margin-bottom: 8px; text-transform: uppercase;">Status</label>
+          <select id="editStatus"
+            style="width: 100%; background: var(--black); border: 2px solid var(--border); color: var(--white); padding: 12px; font-family: var(--ff-body); outline: none;">
+            <option value="0">Pending Review</option>
+            <option value="1">Working / In Progress</option>
+            <option value="2">Awaiting Documents</option>
+            <option value="3">Hearing Scheduled</option>
+            <option value="4">Resolved / Closed</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label
+            style="display: block; font-family: var(--ff-mono); font-size: 10px; color: var(--red); margin-bottom: 8px; text-transform: uppercase;">Assigned
+            Attorney</label>
+          <select id="editAttorney"
+            style="width: 100%; background: var(--black); border: 2px solid var(--border); color: var(--white); padding: 12px; font-family: var(--ff-body); outline: none;">
+            <option value="">Unassigned</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label
+            style="display: block; font-family: var(--ff-mono); font-size: 10px; color: var(--red); margin-bottom: 8px; text-transform: uppercase;">Next
+            Action</label>
+          <input type="text" id="editNext" placeholder="Visible to client"
+            style="width: 100%; background: var(--black); border: 2px solid var(--border); color: var(--white); padding: 12px; font-family: var(--ff-body); outline: none;">
+        </div>
+        <div class="modal-btns" style="display: flex; gap: 12px; margin-top: 32px;">
+          <button class="action-btn" style="flex: 1; padding: 14px; border-color: var(--grey); color: var(--grey);"
+            onclick="closeAdminModal()">CANCEL</button>
+          <button class="action-btn"
+            style="flex: 1; padding: 14px; border-color: var(--red); background: var(--red); color: var(--white);"
+            onclick="saveCase()">SAVE CHANGES</button>
+        </div>
       </div>
     </div>
   </div>
-
-  <footer>
-    <div class="footer-grid">
-      <div>
-        <div class="footer-logo">LEXIS<span>LAW</span></div>
-        <p class="footer-tagline">Providing South Africa with modern, reliable, and accessible legal representation
-          since 2008.</p>
-      </div>
-      <div>
-        <h4 class="footer-heading">Services</h4>
-        <a href="#" class="footer-link">Family Law</a>
-        <a href="#" class="footer-link">Commercial Law</a>
-        <a href="#" class="footer-link">Criminal Defence</a>
-        <a href="#" class="footer-link">Property Law</a>
-      </div>
-      <div>
-        <h4 class="footer-heading">Company</h4>
-        <a href="#" class="footer-link">Our Firm</a>
-        <a href="#" class="footer-link">Legal Team</a>
-        <a href="#" class="footer-link">Case Tracking</a>
-        <a href="#" class="footer-link">Contact</a>
-      </div>
-      <div>
-        <h4 class="footer-heading">Contact</h4>
-        <div class="footer-contact-item"><span>📍</span> Johannesburg, SA</div>
-        <div class="footer-contact-item"><span>📞</span> +27 11 455 0988</div>
-        <div class="footer-contact-item"><span>✉️</span> info@lexislaw.co.za</div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="footer-legal">© 2026 LEXIS LAW (PTY) LTD. ALL RIGHTS RESERVED.</div>
-      <div class="footer-popia">POPIA COMPLIANT</div>
-    </div>
-  </footer>
 
   <script>
     // ─── PAGE ROUTING ───────────────────────────────────────────────────────────
@@ -2265,12 +2671,314 @@
       });
     }
 
-    // Handle URL hash for navigation
+    // ─── ADMIN VIEW SWITCHING ──────────────────────────────────────────────────
+    let adminApi = null;
+    let attorneysList = [];
+    const ADMIN_PASS = 'lexislaw2026';
+
+    function showAdmin() {
+      document.getElementById('clientView').classList.add('hidden');
+      document.getElementById('adminView').classList.remove('hidden');
+      document.getElementById('loginScreen').classList.remove('hidden');
+      document.getElementById('dashboard').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showClient() {
+      document.getElementById('adminView').classList.add('hidden');
+      document.getElementById('clientView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function checkLogin() {
+      const input = document.getElementById('passInput');
+      if (input.value === ADMIN_PASS) {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('dashboard').classList.remove('hidden');
+        initAdmin();
+      } else {
+        alert('INVALID ACCESS CODE');
+      }
+    }
+
+    function switchDashboardTab(tab) {
+      document.querySelectorAll('#dashboard .nav-btn').forEach(b => b.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      const views = ['overview', 'bookings', 'matters', 'documents', 'schedule', 'waLogs'];
+      views.forEach(v => document.getElementById(v + 'View').classList.add('hidden'));
+      document.getElementById(tab + 'View').classList.remove('hidden');
+
+      if (tab === 'overview') loadOverview();
+      if (tab === 'bookings') loadBookings();
+      if (tab === 'matters') loadMatters();
+      if (tab === 'documents') loadDocs();
+      if (tab === 'schedule') loadSchedule();
+      if (tab === 'waLogs') loadWALogs();
+    }
+
+    async function initAdmin() {
+      console.log("Initializing Admin Dashboard...");
+      const checkApi = setInterval(async () => {
+        if (window.lexisLawApi) {
+          clearInterval(checkApi);
+          adminApi = window.lexisLawApi;
+          try {
+            attorneysList = await adminApi.getAttorneys();
+            const select = document.getElementById('editAttorney');
+            select.innerHTML = '<option value="">Unassigned</option>' +
+              attorneysList.map(a => `<option value="${a._id}">${a.name}</option>`).join('');
+          } catch (e) {
+            console.error("Error loading attorneys:", e);
+          }
+          loadOverview();
+        }
+      }, 500);
+    }
+
+    // ─── ADMIN DATA LOADING ───────────────────────────────────────────────────
+    async function loadOverview() {
+      if (!adminApi) return;
+      try {
+        const bookings = await adminApi.getBookings();
+        const matters = await adminApi.getMatters();
+        document.getElementById('statActiveCases').textContent = matters.filter(m => m.status < 4).length;
+        document.getElementById('statNewBookings').textContent = bookings.length;
+        document.getElementById('statResolved').textContent = matters.filter(m => m.status === 4).length;
+        document.getElementById('statUnbilled').textContent = (matters.filter(m => m.status < 4).length * 1500).toLocaleString();
+
+        const teamList = document.getElementById('teamCapacityList');
+        teamList.innerHTML = attorneysList.map(a => `
+          <div style="background: var(--black2); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-weight: 700; font-size: 14px;">${a.name}</div>
+              <div style="font-family: var(--ff-mono); font-size: 10px; color: var(--grey);">${a.specialty || 'General'}</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-family: var(--ff-display); font-size: 20px; color: var(--red);">${a.activeCases || 0}</div>
+              <div style="font-family: var(--ff-mono); font-size: 9px; color: var(--grey);">ACTIVE MATTERS</div>
+            </div>
+          </div>
+        `).join('');
+
+        const activityTable = document.getElementById('recentActivityTable');
+        activityTable.innerHTML = matters.slice(0, 5).map(m => `
+          <tr>
+            <td style="font-family: var(--ff-mono); font-size: 11px;">RECENT</td>
+            <td>Status updated to ${m.statusLabel}</td>
+            <td style="color:var(--red); font-family:var(--ff-mono); font-weight:700;">${m.reference}</td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadBookings() {
+      if (!adminApi) return;
+      const table = document.getElementById('bookingsTable');
+      table.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+      try {
+        const bookings = await adminApi.getBookings();
+        if (bookings.length === 0) {
+          table.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color: var(--grey);">No pending requests.</td></tr>';
+          return;
+        }
+        table.innerHTML = bookings.map(b => `
+          <tr>
+            <td><strong>${b.client_name}</strong></td>
+            <td>${b.client_phone}</td>
+            <td>${b.matter_type}</td>
+            <td>${b.preferred_date} @ ${b.preferred_time}</td>
+            <td>
+              <div style="display:flex; gap:8px;">
+                <button class="action-btn" onclick="approveBooking('${b._id}')">APPROVE</button>
+                <button class="action-btn" style="color:var(--grey); border-color:var(--border);" onclick="rejectBooking('${b._id}')">REJECT</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { table.innerHTML = '<tr><td colspan="5">Error loading bookings.</td></tr>'; }
+    }
+
+    async function loadMatters() {
+      if (!adminApi) return;
+      const table = document.getElementById('mattersTable');
+      table.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+      try {
+        const matters = await adminApi.getMatters();
+        if (matters.length === 0) {
+          table.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color: var(--grey);">No active matters.</td></tr>';
+          return;
+        }
+        table.innerHTML = matters.map(m => `
+          <tr>
+            <td style="color:var(--red); font-family:var(--ff-mono); font-weight:700;">${m.reference}</td>
+            <td>${m.name}</td>
+            <td>${m.attorney}</td>
+            <td><span class="badge">${m.statusLabel}</span></td>
+            <td>
+              <div style="display:flex; gap:8px;">
+                <button class="action-btn" onclick="openAdminModal('${m.reference}', '${m.status}', '${m.next}', '${m.attorney_id || ""}')">UPDATE</button>
+                <button class="action-btn" style="color:var(--grey); border-color:var(--border);" onclick="deleteMatter('${m._id}')">DELETE</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      } catch (e) { table.innerHTML = '<tr><td colspan="5">Error loading matters.</td></tr>'; }
+    }
+
+    async function loadDocs() {
+      if (!adminApi) return;
+      try {
+        const docs = await adminApi.getDocuments();
+        const list = document.getElementById('docList');
+        if (!docs || docs.length === 0) {
+          list.innerHTML = '<div style="text-align:center; padding: 40px; color: var(--grey);">No documents in vault.</div>';
+          return;
+        }
+        list.innerHTML = docs.map(d => `
+          <div class="doc-item">
+            <div style="display:flex; align-items:center; gap:16px;">
+              <span style="font-size:24px; color:var(--red);">${d.file_type && d.file_type.includes('pdf') ? '📄' : '📁'}</span>
+              <div>
+                <div style="font-weight:600; font-size:14px;">${d.filename}</div>
+                <div style="font-family:var(--ff-mono); font-size:10px; color:var(--grey);">${(d.file_size / 1024).toFixed(1)}KB · REF: ${d.matter_reference}</div>
+              </div>
+            </div>
+            <button class="action-btn" onclick="window.open('${d.url || '#'}', '_blank')">VIEW</button>
+          </div>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadSchedule() {
+      if (!adminApi) return;
+      try {
+        const bookings = await adminApi.getBookings();
+        const scheduleTable = document.getElementById('scheduleTable');
+        const confirmed = bookings.filter(b => b.status === 'confirmed' || b.status === 'approved');
+        if (confirmed.length === 0) {
+          scheduleTable.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 40px; color: var(--grey);">No appointments.</td></tr>';
+          return;
+        }
+        scheduleTable.innerHTML = confirmed.map(b => `
+          <tr>
+            <td style="font-family: var(--ff-mono); font-size: 12px; color: var(--red);">${b.preferred_time || '—'}</td>
+            <td style="font-weight: 700;">${b.matter_type || 'General'} Consultation</td>
+            <td>${b.client_name || 'Client'}</td>
+            <td style="font-family: var(--ff-mono); font-size: 11px; color: var(--grey);">OFFICE 4A</td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function loadWALogs() {
+      if (!adminApi) return;
+      try {
+        const logs = await adminApi.getWhatsAppLogs();
+        const table = document.getElementById('waLogsTable');
+        if (!logs || logs.length === 0) {
+          table.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color: var(--grey);">No logs found.</td></tr>';
+          return;
+        }
+        table.innerHTML = logs.map(l => `
+          <tr>
+            <td style="font-family:var(--ff-mono); font-size:11px;">${new Date(l.timestamp).toLocaleString()}</td>
+            <td style="font-weight:700;">${l.clientName}</td>
+            <td><span class="badge" style="background:var(--border);">${l.type}</span></td>
+            <td><span class="badge" style="background:${l.status === 'delivered' ? 'var(--green)' : 'var(--red)'}; color:white; border:0;">${l.status}</span></td>
+            <td style="font-family:var(--ff-mono); font-size:11px; color:var(--grey);">${l.message}</td>
+          </tr>
+        `).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    // ─── ADMIN ACTIONS ────────────────────────────────────────────────────────
+    function openAdminModal(ref, status, next, attorneyId) {
+      document.getElementById('editRef').value = ref;
+      document.getElementById('editStatus').value = status;
+      document.getElementById('editNext').value = next;
+      document.getElementById('editAttorney').value = attorneyId || "";
+      document.getElementById('adminModal').classList.add('show');
+    }
+
+    function closeAdminModal() {
+      document.getElementById('adminModal').classList.remove('show');
+    }
+
+    async function saveCase() {
+      const ref = document.getElementById('editRef').value;
+      const status = parseInt(document.getElementById('editStatus').value);
+      const next = document.getElementById('editNext').value;
+      const attorneyId = document.getElementById('editAttorney').value || undefined;
+      try {
+        await adminApi.updateMatterStatus(ref, status, next, attorneyId);
+        const matter = (await adminApi.getMatters()).find(m => m.reference === ref);
+        if (matter) {
+          await adminApi.addWALog({
+            bookingRef: ref, clientName: matter.name, phone: matter.phone || "000",
+            type: "Status Update", message: `Matter ${ref} updated to ${matter.statusLabel}. Next: ${next}`,
+            status: "delivered"
+          });
+        }
+        closeAdminModal();
+        loadMatters();
+        loadWALogs();
+        loadOverview();
+      } catch (e) { alert('Error updating case'); }
+    }
+
+    async function approveBooking(id) {
+      if (!confirm('Approve this request?')) return;
+      try {
+        const bookings = await adminApi.getBookings();
+        const booking = bookings.find(b => b._id === id);
+        await adminApi.approveBooking(id);
+        if (booking) {
+          await adminApi.addWALog({
+            bookingRef: booking.ref || "NEW", clientName: booking.client_name, phone: booking.client_phone,
+            type: "Confirmation", message: `Booking approved for ${booking.matter_type}. Reference: ${booking.ref}`,
+            status: "delivered"
+          });
+        }
+        loadBookings();
+        loadWALogs();
+        loadOverview();
+      } catch (e) { alert('Error approving'); }
+    }
+
+    async function uploadDoc() {
+      const ref = prompt("Enter Matter Reference:");
+      const filename = prompt("Enter Filename:");
+      if (!ref || !filename) return;
+      try {
+        await adminApi.addDocument({
+          matter_reference: ref, filename: filename,
+          file_type: filename.endsWith('.pdf') ? 'application/pdf' : 'text/plain',
+          file_size: Math.floor(Math.random() * 5000) + 100, storage_id: "mock"
+        });
+        loadDocs();
+      } catch (e) { alert(e.message); }
+    }
+
+    async function rejectBooking(id) {
+      if (confirm('Reject this request?')) {
+        try { await adminApi.rejectBooking(id); loadBookings(); loadOverview(); } catch (e) { alert('Error rejecting'); }
+      }
+    }
+
+    async function deleteMatter(id) {
+      if (confirm('Delete matter?')) {
+        try { await adminApi.deleteMatter(id); loadMatters(); loadOverview(); } catch (e) { alert('Error deleting'); }
+      }
+    }
+
     window.addEventListener('load', () => {
       const hash = window.location.hash;
       if (hash === '#tracker') showPage('tracker');
       if (hash === '#booking') showPage('booking');
+      if (hash === '#admin') showAdmin();
     });
+
   </script>
 
 </body>
