@@ -1,8 +1,7 @@
 // LexisLaw WhatsApp Notifications for Convex
 // Send WhatsApp messages to clients and admin
 
-import { query } from "./_generated/server";
-import { mutation } from "./_generated/server";
+import { action } from "./_generated/server";
 import { v } from "convex/values";
 
 // Admin phone number
@@ -29,7 +28,7 @@ async function sendWhatsApp(to, message) {
   }
 
   const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
-  
+
   const credentials = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
 
   const response = await fetch(url, {
@@ -55,11 +54,11 @@ async function sendWhatsApp(to, message) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// MUTATIONS
+// ACTIONS
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Send WhatsApp message
-export const sendWhatsAppMessage = mutation({
+export const sendWhatsAppMessage = action({
   args: {
     to: v.string(),
     message: v.string(),
@@ -71,7 +70,7 @@ export const sendWhatsAppMessage = mutation({
 });
 
 // Send booking confirmation to client
-export const sendBookingConfirmation = mutation({
+export const sendBookingConfirmation = action({
   args: {
     client_phone: v.string(),
     reference: v.string(),
@@ -102,7 +101,7 @@ _Justice Starts Here_`;
 });
 
 // Send new booking notification to admin
-export const sendAdminNotification = mutation({
+export const sendAdminNotification = action({
   args: {
     client_name: v.string(),
     client_phone: v.string(),
@@ -132,7 +131,7 @@ Please assign an attorney in the dashboard.`;
 });
 
 // Send status update to client
-export const sendStatusUpdate = mutation({
+export const sendStatusUpdate = action({
   args: {
     client_phone: v.string(),
     reference: v.string(),

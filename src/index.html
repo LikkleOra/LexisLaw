@@ -1030,7 +1030,7 @@
 
     /* ─── CONFIRMATION ───────────────────────────────────────────────────────────── */
     .confirmation-page {
-      display: none;
+      display: flex;
       min-height: 100vh;
       background: var(--black);
       flex-direction: column;
@@ -1038,10 +1038,6 @@
       justify-content: center;
       padding: 80px 40px;
       text-align: center;
-    }
-
-    .confirmation-page.active {
-      display: flex;
       animation: pageIn 0.5s ease forwards;
     }
 

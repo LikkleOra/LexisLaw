@@ -4,7 +4,7 @@
 import { query } from "./_generated/server";
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { sendBookingConfirmation, sendAdminNotification } from "./whatsapp.js";
+import { api } from "./_generated/api";
 
 // Admin phone number for notifications
 const ADMIN_PHONE = "+2785962689";
@@ -189,7 +189,7 @@ export const createBooking = mutation({
     if (args.whatsapp_consent) {
       const dateFormatted = formatDate(args.preferred_date);
       try {
-        await ctx.scheduler.runAfter(0, "sendBookingConfirmation", {
+        await ctx.scheduler.runAfter(0, api.whatsapp.sendBookingConfirmation, {
           client_phone: normalizedPhone,
           reference,
           date: dateFormatted,
@@ -203,7 +203,7 @@ export const createBooking = mutation({
 
     // Send WhatsApp notification to admin
     try {
-      await ctx.scheduler.runAfter(0, "sendAdminNotification", {
+      await ctx.scheduler.runAfter(0, api.whatsapp.sendAdminNotification, {
         client_name: args.name,
         client_phone: normalizedPhone,
         client_email: args.email,
@@ -229,7 +229,7 @@ export const getMatters = query({
   args: {},
   handler: async (ctx) => {
     const matters = await ctx.db.query("matters").collect();
-    
+
     return await Promise.all(
       matters.map(async (matter) => {
         const client = await ctx.db.get(matter.client_id);
@@ -284,26 +284,26 @@ export const updateMatterStatus = mutation({
 
 // Approve booking (placeholder for more complex logic if needed)
 export const approveBooking = mutation({
-    args: { id: v.id("bookings") },
-    handler: async (ctx, args) => {
-        const booking = await ctx.db.get(args.id);
-        if (!booking) throw new Error("Booking not found");
-        
-        // Find associated matter
-        const matters = await ctx.db.query("matters")
-            .filter(q => q.eq(q.field("booking_id"), args.id))
-            .collect();
-            
-        if (matters.length > 0) {
-            await ctx.db.patch(matters[0]._id, {
-                status: "in_progress",
-                next_action: "Consultation approved"
-            });
-        }
-        
-        await ctx.db.patch(args.id, { status: "confirmed" });
-        return { success: true };
+  args: { id: v.id("bookings") },
+  handler: async (ctx, args) => {
+    const booking = await ctx.db.get(args.id);
+    if (!booking) throw new Error("Booking not found");
+
+    // Find associated matter
+    const matters = await ctx.db.query("matters")
+      .filter(q => q.eq(q.field("booking_id"), args.id))
+      .collect();
+
+    if (matters.length > 0) {
+      await ctx.db.patch(matters[0]._id, {
+        status: "in_progress",
+        next_action: "Consultation approved"
+      });
     }
+
+    await ctx.db.patch(args.id, { status: "confirmed" });
+    return { success: true };
+  }
 });
 
 // ═══════════════════════════════════════════════════════════════════════════

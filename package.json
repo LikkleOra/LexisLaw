@@ -5,9 +5,8 @@
   "main": "server/index.js",
   "type": "module",
   "scripts": {
-    "start": "node server/index.js",
-    "dev": "nodemon server/index.js",
-    "db:init": "node server/models/init.js"
+    "dev": "npx serve src",
+    "convex:dev": "npx convex dev"
   },
   "dependencies": {
     "convex": "^1.32.0",
