@@ -31,19 +31,38 @@ export default defineSchema({
   // Booking records for consultations
   bookings: defineTable({
     client_id: v.id("clients"),
-    matter_type: v.string(),
-    preferred_date: v.string(), // ISO date string
-    preferred_time: v.string(),
+    ref: v.string(), // e.g., REF-XXXXX
+    name: v.string(),
+    phone: v.string(),
+    email: v.string(),
+    matter: v.string(), // Corresponds to matter_type
+    date: v.string(), // Corresponds to preferred_date
+    time: v.string(), // Corresponds to preferred_time
+    attorney: v.optional(v.string()), // Attorney name or ID
+    matter_type: v.string(), // Existing, keeping for compatibility
+    preferred_date: v.string(), // Existing, keeping for compatibility
+    preferred_time: v.string(), // Existing, keeping for compatibility
     description: v.optional(v.string()),
     status: v.union(
+      v.literal("new"),
       v.literal("pending"),
-      v.literal("confirmed"),
-      v.literal("completed"),
-      v.literal("cancelled")
+      v.literal("approved"),
+      v.literal("rejected"),
+      v.literal("in-progress"),
+      v.literal("awaiting"),
+      v.literal("hearing"),
+      v.literal("resolved"),
+      v.literal("confirmed"), // Compatibility
+      v.literal("completed"), // Compatibility
+      v.literal("cancelled") // Compatibility
     ),
+    bookingStatus: v.optional(v.string()), // Specialized booking status
+    created: v.string(), // ISO format
+    updated: v.string(), // ISO format
   })
     .index("by_client", ["client_id"])
-    .index("by_date", ["preferred_date"])
+    .index("by_ref", ["ref"])
+    .index("by_date", ["date"])
     .index("by_status", ["status"]),
 
   // Matters (legal cases)
@@ -76,6 +95,24 @@ export default defineSchema({
   })
     .index("by_client", ["client_id"])
     .index("by_matter", ["matter_reference"]),
+
+  // WhatsApp Logs (notification history for the dashboard)
+  whatsapp_logs: defineTable({
+    bookingRef: v.string(),
+    clientName: v.string(),
+    phone: v.string(),
+    type: v.string(), // e.g., "Confirmation", "Reminder", "Update"
+    message: v.string(),
+    status: v.union(
+      v.literal("delivered"),
+      v.literal("read"),
+      v.literal("failed"),
+      v.literal("pending")
+    ),
+    timestamp: v.string(), // ISO format
+  })
+    .index("by_ref", ["bookingRef"])
+    .index("by_status", ["status"]),
 
   // SMS Logs (notification history)
   sms_logs: defineTable({
