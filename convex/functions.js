@@ -1,13 +1,10 @@
-// LexisLaw API Functions for Convex
-// Queries and mutations for bookings, matters, and clients
-
+// WhatsApp is handled client-side via wa.me Click-to-Chat links
 import { query } from "./_generated/server";
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
-import { api } from "./_generated/api";
 
-// Admin phone number for notifications
-const ADMIN_PHONE = "+27785962689";
+// Admin WhatsApp number (no + sign, with country code)
+const ADMIN_PHONE = "27785962689";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // QUERIES
@@ -185,41 +182,21 @@ export const createBooking = mutation({
       next_action: "Awaiting initial consultation",
     });
 
-    // Send WhatsApp confirmation to client (if consented)
-    if (args.whatsapp_consent) {
-      const dateFormatted = formatDate(args.preferred_date);
-      try {
-        await ctx.scheduler.runAfter(0, api.whatsapp.sendBookingConfirmation, {
-          client_phone: normalizedPhone,
-          reference,
-          date: dateFormatted,
-          time: args.preferred_time,
-          matter_type: args.matter_type,
-        });
-      } catch (e) {
-        console.error("Failed to send client WhatsApp:", e.message);
-      }
-    }
-
-    // Send WhatsApp notification to admin
-    try {
-      await ctx.scheduler.runAfter(0, api.whatsapp.sendAdminNotification, {
-        client_name: args.name,
-        client_phone: normalizedPhone,
-        client_email: args.email,
-        matter_type: args.matter_type,
-        preferred_date: formatDate(args.preferred_date),
-        preferred_time: args.preferred_time,
-        description: args.description,
-      });
-    } catch (e) {
-      console.error("Failed to send admin WhatsApp:", e.message);
-    }
-
+    // Return data for the frontend to build WhatsApp Click-to-Chat links
+    const normalizedPhone = args.phone.replace(/\s/g, "").replace(/^0/, "27").replace(/^\+/, "");
     return {
       success: true,
       reference,
       booking_id: bookingId,
+      // Client-side WhatsApp data
+      client_phone: normalizedPhone,
+      admin_phone: ADMIN_PHONE,
+      name: args.name,
+      matter_type: args.matter_type,
+      preferred_date: formatDate(args.preferred_date),
+      preferred_time: args.preferred_time,
+      description: args.description,
+      email: args.email,
     };
   },
 });

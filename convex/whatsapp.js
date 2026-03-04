@@ -1,181 +1,68 @@
-// LexisLaw WhatsApp Notifications for Convex
-// Send WhatsApp messages to clients and admin
+// LexisLaw WhatsApp Integration
+// Uses the free WhatsApp Click-to-Chat API (wa.me) — no API keys required.
+// The frontend opens a WhatsApp link with a pre-filled message after a booking is saved.
 
-import { action } from "./_generated/server";
-import { v } from "convex/values";
+// Admin WhatsApp number — South Africa format (no + sign)
+export const ADMIN_WHATSAPP_NUMBER = "27785962689";
 
-// Admin phone number
-const ADMIN_PHONE = "+27785962689"; // 0785962689 formatted for WhatsApp
-
-// Twilio WhatsApp configuration
-const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
-const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN;
-const TWILIO_WHATSAPP_NUMBER = process.env.TWILIO_WHATSAPP_NUMBER || "+14155238871"; // Twilio sandbox
-
-// Send WhatsApp via Twilio
-async function sendWhatsApp(to, message) {
-  // Demo mode if no credentials
-  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
-    console.log(`
-╔════════════════════════════════════════╗
-║  WHATSAPP (DEMO MODE)                ║
-╠════════════════════════════════════════╣
-║  To: ${to.padEnd(35)}║
-║  Message: ${message.substring(0, 30).padEnd(30)}║
-╚════════════════════════════════════════╝
-    `);
-    return { sid: "DEMO", status: "sent" };
-  }
-
-  const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
-
-  const credentials = Buffer.from(`${TWILIO_ACCOUNT_SID}:${TWILIO_AUTH_TOKEN}`).toString("base64");
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      To: to.startsWith("whatsapp:") ? to : `whatsapp:${to}`,
-      From: `whatsapp:${TWILIO_WHATSAPP_NUMBER}`,
-      Body: message,
-    }),
-  });
-
-  const data = await response.json();
-
-  if (!response.ok) {
-    throw new Error(data.message || "Failed to send WhatsApp");
-  }
-
-  return { sid: data.sid, status: "sent" };
+/**
+ * Normalizes a phone number to the WhatsApp format (digits only, with country code).
+ * e.g. "0785962689" → "27785962689"
+ */
+export function normalizePhone(phone) {
+  if (!phone) return ADMIN_WHATSAPP_NUMBER;
+  return phone.replace(/\s/g, "").replace(/^0/, "27").replace(/^\+/, "");
 }
 
-// ═══════════════════════════════════════════════════════════════════════════
-// ACTIONS
-// ═══════════════════════════════════════════════════════════════════════════
+/**
+ * Generates a WhatsApp Click-to-Chat URL with a pre-filled message.
+ * @param {string} phone - recipient phone number (any format)
+ * @param {string} message - plain text message
+ * @returns {string} wa.me URL
+ */
+export function buildWhatsAppUrl(phone, message) {
+  const number = normalizePhone(phone);
+  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+}
 
-// Send WhatsApp message
-export const sendWhatsAppMessage = action({
-  args: {
-    to: v.string(),
-    message: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const normalizedTo = args.to.replace(/\s/g, "").replace(/^0/, "+27");
-    return await sendWhatsApp(normalizedTo, args.message);
-  },
-});
+/**
+ * Builds the booking confirmation message for the LAW FIRM ADMIN.
+ */
+export function buildAdminNotificationMessage({ name, phone, email, matter_type, preferred_date, preferred_time, description, reference }) {
+  return `*🔴 NEW BOOKING — LEXIS LAW*
 
-// Send booking confirmation to client
-export const sendBookingConfirmation = action({
-  args: {
-    client_phone: v.string(),
-    reference: v.string(),
-    date: v.string(),
-    time: v.string(),
-    matter_type: v.string(),
-  },
-  handler: async (ctx, args) => {
-    const phone = args.client_phone.replace(/\s/g, "").replace(/^0/, "+27");
+Reference: *${reference}*
 
-    const message = `*LEXIS LAW — BOOKING CONFIRMED* 🔴
+Client: ${name}
+Phone: ${phone}
+Email: ${email || "N/A"}
+Matter: ${matter_type}
+Date: ${preferred_date}
+Time: ${preferred_time}
 
-Reference: *${args.reference}*
+Description: ${description || "None provided"}
 
-Your consultation:
-📅 ${args.date}
-🕐 ${args.time}
-⚖️ ${args.matter_type}
+Please log in to the dashboard to assign an attorney.
+https://lexislaw.co.za/admin`;
+}
 
-Please arrive 10 minutes early and bring any relevant documents.
+/**
+ * Builds the booking confirmation message for the CLIENT.
+ */
+export function buildClientConfirmationMessage({ name, reference, matter_type, preferred_date, preferred_time }) {
+  return `*LEXIS LAW — REQUEST RECEIVED* ⚖️
 
-Reply CONFIRM to acknowledge.
+Dear ${name},
 
-_Justice Starts Here_`;
+Your consultation request has been submitted successfully.
 
-    return await sendWhatsApp(phone, message);
-  },
-});
+Reference: *${reference}*
+Matter: ${matter_type}
+Preferred Date: ${preferred_date}
+Preferred Time: ${preferred_time}
 
-// Send new booking notification to admin
-export const sendAdminNotification = action({
-  args: {
-    client_name: v.string(),
-    client_phone: v.string(),
-    client_email: v.optional(v.string()),
-    matter_type: v.string(),
-    preferred_date: v.string(),
-    preferred_time: v.string(),
-    description: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const message = `*🔴 NEW BOOKING RECEIVED*
+Our team will reach out to confirm your appointment shortly.
 
-Reference: *${generateReference()}*
-
-Client: ${args.client_name}
-Phone: ${args.client_phone}
-Email: ${args.client_email || "N/A"}
-Matter: ${args.matter_type}
-Date: ${args.preferred_date} at ${args.preferred_time}
-
-Description: ${args.description || "None"}
-
-Please assign an attorney in the dashboard.`;
-
-    return await sendWhatsApp(ADMIN_PHONE, message);
-  },
-});
-
-// Send status update to client
-export const sendStatusUpdate = action({
-  args: {
-    client_phone: v.string(),
-    reference: v.string(),
-    status: v.string(),
-    next_action: v.optional(v.string()),
-  },
-  handler: async (ctx, args) => {
-    const phone = args.client_phone.replace(/\s/g, "").replace(/^0/, "+27");
-
-    const statusEmoji = {
-      pending: "⏳",
-      in_progress: "⚙️",
-      awaiting_docs: "📄",
-      hearing: "🏛️",
-      resolved: "✅",
-    };
-
-    const statusMessages = {
-      pending: "Your matter is pending review.",
-      in_progress: "Your matter is now in progress.",
-      awaiting_docs: "We are awaiting documents from you.",
-      hearing: "A hearing has been scheduled.",
-      resolved: "Your matter has been resolved.",
-    };
-
-    const message = `*LEXIS LAW — STATUS UPDATE* 🔴
-
-Ref: *${args.reference}*
-${statusEmoji[args.status] || ""} Status: *${args.status.replace("_", " ").toUpperCase()}*
-
-${args.next_action || statusMessages[args.status] || ""}
-
-Track your matter: https://lexislaw.co.za/tracker
-
-_Justice Starts Here_`;
-
-    return await sendWhatsApp(phone, message);
-  },
-});
-
-// ═══════════════════════════════════════════════════════════════════════════
-// HELPER
-// ═══════════════════════════════════════════════════════════════════════════
-
-function generateReference() {
-  return "REF-" + String(Math.floor(10000 + Math.random() * 89999));
+_Justice Starts Here._
+https://lexislaw.co.za`;
 }

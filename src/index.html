@@ -2125,6 +2125,22 @@
       setTimeout(() => toast.classList.remove('show'), 4000);
     }
 
+    // ─── WHATSAPP CLICK-TO-CHAT ──────────────────────────────────────────────
+    const ADMIN_WA = "27785962689";
+
+    function buildAdminMsg(result, data) {
+      return `*🔴 NEW BOOKING — LEXIS LAW*\n\nReference: *${result.reference}*\n\nClient: ${data.name}\nPhone: ${data.phone}\nEmail: ${data.email || "N/A"}\nMatter: ${data.matter_type}\nDate: ${data.preferred_date}\nTime: ${data.preferred_time}\n\nDescription: ${data.description || "None provided"}\n\nPlease assign an attorney in the admin dashboard.`;
+    }
+
+    function buildClientMsg(result, data) {
+      return `*LEXIS LAW — REQUEST RECEIVED* ⚖️\n\nDear ${data.name},\n\nYour consultation request has been submitted.\n\nReference: *${result.reference}*\nMatter: ${data.matter_type}\nDate: ${data.preferred_date}\nTime: ${data.preferred_time}\n\nOur team will reach out to confirm shortly.\n\n_Justice Starts Here._`;
+    }
+
+    function openWhatsApp(number, message) {
+      const url = `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+      window.open(url, '_blank');
+    }
+
     // ─── CONVEX INTEGRATION ─────────────────────────────────────────────────────
 
     async function submitBooking(e) {
@@ -2147,23 +2163,40 @@
       };
 
       try {
+        let result;
+
         // Call Convex API
         if (window.lexisLawApi && typeof window.lexisLawApi.createBooking === 'function') {
-          const result = await window.lexisLawApi.createBooking(data);
-          if (result && result.success) {
-            document.getElementById('displayRef').textContent = result.reference;
-            showPage('confirmation');
-            showToast('Booking Request Received!');
-          } else {
-            throw new Error("Booking failed on server");
-          }
+          result = await window.lexisLawApi.createBooking(data);
+          if (!result || !result.success) throw new Error("Booking failed on server");
         } else {
-          // Fallback for demo if API not loaded
-          console.warn("API not found or invalid, using demo mode");
-          document.getElementById('displayRef').textContent = "REF-" + Math.floor(10000 + Math.random() * 90000);
-          showPage('confirmation');
-          showToast('Demo Mode: Request Submitted');
+          // Demo fallback (Convex not loaded)
+          console.warn("API not loaded, using demo mode");
+          result = {
+            success: true,
+            reference: "REF-" + Math.floor(10000 + Math.random() * 90000),
+            preferred_date: data.preferred_date,
+            preferred_time: data.preferred_time,
+          };
         }
+
+        // Show confirmation page
+        document.getElementById('displayRef').textContent = result.reference;
+        showPage('confirmation');
+        showToast('Booking Request Received!');
+
+        // 1. Notify admin via WhatsApp
+        const adminMsg = buildAdminMsg(result, data);
+        openWhatsApp(ADMIN_WA, adminMsg);
+
+        // 2. If client consented, open a pre-filled WhatsApp for client confirmation
+        if (data.whatsapp_consent && data.phone) {
+          const clientPhone = data.phone.replace(/\s/g, '').replace(/^0/, '27').replace(/^\+/, '');
+          const clientMsg = buildClientMsg(result, data);
+          // Small delay so both tabs open without being blocked
+          setTimeout(() => openWhatsApp(clientPhone, clientMsg), 800);
+        }
+
       } catch (err) {
         console.error(err);
         showToast('Error sending request. Please try again.', 'error');
