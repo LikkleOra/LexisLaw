@@ -3074,7 +3074,12 @@ async function loadMatters() {
       const hash = window.location.hash;
       if (hash === '#tracker') showPage('tracker');
       if (hash === '#booking') showPage('booking');
-      (ha'#admin') showAdmin();
+      if (hash === '#admin') showAdmin();
+      
+      // Also handle /admin/dashboard path
+      if (window.location.pathname.includes('/admin')) {
+        showAdmin();
+      }
     });
 
   </script>
