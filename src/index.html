@@ -2656,12 +2656,16 @@
         popia_consent: true
       };
 
+      console.log('Submitting booking with data:', data);
+
       try {
         let result;
 
         // Call Convex API
         if (window.lexisLawApi && typeof window.lexisLawApi.createBooking === 'function') {
+          console.log('Calling createBooking API...');
           result = await window.lexisLawApi.createBooking(data);
+          console.log('Booking result:', result);
           if (!result || !result.success) throw new Error("Booking failed on server");
         } else {
           // Demo fallback (Convex not loaded)
@@ -2705,6 +2709,10 @@
       const resultDiv = document.getElementById('trackerResult');
       const errorDiv = document.getElementById('trackerError');
 
+      console.log('Looking up reference:', ref);
+      console.log('API available:', !!window.lexisLawApi);
+      console.log('Convex available:', window.lexisLawApi?.isConnected ? window.lexisLawApi.isConnected() : 'unknown');
+
       if (!ref) return;
 
       resultDiv.classList.remove('show');
@@ -2712,7 +2720,10 @@
 
       try {
         if (window.lexisLawApi) {
+          console.log('Calling getMatterByReference...');
           const matter = await window.lexisLawApi.getMatterByReference(ref);
+          console.log('Matter result:', matter);
+          
           if (matter) {
             // Map data to UI
             document.getElementById('resRef').textContent = matter.reference;
@@ -2732,6 +2743,7 @@
 
             resultDiv.classList.add('show');
           } else {
+            console.log('No matter found for reference:', ref);
             errorDiv.classList.add('show');
           }
         } else {
@@ -2740,7 +2752,7 @@
           else { errorDiv.classList.add('show'); }
         }
       } catch (err) {
-        console.error(err);
+        console.error('Lookup error:', err);
         showToast('Error looking up matter.', 'error');
       }
     }
