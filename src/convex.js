@@ -60,21 +60,11 @@
   let convexAvailable = false;
 
   async function testConvexConnection() {
-    try {
-      const url = `${CONVEX_URL}/api/query`;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ path: "functions:getAttorneys", args: {} }),
-      });
-      convexAvailable = res.ok;
-      console.log('Convex backend:', convexAvailable ? 'AVAILABLE' : 'UNAVAILABLE (using localStorage)');
-      return convexAvailable;
-    } catch (e) {
-      console.warn('Convex connection failed:', e.message);
-      convexAvailable = false;
-      return false;
-    }
+    // Skip Convex check for now - always use localStorage
+    // TODO: Enable when Convex backend is deployed
+    convexAvailable = false;
+    console.log('Using localStorage (Convex backend not configured)');
+    return false;
   }
 
   async function convexQuery(name, args = {}) {
