@@ -1979,10 +1979,60 @@
           </div>
           <div class="service-card reveal reveal-delay-2" onclick="showPage('booking')">
             <span class="service-num">03</span>
-            <span class="service-icon">ðŸš¨</span>
-            <h3 class="service-name">Criminal</h3>
-            <p class="service-desc">Expert defence and representation in all criminal matters.</p>
-            <span class="service-arrow">â†’</span>
+            <span class="service-icon">🏏</span>
+            <h3 class="service-name">Property Law</h3>
+            <p class="service-desc">Conveyancing, tenant disputes, and property litigation.</p>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-card reveal reveal-delay-3" onclick="showPage('booking')">
+            <span class="service-num">04</span>
+            <span class="service-icon">✈️</span>
+            <h3 class="service-name">Migration Law</h3>
+            <p class="service-desc">Visa applications, permits, citizenship and immigration matters.</p>
+            <span class="service-arrow">→</span>
+          </div>
+          <div class="service-card reveal reveal-delay-4" onclick="showPage('booking')">
+            <span class="service-num">05</span>
+            <span class="service-icon">💰</span>
+            <h3 class="service-name">Debt Collection</h3>
+            <p class="service-desc">Recover outstanding debts, credit enforcement, and litigation.</p>
+            <span class="service-arrow">→</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta-banner">
+        <h2 class="cta-text">Ready to protect <span>your rights?</span></h2>
+        <button class="btn-dark" onclick="showPage('booking')">Book Consultation Now</button>
+      </section>
+
+      <section class="section" id="about">
+        <div class="about-grid">
+          <div class="about-content reveal">
+            <div class="about-label">The Firm</div>
+            <h2 class="about-title">Trusted Legal Experts.</h2>
+            <p class="about-body">Mokoena Legal Services provides expert legal counsel across South Africa. 
+              With 13 years of experience, we specialize in property law, migration law, and debt collection. 
+              Our commitment to integrity and results-driven representation sets us apart.</p>
+            <div class="about-values">
+              <div class="value-item">
+                <div class="value-name">Intergrity</div>
+                <div class="value-desc">Upholding the highest ethical standards in every case.</div>
+              </div>
+              <div class="value-item">
+                <div class="value-name">Results</div>
+                <div class="value-desc">Focused on achieving the best outcomes for our clients.</div>
+              </div>
+            </div>
+          </div>
+          <div class="about-visual reveal reveal-delay-2">
+            <div class="team-member">
+              <div class="team-avatar">JM</div>
+              <div>
+                <div class="team-name">Adv. Jabu Mokoena</div>
+                <div class="team-role">Principal Attorney — 13 Years Experience</div>
+              </div>
+            </div>
           </div>
           <div class="service-card reveal reveal-delay-3" onclick="showPage('booking')">
             <span class="service-num">04</span>
@@ -2022,7 +2072,7 @@
             <div class="team-member">
               <div class="team-avatar">TM</div>
               <div>
-                <div class="team-name">Adv. Thabo Jabulani Mokoena</div>
+                <div class="team-name">Adv. Jabu Mokoena</div>
                 <div class="team-role">Senior Advocate — 20+ Years Experience</div>
               </div>
             </div>
@@ -2048,9 +2098,14 @@
                     433 4784</a></div>
               </div>
               <div class="value-item">
+                <div class="value-name">Landline</div>
+                <div class="value-desc"><a href="tel:0100230430" style="color:var(--white);text-decoration:none;">010
+                    023 0430</a></div>
+              </div>
+              <div class="value-item">
                 <div class="value-name">Email</div>
-                <div class="value-desc"><a href="mailto:thabolegal@gmail.com"
-                    style="color:var(--white);text-decoration:none;">thabolegal@gmail.com</a></div>
+                <div class="value-desc"><a href="mailto:jabu.legal@gmail.com"
+                    style="color:var(--white);text-decoration:none;">jabu.legal@gmail.com</a></div>
               </div>
             </div>
           </div>
@@ -2115,11 +2170,12 @@
                 <label class="form-label">Legal Matter Type</label>
                 <select id="matterType" class="form-select" required>
                   <option value="" disabled selected>Select a category</option>
-                  <option value="Family Law">Family Law â€” Divorce & Custody</option>
-                  <option value="Commercial Law">Commercial Law â€” Business & Contracts</option>
-                  <option value="Criminal Defence">Criminal Defence</option>
-                  <option value="Property Law">Property Law â€” Conveyancing & Disputes</option>
-                  <option value="Civil Litigation">Civil Litigation â€” General</option>
+                  <option value="Family Law">Family Law — Divorce & Custody</option>
+                  <option value="Commercial Law">Commercial Law — Business & Contracts</option>
+                  <option value="Property Law">Property Law — Conveyancing & Disputes</option>
+                  <option value="Migration Law">Migration Law — Visas & Permits</option>
+                  <option value="Debt Collection">Debt Collection</option>
+                  <option value="Civil Litigation">Civil Litigation — General</option>
                 </select>
               </div>
               <div class="form-row">
@@ -2786,8 +2842,8 @@
           if (!attorneysList || attorneysList.length === 0) {
             attorneysList = [{
               _id: 'att_1',
-              name: 'Adv. Thabo Jabulani Mokoena',
-              specialty: 'Criminal Defence & Litigation',
+              name: 'Adv. Jabu Mokoena',
+              specialty: 'Property Law, Migration Law & Debt Collection',
               activeCases: 0,
               resolvedCases: 0
             }];

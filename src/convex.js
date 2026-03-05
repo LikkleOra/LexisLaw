@@ -203,7 +203,7 @@
       email: client?.email || booking.email,
       matter: booking.matter_type,
       date: `${formatDate(booking.preferred_date)}, ${booking.preferred_time}`,
-      attorney: 'Adv. Thabo Jabulani Mokoena',
+        attorney: 'Adv. Jabu Mokoena',
       updated: formatDate(matter._creationTime || matter.created),
       next: matter.next_action || 'Awaiting initial consultation',
       status: getStatusNumber(matter.status),
@@ -232,7 +232,7 @@
         preferred_date: booking.preferred_date,
         preferred_time: booking.preferred_time,
         status: booking.status,
-        attorney_name: matter?.attorney_id ? 'Adv. Thabo Jabulani Mokoena' : null,
+        attorney_name: matter?.attorney_id ? 'Adv. Jabu Mokoena' : null,
       };
     });
   }
@@ -251,7 +251,7 @@
         reference: matter.reference,
         name: client?.name || booking?.name || 'Unknown',
         matter: booking?.matter_type || 'General',
-        attorney: 'Adv. Thabo Jabulani Mokoena',
+      attorney: 'Adv. Jabu Mokoena',
         status: getStatusNumber(matter.status),
         statusLabel: getStatusLabel(matter.status),
         next: matter.next_action || 'Pending review',
@@ -329,13 +329,13 @@
     return [
       {
         _id: 'att_1',
-        name: 'Adv. Thabo Jabulani Mokoena',
-        email: 'thabo@mokoenalegal.co.za',
-        initials: 'TM',
-        specialty: 'Criminal Defence & Litigation',
+        name: 'Adv. Jabu Mokoena',
+        email: 'jabu.legal@gmail.com',
+        initials: 'JM',
+        specialty: 'Property Law, Migration Law & Debt Collection',
         activeCases: localGetMatters().filter(m => m.status < 4).length,
         resolvedCases: localGetMatters().filter(m => m.status === 4).length,
-        specializations: ['Criminal Defence', 'Civil Litigation', 'Family Law']
+        specializations: ['Property Law', 'Migration Law', 'Debt Collection', 'Family Law', 'Commercial Law']
       }
     ];
   }
