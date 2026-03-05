@@ -335,7 +335,7 @@
         specialty: 'Property Law, Migration Law & Debt Collection',
         activeCases: localGetMatters().filter(m => m.status < 4).length,
         resolvedCases: localGetMatters().filter(m => m.status === 4).length,
-        specializations: ['Property Law', 'Migration Law', 'Debt Collection', 'Family Law', 'Commercial Law']
+        specializations: ['Property Law', 'Migration Law', 'Debt Collection', 'Civil Litigation']
       }
     ];
   }
