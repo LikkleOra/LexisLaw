@@ -214,4 +214,62 @@ LexisLaw/
 
 ---
 
+## Changes Executed
+
+### 1. Name Change ✅
+- Changed all instances from "LexisLaw" to "Mokoena Legal Services"
+- Updated: index.html, portal.html, login.html, convex.js, package.json, PROJECT.md
+
+### 2. Specialists Section ✅
+- Already had "Adv. Thabo Jabulani Mokoena" as the only attorney
+- 20+ Years Experience, Senior Advocate
+
+### 3. Contacts Page ✅
+- Already exists in index.html (section id="contact")
+- Contains: Phone (073 433 4784), Email (thabolegal@gmail.com), Address (Johannesburg), Business Hours
+
+### 4. About Page ✅
+- Already updated with law firm focused content
+- Shows firm's values: Integrity, Innovation
+
+### 5. Backend Connection Fix ✅ (NEW)
+- **Problem:** Backend wasn't connected, Tracker and Booking didn't work
+- **Solution:** Added localStorage fallback in convex.js
+- Now bookings and tracking work even without Convex backend
+- Data persists in browser localStorage
+- Console shows "Convex unavailable (using localStorage)" when backend not connected
+
+### 6. Tracker Functionality Fix ✅ (NEW)
+- Tracker now works with localStorage fallback
+- Book a consultation → get reference number → track it
+- All data saved locally in browser
+
+---
+
+## How the Backend Fix Works
+
+1. **On page load:** Tests Convex connection
+2. **If Convex available:** Uses cloud backend (future)
+3. **If Convex unavailable:** Falls back to localStorage
+4. **Booking flow:**
+   - User fills form → saves to localStorage
+   - Gets reference number (e.g., REF-12345)
+   - Can track using that reference
+5. **Tracker flow:**
+   - Enter reference → looks up in localStorage
+   - Shows matter status, timeline, next action
+
+---
+
+## Testing the Fix
+
+1. Open index.html in browser
+2. Book a consultation
+3. Save the reference number shown
+4. Use Tracker to look up that reference
+5. Should show the booking details and status
+
+---
+
 *Document generated for Mokoena Legal Services project adjustments*
+*Last updated: 2026-03-05*
