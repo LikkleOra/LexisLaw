@@ -3,8 +3,8 @@
 // Falls back to localStorage when backend is unavailable.
 
 (function () {
-  // Use URL from global (set by Netlify env var) or fallback to default
-  const CONVEX_URL = window.CONVEX_SITE_URL || 'https://striped-meadowlark-10.convex.cloud';
+  // Use the correct Convex deployment URL (.cloud, not .site)
+  const CONVEX_URL = 'https://striped-meadowlark-10.convex.cloud';
   console.log('Initializing Mokoena Legal Services API with:', CONVEX_URL);
 
   // ─── LOCALSTORAGE HELPERS ───────────────────────────────────────────────────
