@@ -1,15 +1,15 @@
-# LexisLaw Digital Platform
+# Mokoena Legal Services Digital Platform
 
 ## Project Overview
 
-**Project Name:** LexisLaw Digital Platform  
+**Project Name:** Mokoena Legal Services Digital Platform  
 **Type:** Legal Services Web Application  
 **Location:** Johannesburg, South Africa  
 **Tech Stack:** Vanilla HTML/CSS/JS (Phase 1) → Full-stack extension planned
 
 ## Business Context
 
-LexisLaw is an established law firm seeking to modernize client interactions through a digital platform. The current implementation provides:
+Mokoena Legal Services is an established law firm seeking to modernize client interactions through a digital platform. The current implementation provides:
 - Landing page with brutalist design aesthetic
 - Online booking system for consultations  
 - Matter tracking portal for clients

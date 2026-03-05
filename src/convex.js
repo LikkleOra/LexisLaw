@@ -1,4 +1,4 @@
-// LexisLaw Convex Client — HTTP API Edition
+// Mokoena Legal Services Convex Client — HTTP API Edition
 // Uses Convex's built-in HTTP API so no bundler is needed.
 // Works in plain static HTML pages.
 
@@ -129,5 +129,5 @@
   window.convexQuery = convexQuery;
   window.convexMutation = convexMutation;
 
-  console.log("✓ LexisLaw Convex HTTP client initialized");
+  console.log("✓ Mokoena Legal Services Convex HTTP client initialized");
 })();

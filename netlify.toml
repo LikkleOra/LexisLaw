@@ -3,6 +3,8 @@
 [build]
   # Directory where your static frontend files are located
   publish = "src"
+  # Inject Convex URL from environment variable during build
+  command = "sed -i 's|https://striped-meadowlark-10.convex.cloud|'\"$VITE_CONVEX_URL\"'|g' src/index.html src/convex.js"
 
 [[redirects]]
   # For client-side routing (SPA fallback)
