@@ -2808,41 +2808,63 @@
 
     // â”€â”€â”€ ADMIN DATA LOADING â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function loadOverview() {
-      // Always try to load data, even without API
       try {
-        const bookings = await adminApi.getBookings();
-        const matters = await adminApi.getMatters();
-        document.getElementById('statActiveCases').textContent = matters.filter(m => m.status < 4).length;
+        let bookings = [];
+        let matters = [];
+        
+        if (adminApi) {
+          try {
+            bookings = (await adminApi.getBookings()) || [];
+            matters = (await adminApi.getMatters()) || [];
+          } catch (e) {
+            console.warn("API load error:", e.message);
+          }
+        }
+        
+        const activeMatters = matters.filter(m => m.status < 4);
+        const resolvedMatters = matters.filter(m => m.status === 4);
+        
+        document.getElementById('statActiveCases').textContent = activeMatters.length;
         document.getElementById('statNewBookings').textContent = bookings.length;
-        document.getElementById('statResolved').textContent = matters.filter(m => m.status === 4).length;
-        document.getElementById('statUnbilled').textContent = (matters.filter(m => m.status < 4).length * 1500).toLocaleString();
+        document.getElementById('statResolved').textContent = resolvedMatters.length;
+        document.getElementById('statUnbilled').textContent = (activeMatters.length * 1500).toLocaleString();
 
         const teamList = document.getElementById('teamCapacityList');
-        teamList.innerHTML = attorneysList.map(a => `
-          <div style="background: var(--black2); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-              <div style="font-weight: 700; font-size: 14px;">${a.name}</div>
-              <div style="font-family: var(--ff-mono); font-size: 10px; color: var(--grey);">${a.specialty || 'General'}</div>
+        if (teamList) {
+          teamList.innerHTML = attorneysList.map(a => `
+            <div style="background: var(--black2); border: 1px solid var(--border); padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-weight: 700; font-size: 14px;">${a.name}</div>
+                <div style="font-family: var(--ff-mono); font-size: 10px; color: var(--grey);">${a.specialty || 'General'}</div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-family: var(--ff-display); font-size: 20px; color: var(--red);">${a.activeCases || activeMatters.length || 0}</div>
+                <div style="font-family: var(--ff-mono); font-size: 9px; color: var(--grey);">ACTIVE MATTERS</div>
+              </div>
             </div>
-            <div style="text-align: right;">
-              <div style="font-family: var(--ff-display); font-size: 20px; color: var(--red);">${a.activeCases || 0}</div>
-              <div style="font-family: var(--ff-mono); font-size: 9px; color: var(--grey);">ACTIVE MATTERS</div>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
 
         const activityTable = document.getElementById('recentActivityTable');
-        activityTable.innerHTML = matters.slice(0, 5).map(m => `
-          <tr>
-            <td style="font-family: var(--ff-mono); font-size: 11px;">RECENT</td>
-            <td>Status updated to ${m.statusLabel}</td>
-            <td style="color:var(--red); font-family:var(--ff-mono); font-weight:700;">${m.reference}</td>
-          </tr>
-        `).join('');
-      } catch (e) { console.error(e); }
+        if (activityTable) {
+          if (matters.length === 0) {
+            activityTable.innerHTML = '<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--grey);">No recent activity</td></tr>';
+          } else {
+            activityTable.innerHTML = matters.slice(0, 5).map(m => `
+              <tr>
+                <td style="font-family: var(--ff-mono); font-size: 11px;">RECENT</td>
+                <td>Status updated to ${m.statusLabel || 'PENDING'}</td>
+                <td style="color:var(--red); font-family:var(--ff-mono); font-weight:700;">${m.reference || '—'}</td>
+              </tr>
+            `).join('');
+          }
+        }
+      } catch (e) { 
+        console.error("loadOverview error:", e);
+      }
     }
 
-async function loadBookings() {
+    async function loadBookings() {
       const table = document.getElementById('bookingsTable');
       if (!table) return;
       table.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
