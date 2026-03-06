@@ -1,0 +1,41 @@
+import './globals.css';
+import type { Metadata } from 'next';
+import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
+
+export const metadata: Metadata = {
+  title: 'MOKOENA LEGAL SERVICES — Expert Legal Counsel',
+  description: 'Providing expert legal counsel for individuals and businesses. Modern solutions for complex legal challenges in South Africa.',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <head>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+            rel="stylesheet"
+          />
+        </head>
+        <body>
+          <header className="flex justify-end gap-4 p-4">
+            <Show when={false}>
+              <SignInButton />
+              <SignUpButton />
+            </Show>
+            <Show when={true}>
+              <UserButton />
+            </Show>
+          </header>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
+  );
+}
