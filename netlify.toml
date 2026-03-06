@@ -1,19 +1,22 @@
-# Netlify Configuration for LexisLaw Project
+# Netlify Configuration for LexisLaw Project (Next.js)
 
 [build]
-  # Directory where your static frontend files are located
-  publish = "src"
-  # Inject Convex URL from environment variable during build
-  command = "sed -i 's|https://striped-meadowlark-10.convex.cloud|'\"$VITE_CONVEX_URL\"'|g' src/index.html src/convex.js"
+  # Next.js builds to .next, serve that as static
+  publish = ".next"
+  command = "npm run build"
 
+[functions]
+  # Serverless functions directory (if needed)
+  directory = "api"
+
+# Redirect for client-side routing
 [[redirects]]
-  # For client-side routing (SPA fallback)
   from = "/*"
   to = "/index.html"
   status = 200
 
-[[redirects]]
-  # Redirect for the admin dashboard
-  from = "/admin"
-  to = "/admin/dashboard.html"
-  status = 200
+# Next.js specific headers
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
