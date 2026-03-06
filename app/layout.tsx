@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
+import { ClerkProvider } from '@clerk/nextjs';
+import { AuthButtons } from '@/components/AuthButtons';
 
 export const metadata: Metadata = {
   title: 'MOKOENA LEGAL SERVICES — Expert Legal Counsel',
@@ -25,13 +26,7 @@ export default function RootLayout({
         </head>
         <body>
           <header className="flex justify-end gap-4 p-4">
-            <Show when={false}>
-              <SignInButton />
-              <SignUpButton />
-            </Show>
-            <Show when={true}>
-              <UserButton />
-            </Show>
+            <AuthButtons />
           </header>
           {children}
         </body>
