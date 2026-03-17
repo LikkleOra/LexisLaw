@@ -1,0 +1,2244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LEXIS LAW — Expert Legal Counsel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <!-- Integrate Convex API -->
+  <script type="module" src="./convex.js"></script>
+
+  <style>
+    /* ─── RESET & ROOT ─────────────────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --black: #0A0A0A;
+      --black2: #111111;
+      --black3: #1A1A1A;
+      --card: #1E1E1E;
+      --card2: #252525;
+      --red: #E63329;
+      --red-dark: #9E1F18;
+      --red-glow: rgba(230, 51, 41, 0.15);
+      --green: #2DB34A;
+      --green-dark: #1B7A30;
+      --grey: #8A8A8A;
+      --grey-light: #B0B0B0;
+      --white: #F5F5F5;
+      --border: rgba(138, 138, 138, 0.25);
+      --border-strong: rgba(138, 138, 138, 0.5);
+      --ff-display: 'Bebas Neue', sans-serif;
+      --ff-body: 'Space Grotesk', sans-serif;
+      --ff-mono: 'IBM Plex Mono', monospace;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--ff-body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── CUSTOM CURSOR ─────────────────────────────────────────────────────────── */
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform 0.1s, background 0.2s;
+      mix-blend-mode: normal;
+    }
+
+    .cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--red);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99998;
+      transition: transform 0.18s ease, width 0.2s, height 0.2s, border-color 0.2s;
+      transform: translate(-50%, -50%);
+    }
+
+    body:has(a:hover) .cursor-ring,
+    body:has(button:hover) .cursor-ring {
+      width: 56px;
+      height: 56px;
+      border-color: var(--green);
+    }
+
+    /* ─── PAGES ─────────────────────────────────────────────────────────────────── */
+    .page {
+      display: none;
+      min-height: 100vh;
+    }
+
+    .page.active {
+      display: block;
+      animation: pageIn 0.5s ease forwards;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ─── NAV ───────────────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--black);
+      border-bottom: 2px solid var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+    }
+
+    .nav-logo {
+      font-family: var(--ff-display);
+      font-size: 28px;
+      letter-spacing: 3px;
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .nav-logo span {
+      color: var(--red);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 0;
+    }
+
+    .nav-link {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--grey);
+      text-decoration: none;
+      padding: 8px 18px;
+      border: 1px solid transparent;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      cursor: none;
+    }
+
+    .nav-link:hover,
+    .nav-link.active-link {
+      color: var(--white);
+      border-color: var(--border-strong);
+      background: var(--card);
+    }
+
+    .nav-cta {
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      padding: 10px 24px;
+      cursor: none;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 4px 4px 0 var(--red-dark);
+      position: relative;
+      top: 0;
+      left: 0;
+    }
+
+    .nav-cta:hover {
+      background: var(--red-dark);
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--red-dark);
+    }
+
+    /* ─── TICKER ─────────────────────────────────────────────────────────────────── */
+    .ticker {
+      background: var(--red);
+      overflow: hidden;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--red-dark);
+    }
+
+    .ticker-inner {
+      display: flex;
+      gap: 0;
+      animation: ticker 30s linear infinite;
+      white-space: nowrap;
+    }
+
+    .ticker-item {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--white);
+      padding: 0 40px;
+      opacity: 0.9;
+    }
+
+    .ticker-sep {
+      color: rgba(255, 255, 255, 0.4);
+      padding: 0 10px;
+    }
+
+    @keyframes ticker {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ─── HERO ───────────────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: calc(100vh - 96px);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      padding: 80px 40px 80px 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-right: 2px solid var(--border);
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 2px;
+      background: var(--red);
+    }
+
+    .hero-h1 {
+      font-family: var(--ff-display);
+      font-size: clamp(72px, 9vw, 120px);
+      line-height: 0.92;
+      letter-spacing: 2px;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .hero-h1 .accent {
+      color: var(--red);
+      display: block;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--grey-light);
+      max-width: 420px;
+      margin: 28px 0 48px;
+      line-height: 1.7;
+      border-left: 3px solid var(--green);
+      padding-left: 20px;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 2px solid var(--red);
+      padding: 16px 36px;
+      cursor: none;
+      position: relative;
+      box-shadow: 5px 5px 0 var(--red-dark);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0 var(--red-dark);
+      background: var(--red-dark);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 2px solid var(--border-strong);
+      padding: 16px 36px;
+      cursor: none;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--white);
+      background: var(--card);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-num {
+      font-family: var(--ff-display);
+      font-size: 48px;
+      color: var(--white);
+      line-height: 1;
+    }
+
+    .stat-num span {
+      color: var(--red);
+    }
+
+    .stat-label {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-top: 4px;
+    }
+
+    /* Hero right */
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+      background: var(--card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-bg-text {
+      font-family: var(--ff-display);
+      font-size: 280px;
+      color: var(--card2);
+      line-height: 1;
+      user-select: none;
+      position: absolute;
+      right: -20px;
+      bottom: -20px;
+      letter-spacing: -10px;
+    }
+
+    .hero-card {
+      position: relative;
+      z-index: 2;
+      background: var(--black3);
+      border: 2px solid var(--border-strong);
+      border-left: 4px solid var(--red);
+      padding: 40px 36px;
+      width: 340px;
+      box-shadow: 8px 8px 0 rgba(230, 51, 41, 0.2);
+    }
+
+    .hero-card-label {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 20px;
+    }
+
+    .hero-card-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hero-card-item:last-child {
+      border-bottom: none;
+    }
+
+    .hero-card-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--red-glow);
+      border: 1px solid var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .hero-card-text {
+      font-size: 13px;
+      color: var(--grey-light);
+      line-height: 1.5;
+    }
+
+    .hero-card-text strong {
+      display: block;
+      color: var(--white);
+      font-size: 14px;
+      margin-bottom: 2px;
+    }
+
+    /* ─── SERVICES ───────────────────────────────────────────────────────────────── */
+    .section {
+      padding: 100px 60px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 60px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .section-title {
+      font-family: var(--ff-display);
+      font-size: clamp(48px, 6vw, 80px);
+      line-height: 1;
+      letter-spacing: 2px;
+    }
+
+    .section-title .red {
+      color: var(--red);
+    }
+
+    .section-num {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--grey);
+      text-transform: uppercase;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border: 2px solid var(--border-strong);
+    }
+
+    .service-card {
+      padding: 36px 28px;
+      border-right: 1px solid var(--border-strong);
+      border-bottom: 1px solid var(--border-strong);
+      background: var(--card);
+      transition: background 0.25s, border-color 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+      cursor: none;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--red);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .service-card:hover {
+      background: var(--card2);
+    }
+
+    .service-card:hover .service-num {
+      color: var(--red);
+    }
+
+    .service-num {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--grey);
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      transition: color 0.2s;
+    }
+
+    .service-icon {
+      font-size: 28px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .service-name {
+      font-family: var(--ff-display);
+      font-size: 28px;
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .service-desc {
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.6;
+    }
+
+    .service-arrow {
+      font-size: 20px;
+      color: var(--red);
+      margin-top: 20px;
+      display: block;
+      transition: transform 0.2s;
+    }
+
+    .service-card:hover .service-arrow {
+      transform: translate(4px, -4px);
+    }
+
+    /* ─── ABOUT ──────────────────────────────────────────────────────────────────── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-label {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+    }
+
+    .about-title {
+      font-family: var(--ff-display);
+      font-size: 56px;
+      line-height: 1;
+      letter-spacing: 2px;
+      margin-bottom: 28px;
+    }
+
+    .about-body {
+      color: var(--grey-light);
+      line-height: 1.8;
+      font-size: 15px;
+      margin-bottom: 20px;
+    }
+
+    .about-values {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 40px;
+    }
+
+    .value-item {
+      padding: 20px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--green);
+    }
+
+    .value-name {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+
+    .value-desc {
+      font-size: 13px;
+      color: var(--grey);
+      line-height: 1.5;
+    }
+
+    .about-visual {
+      background: var(--card);
+      border: 2px solid var(--border-strong);
+      border-top: 4px solid var(--red);
+      padding: 48px 40px;
+      position: relative;
+    }
+
+    .about-visual::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      right: -8px;
+      width: 100%;
+      height: 100%;
+      border: 2px solid var(--red);
+      z-index: -1;
+      opacity: 0.3;
+    }
+
+    .team-member {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .team-member:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .team-avatar {
+      width: 52px;
+      height: 52px;
+      background: var(--card2);
+      border: 2px solid var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--ff-display);
+      font-size: 22px;
+      color: var(--red);
+      flex-shrink: 0;
+    }
+
+    .team-name {
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--white);
+    }
+
+    .team-role {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      color: var(--grey);
+      letter-spacing: 1px;
+    }
+
+    /* ─── CTA BANNER ─────────────────────────────────────────────────────────────── */
+    .cta-banner {
+      background: var(--red);
+      padding: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 4px solid var(--red-dark);
+      border-bottom: 4px solid var(--red-dark);
+    }
+
+    .cta-text {
+      font-family: var(--ff-display);
+      font-size: 52px;
+      letter-spacing: 2px;
+      line-height: 1;
+      color: var(--white);
+    }
+
+    .cta-text span {
+      color: var(--black);
+    }
+
+    .btn-dark {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 2px solid var(--white);
+      padding: 18px 40px;
+      cursor: none;
+      white-space: nowrap;
+      box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn-dark:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+    }
+
+    /* ─── BOOKING PAGE ───────────────────────────────────────────────────────────── */
+    .booking-page {
+      padding: 80px 60px;
+    }
+
+    .booking-page-header {
+      margin-bottom: 60px;
+    }
+
+    .booking-eyebrow {
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 16px;
+    }
+
+    .booking-title {
+      font-family: var(--ff-display);
+      font-size: clamp(56px, 7vw, 96px);
+      line-height: 0.95;
+      letter-spacing: 2px;
+    }
+
+    .progress-bar {
+      display: flex;
+      margin-bottom: 60px;
+      border: 2px solid var(--border-strong);
+      overflow: hidden;
+    }
+
+    .progress-step {
+      flex: 1;
+      padding: 14px 20px;
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--grey);
+      background: var(--card);
+      border-right: 1px solid var(--border-strong);
+      transition: background 0.3s, color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-step:last-child {
+      border-right: none;
+    }
+
+    .progress-step.active {
+      background: var(--red);
+      color: var(--white);
+    }
+
+    .progress-step.done {
+      background: var(--card2);
+      color: var(--green);
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border: 2px solid currentColor;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      flex-shrink: 0;
+    }
+
+    .progress-step.done .step-num {
+      background: var(--green);
+      border-color: var(--green);
+      color: var(--black);
+    }
+
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 40px;
+    }
+
+    .booking-form-wrap {
+      background: var(--card);
+      border: 2px solid var(--border-strong);
+      border-top: 4px solid var(--red);
+      padding: 48px 48px;
+    }
+
+    .form-section-title {
+      font-family: var(--ff-display);
+      font-size: 32px;
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 36px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group.full {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: block;
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 10px;
+    }
+
+    .form-label span {
+      color: var(--grey);
+    }
+
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: var(--black3);
+      border: 1.5px solid var(--border-strong);
+      color: var(--white);
+      font-family: var(--ff-body);
+      font-size: 15px;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-input::placeholder,
+    .form-textarea::placeholder {
+      color: var(--grey);
+    }
+
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-color: var(--red);
+      background: var(--card2);
+    }
+
+    .form-select {
+      cursor: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A8A8A' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+      padding-right: 40px;
+    }
+
+    .form-select option {
+      background: var(--card);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .form-submit {
+      width: 100%;
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: 2px solid var(--red);
+      padding: 20px;
+      cursor: none;
+      margin-top: 12px;
+      box-shadow: 6px 6px 0 var(--red-dark);
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+    }
+
+    .form-submit:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 var(--red-dark);
+      background: var(--red-dark);
+    }
+
+    /* Sidebar */
+    .booking-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .sidebar-card {
+      background: var(--card);
+      border: 1px solid var(--border-strong);
+      padding: 28px 28px;
+    }
+
+    .sidebar-card-title {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar-step {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .sidebar-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .sidebar-step-num {
+      width: 28px;
+      height: 28px;
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-step-text {
+      font-size: 13px;
+      color: var(--grey-light);
+      line-height: 1.5;
+    }
+
+    .sidebar-step-text strong {
+      display: block;
+      color: var(--white);
+      margin-bottom: 2px;
+      font-size: 14px;
+    }
+
+    .wa-card {
+      background: #075E54;
+      border: 2px solid #128C7E;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .wa-icon {
+      font-size: 36px;
+    }
+
+    .wa-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .wa-sub {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ─── CONFIRMATION ───────────────────────────────────────────────────────────── */
+    .confirmation-page {
+      display: flex;
+      min-height: 100vh;
+      background: var(--black);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px;
+      text-align: center;
+      animation: pageIn 0.5s ease forwards;
+    }
+
+    .conf-check {
+      width: 100px;
+      height: 100px;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      margin: 0 auto 32px;
+      animation: scaleIn 0.5s 0.2s both;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+    .conf-title {
+      font-family: var(--ff-display);
+      font-size: 72px;
+      letter-spacing: 3px;
+      color: var(--white);
+      margin-bottom: 8px;
+    }
+
+    .conf-ref {
+      font-family: var(--ff-mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--red);
+      background: var(--card);
+      border: 2px solid var(--red);
+      padding: 16px 40px;
+      display: inline-block;
+      margin: 20px 0;
+      letter-spacing: 4px;
+    }
+
+    .conf-sub {
+      color: var(--grey-light);
+      font-size: 16px;
+      max-width: 500px;
+      margin: 0 auto 16px;
+      line-height: 1.7;
+    }
+
+    .conf-wa {
+      background: #075E54;
+      border: 2px solid #25D366;
+      padding: 14px 32px;
+      color: var(--white);
+      font-size: 14px;
+      margin: 16px 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .conf-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    /* ─── TRACKER PAGE ───────────────────────────────────────────────────────────── */
+    .tracker-page {
+      padding: 80px 60px;
+    }
+
+    .tracker-lookup {
+      background: var(--card);
+      border: 2px solid var(--border-strong);
+      border-top: 4px solid var(--red);
+      padding: 48px;
+      margin-bottom: 48px;
+    }
+
+    .tracker-lookup-title {
+      font-family: var(--ff-display);
+      font-size: 48px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .tracker-lookup-sub {
+      color: var(--grey);
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    .lookup-row {
+      display: flex;
+      gap: 0;
+    }
+
+    .lookup-input {
+      flex: 1;
+      background: var(--black3);
+      border: 2px solid var(--border-strong);
+      border-right: none;
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      padding: 16px 24px;
+      outline: none;
+      text-transform: uppercase;
+      transition: border-color 0.2s;
+    }
+
+    .lookup-input:focus {
+      border-color: var(--red);
+    }
+
+    .lookup-input::placeholder {
+      color: var(--grey);
+      font-size: 14px;
+      letter-spacing: 2px;
+    }
+
+    .lookup-btn {
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 2px solid var(--red);
+      padding: 0 36px;
+      cursor: none;
+      transition: background 0.2s;
+    }
+
+    .lookup-btn:hover {
+      background: var(--red-dark);
+    }
+
+    /* Result card */
+    .tracker-result {
+      display: none;
+      background: var(--card);
+      border: 2px solid var(--green);
+      border-top: 4px solid var(--green);
+      animation: pageIn 0.4s ease forwards;
+      box-shadow: 8px 8px 0 rgba(45, 179, 74, 0.15);
+    }
+
+    .tracker-result.show {
+      display: block;
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 40px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card2);
+    }
+
+    .result-ref {
+      font-family: var(--ff-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    .result-badge {
+      background: var(--green-dark);
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 6px 12px;
+      letter-spacing: 1px;
+    }
+
+    .result-body {
+      padding: 40px;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-bottom: 40px;
+    }
+
+    .detail-item label {
+      display: block;
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      color: var(--grey);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .detail-item p {
+      font-size: 16px;
+      color: var(--white);
+      font-weight: 500;
+    }
+
+    .status-timeline {
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+
+    .timeline-track {
+      height: 4px;
+      background: var(--card2);
+      position: relative;
+      margin: 30px 0 60px;
+    }
+
+    .timeline-progress {
+      height: 100%;
+      background: var(--green);
+      width: 0%;
+      transition: width 1s ease;
+    }
+
+    .timeline-steps {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
+    }
+
+    .timeline-step {
+      width: 16px;
+      height: 16px;
+      background: var(--card2);
+      border: 2px solid var(--border-strong);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .timeline-step.active {
+      background: var(--green);
+      border-color: var(--green);
+      box-shadow: 0 0 15px var(--green);
+    }
+
+    .timeline-step::after {
+      content: attr(data-label);
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: var(--ff-mono);
+      font-size: 9px;
+      color: var(--grey);
+      text-transform: uppercase;
+    }
+
+    .timeline-step.active::after {
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .wa-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #25D366;
+      color: var(--white);
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: none;
+      padding: 18px 40px;
+      cursor: none;
+      width: 100%;
+      margin-top: 8px;
+      transition: background 0.2s;
+      text-decoration: none;
+    }
+
+    .wa-action-btn:hover {
+      background: #075E54;
+    }
+
+    /* Not found */
+    .tracker-notfound {
+      display: none;
+      text-align: center;
+      padding: 60px;
+      border: 2px solid var(--red);
+      background: var(--red-glow);
+      animation: pageIn 0.3s ease forwards;
+    }
+
+    .tracker-notfound.show {
+      display: block;
+    }
+
+    .notfound-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .notfound-title {
+      font-family: var(--ff-display);
+      font-size: 36px;
+      letter-spacing: 2px;
+      color: var(--red);
+      margin-bottom: 12px;
+    }
+
+    .notfound-sub {
+      color: var(--grey);
+      font-size: 14px;
+    }
+
+    /* Notification signup */
+    .notification-strip {
+      background: var(--card2);
+      border: 1px solid var(--border);
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 32px;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .notif-text {
+      font-size: 14px;
+      color: var(--grey-light);
+    }
+
+    .notif-text strong {
+      color: var(--white);
+      display: block;
+      margin-bottom: 4px;
+      font-size: 16px;
+    }
+
+    .notif-checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--grey-light);
+      cursor: none;
+    }
+
+    .notif-checkbox {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--green);
+      cursor: none;
+    }
+
+    /* ─── FOOTER ────────────────────────────────────────────────────────────────── */
+    footer {
+      background: var(--black3);
+      border-top: 2px solid var(--border-strong);
+      padding: 60px 60px 32px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer-logo {
+      font-family: var(--ff-display);
+      font-size: 40px;
+      letter-spacing: 3px;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .footer-logo span {
+      color: var(--red);
+    }
+
+    .footer-tagline {
+      color: var(--grey);
+      font-size: 13px;
+      line-height: 1.7;
+      max-width: 260px;
+      margin-bottom: 24px;
+    }
+
+    .footer-heading {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .footer-link {
+      display: block;
+      color: var(--grey);
+      font-size: 13px;
+      text-decoration: none;
+      margin-bottom: 10px;
+      cursor: none;
+      transition: color 0.2s;
+    }
+
+    .footer-link:hover {
+      color: var(--white);
+    }
+
+    .footer-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: var(--grey);
+    }
+
+    .footer-contact-item span:first-child {
+      color: var(--red);
+      font-size: 16px;
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-legal {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      color: var(--grey);
+      letter-spacing: 1px;
+    }
+
+    .footer-popia {
+      font-family: var(--ff-mono);
+      font-size: 10px;
+      color: var(--green);
+      letter-spacing: 1px;
+      border: 1px solid var(--green);
+      padding: 4px 12px;
+    }
+
+    /* ─── TOAST ──────────────────────────────────────────────────────────────────── */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      right: 32px;
+      background: var(--green);
+      color: var(--black);
+      font-family: var(--ff-mono);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 16px 28px;
+      border: 2px solid var(--green-dark);
+      z-index: 9999;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: 360px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast-icon {
+      font-size: 20px;
+    }
+
+    /* ─── SCROLL ANIMATIONS ──────────────────────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: 0.1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: 0.2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: 0.3s;
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-right {
+        display: none;
+      }
+
+      .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .booking-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 0 20px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .section,
+      .booking-page,
+      .tracker-page {
+        padding: 60px 24px;
+      }
+
+      .hero-left {
+        padding: 60px 24px;
+      }
+
+      .cta-banner {
+        flex-direction: column;
+        gap: 32px;
+        text-align: center;
+        padding: 40px 24px;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .result-header {
+        flex-direction: column;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Custom cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast">
+    <span class="toast-icon">📱</span>
+    <span id="toastMsg">WhatsApp confirmation sent!</span>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner" id="ticker">
+      <span class="ticker-item">EXPERT LEGAL COUNSEL</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">FAMILY LAW</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">COMMERCIAL DISPUTES</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">CRIMINAL DEFENCE</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">CIVIL LITIGATION</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">WHATSAPP CONFIRMATIONS</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">MATTER TRACKING</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">BOOK ONLINE 24/7</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">TRUSTED SINCE 2008</span><span class="ticker-sep">◆</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="ticker-item">EXPERT LEGAL COUNSEL</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">FAMILY LAW</span><span class="ticker-sep">◆</span>
+      <span class="ticker-item">COMMERCIAL DISPUTES</span><span class="ticker-sep">◆</span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo" onclick="showPage('home')">LEXIS<span>LAW</span></a>
+    <div class="nav-links">
+      <a href="#services" class="nav-link" onclick="showPage('home')">SERVICES</a>
+      <a href="#about" class="nav-link" onclick="showPage('home')">ABOUT</a>
+      <a href="#" class="nav-link" onclick="showPage('tracker')">TRACKER</a>
+    </div>
+    <button class="nav-cta" onclick="showPage('booking')">BOOK NOW</button>
+  </nav>
+
+  <!-- HOME PAGE -->
+  <div id="homePage" class="page active">
+    <section class="hero">
+      <div class="hero-left reveal">
+        <div class="hero-eyebrow">PREMIUM LEGAL SERVICES</div>
+        <h1 class="hero-h1">Justice <span class="accent">Simplified.</span></h1>
+        <p class="hero-sub">Providing expert legal counsel for individuals and businesses. Modern solutions for complex
+          legal challenges in South Africa.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showPage('booking')">Start Consultation</button>
+          <button class="btn-secondary" onclick="showPage('tracker')">Track My Matter</button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">18<span>+</span></div>
+            <div class="stat-label">Years Exp.</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">2.4k<span>+</span></div>
+            <div class="stat-label">Resolved</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">98<span>%</span></div>
+            <div class="stat-label">Success</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-bg-text">LEXIS</div>
+        <div class="hero-card reveal reveal-delay-2">
+          <div class="hero-card-label">Why Choose Us</div>
+          <div class="hero-card-item">
+            <div class="hero-card-icon">⚖️</div>
+            <div class="hero-card-text"><strong>Expert Advocates</strong> Specialized legal teams for every case.</div>
+          </div>
+          <div class="hero-card-item">
+            <div class="hero-card-icon">⚡</div>
+            <div class="hero-card-text"><strong>Real-time Tracking</strong> Knowledge is power. Track your case 24/7.
+            </div>
+          </div>
+          <div class="hero-card-item">
+            <div class="hero-card-icon">📱</div>
+            <div class="hero-card-text"><strong>WhatsApp Updates</strong> Get instant notifications on your phone.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <div class="section-header reveal">
+        <h2 class="section-title">Legal <span class="red">Specialties.</span></h2>
+        <div class="section-num">Section 01</div>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal" onclick="showPage('booking')">
+          <span class="service-num">01</span>
+          <span class="service-icon">🏠</span>
+          <h3 class="service-name">Family Law</h3>
+          <p class="service-desc">Divorce, maintenance, custody and domestic partnership agreements.</p>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-card reveal reveal-delay-1" onclick="showPage('booking')">
+          <span class="service-num">02</span>
+          <span class="service-icon">💼</span>
+          <h3 class="service-name">Commercial</h3>
+          <p class="service-desc">Contract preparation, dispute resolution, and business litigation.</p>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-card reveal reveal-delay-2" onclick="showPage('booking')">
+          <span class="service-num">03</span>
+          <span class="service-icon">🚨</span>
+          <h3 class="service-name">Criminal</h3>
+          <p class="service-desc">Expert defence and representation in all criminal matters.</p>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-card reveal reveal-delay-3" onclick="showPage('booking')">
+          <span class="service-num">04</span>
+          <span class="service-icon">🏗️</span>
+          <h3 class="service-name">Property Law</h3>
+          <p class="service-desc">Conveyancing, tenant disputes, and property litigation.</p>
+          <span class="service-arrow">→</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner">
+      <h2 class="cta-text">Ready to protect <span>your rights?</span></h2>
+      <button class="btn-dark" onclick="showPage('booking')">Book Consultation Now</button>
+    </section>
+
+    <section class="section" id="about">
+      <div class="about-grid">
+        <div class="about-content reveal">
+          <div class="about-label">The Firm</div>
+          <h2 class="about-title">Modern Law for a Digital Age.</h2>
+          <p class="about-body">At Lexis Law, we believe legal counsel should be accessible, transparent, and efficient.
+            We use cutting-edge technology to keep you informed every step of the way.</p>
+          <div class="about-values">
+            <div class="value-item">
+              <div class="value-name">Intergrity</div>
+              <div class="value-desc">Upholding the highest ethical standards in every case.</div>
+            </div>
+            <div class="value-item">
+              <div class="value-name">Innovation</div>
+              <div class="value-desc">Using technology to streamline the legal process.</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual reveal reveal-delay-2">
+          <div class="team-member">
+            <div class="team-avatar">TN</div>
+            <div>
+              <div class="team-name">Adv. Thabo Nkosi</div>
+              <div class="team-role">Senior Partner — Litigation</div>
+            </div>
+          </div>
+          <div class="team-member">
+            <div class="team-avatar">SM</div>
+            <div>
+              <div class="team-name">Adv. Sarah Mokoena</div>
+              <div class="team-role">Partner — Family Law</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- BOOKING PAGE -->
+  <div id="bookingPage" class="page">
+    <div class="booking-page">
+      <div class="booking-page-header">
+        <div class="booking-eyebrow">STEP 01 — CONSULTATION</div>
+        <h1 class="booking-title">Secure Your <br>Appointment.</h1>
+      </div>
+
+      <div class="progress-bar">
+        <div class="progress-step active" id="step1">
+          <div class="step-num">1</div> Details
+        </div>
+        <div class="progress-step" id="step2">
+          <div class="step-num">2</div> Confirm
+        </div>
+      </div>
+
+      <div class="booking-layout">
+        <div class="booking-form-wrap">
+          <h3 class="form-section-title">Personal Information</h3>
+          <form id="bookingForm" onsubmit="submitBooking(event)">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" id="clientName" class="form-input" placeholder="e.g. Sipho Mkhize" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone <span>(WhatsApp)</span></label>
+                <input type="tel" id="clientPhone" class="form-input" placeholder="e.g. 082 123 4567" required>
+              </div>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Email Address <span>(Optional)</span></label>
+              <input type="email" id="clientEmail" class="form-input" placeholder="e.g. sipho@email.co.za">
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Legal Matter Type</label>
+              <select id="matterType" class="form-select" required>
+                <option value="" disabled selected>Select a category</option>
+                <option value="Family Law">Family Law — Divorce & Custody</option>
+                <option value="Commercial Law">Commercial Law — Business & Contracts</option>
+                <option value="Criminal Defence">Criminal Defence</option>
+                <option value="Property Law">Property Law — Conveyancing & Disputes</option>
+                <option value="Civil Litigation">Civil Litigation — General</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Preferred Date</label>
+                <input type="date" id="bookingDate" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Preferred Time</label>
+                <select id="bookingTime" class="form-select" required>
+                  <option value="09:00">09:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="14:00">02:00 PM</option>
+                  <option value="15:00">03:00 PM</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">Brief Description <span>(Optional)</span></label>
+              <textarea id="briefDesc" class="form-textarea" placeholder="Tell us a bit about your case..."></textarea>
+            </div>
+
+            <div class="notification-strip">
+              <div class="notif-text">
+                <strong>WhatsApp Integration</strong>
+                Confirmations and tracking updates are sent via WhatsApp.
+              </div>
+              <label class="notif-checkbox-label">
+                <input type="checkbox" id="whatsappConsent" class="notif-checkbox" checked>
+                I consent to WhatsApp notifications
+              </label>
+            </div>
+
+            <button type="submit" class="form-submit" id="submitBtn">Request Appointment</button>
+          </form>
+        </div>
+
+        <div class="booking-sidebar">
+          <div class="sidebar-card">
+            <h4 class="sidebar-card-title">What Happens Next</h4>
+            <div class="sidebar-step">
+              <div class="sidebar-step-num">1</div>
+              <div class="sidebar-step-text"><strong>Request Received</strong> Our team reviews your matter for conflict
+                of interest.</div>
+            </div>
+            <div class="sidebar-step">
+              <div class="sidebar-step-num">2</div>
+              <div class="sidebar-step-text"><strong>Confirmation</strong> You'll receive a WhatsApp with your reference
+                number.</div>
+            </div>
+            <div class="sidebar-step">
+              <div class="sidebar-step-num">3</div>
+              <div class="sidebar-step-text"><strong>Consultation</strong> Meet with your assigned advocate to discuss
+                the case.</div>
+            </div>
+          </div>
+          <div class="wa-card">
+            <div class="wa-icon">📲</div>
+            <div>
+              <div class="wa-title">Legal Tracker</div>
+              <div class="wa-sub">Once booked, track your status via our digital portal.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION PAGE -->
+  <div id="confirmationPage" class="page">
+    <div class="confirmation-page" id="confView">
+      <div class="conf-check">✓</div>
+      <h1 class="conf-title">Request Sent.</h1>
+      <p class="conf-sub">We have received your request. Please save your reference number for tracking.</p>
+      <div class="conf-ref" id="displayRef">REF-XXXXX</div>
+      <div class="conf-wa">
+        <span>📲</span> WhatsApp confirmation pending...
+      </div>
+      <div class="conf-actions">
+        <button class="btn-primary" onclick="showPage('tracker')">Go to Tracker</button>
+        <button class="btn-secondary" onclick="showPage('home')">Back to Home</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACKER PAGE -->
+  <div id="trackerPage" class="page">
+    <div class="tracker-page">
+      <div class="tracker-lookup">
+        <h2 class="tracker-lookup-title">Track Case.</h2>
+        <p class="tracker-lookup-sub">Enter your 5-digit reference number to view real-time status.</p>
+        <div class="lookup-row">
+          <input type="text" id="trackerInput" class="lookup-input" placeholder="REF-#####" maxlength="9">
+          <button class="lookup-btn" onclick="lookupMatter()">Track</button>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="tracker-result" id="trackerResult">
+        <div class="result-header">
+          <div class="result-ref" id="resRef">REF-00421</div>
+          <div class="result-badge" id="resStatusLabel">IN PROGRESS</div>
+        </div>
+        <div class="result-body">
+          <div class="details-grid">
+            <div class="detail-item">
+              <label>Client</label>
+              <p id="resClient">Sipho Mkhize</p>
+            </div>
+            <div class="detail-item">
+              <label>Matter</label>
+              <p id="resMatter">Family Law — Divorce</p>
+            </div>
+            <div class="detail-item">
+              <label>Assigned Advocate</label>
+              <p id="resAttorney">Adv. Thabo Nkosi</p>
+            </div>
+            <div class="detail-item">
+              <label>Appointment</label>
+              <p id="resDate">15 March 2026, 10:00 AM</p>
+            </div>
+            <div class="detail-item">
+              <label>Next Action</label>
+              <p id="resNext">Awaiting initial consultation</p>
+            </div>
+            <div class="detail-item">
+              <label>Firm Contact</label>
+              <p>+27 11 455 0988</p>
+            </div>
+          </div>
+
+          <div class="status-timeline">
+            <div class="timeline-track">
+              <div class="timeline-progress" id="progressLine"></div>
+              <div class="timeline-steps">
+                <div class="timeline-step" data-label="Pending" id="step_pending"></div>
+                <div class="timeline-step" data-label="Working" id="step_in_progress"></div>
+                <div class="timeline-step" data-label="Documents" id="step_awaiting_docs"></div>
+                <div class="timeline-step" data-label="Hearing" id="step_hearing"></div>
+                <div class="timeline-step" data-label="Resolved" id="step_resolved"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="result-actions">
+            <a href="#" id="waLink" class="wa-action-btn">
+              <span>💬</span> Message Advocate on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tracker-notfound" id="trackerError">
+        <div class="notfound-icon">⚠️</div>
+        <h3 class="notfound-title">Matter Not Found</h3>
+        <p class="notfound-sub">We couldn't find a case with that reference. Please check your spelling and try again.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">LEXIS<span>LAW</span></div>
+        <p class="footer-tagline">Providing South Africa with modern, reliable, and accessible legal representation
+          since 2008.</p>
+      </div>
+      <div>
+        <h4 class="footer-heading">Services</h4>
+        <a href="#" class="footer-link">Family Law</a>
+        <a href="#" class="footer-link">Commercial Law</a>
+        <a href="#" class="footer-link">Criminal Defence</a>
+        <a href="#" class="footer-link">Property Law</a>
+      </div>
+      <div>
+        <h4 class="footer-heading">Company</h4>
+        <a href="#" class="footer-link">Our Firm</a>
+        <a href="#" class="footer-link">Legal Team</a>
+        <a href="#" class="footer-link">Case Tracking</a>
+        <a href="#" class="footer-link">Contact</a>
+      </div>
+      <div>
+        <h4 class="footer-heading">Contact</h4>
+        <div class="footer-contact-item"><span>📍</span> Johannesburg, SA</div>
+        <div class="footer-contact-item"><span>📞</span> +27 11 455 0988</div>
+        <div class="footer-contact-item"><span>✉️</span> info@lexislaw.co.za</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-legal">© 2026 LEXIS LAW (PTY) LTD. ALL RIGHTS RESERVED.</div>
+      <div class="footer-popia">POPIA COMPLIANT</div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── PAGE ROUTING ───────────────────────────────────────────────────────────
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(`${pageId}Page`).classList.add('active');
+
+      // Update nav links
+      document.querySelectorAll('.nav-link').forEach(l => {
+        l.classList.toggle('active-link', l.textContent.toLowerCase() === pageId);
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Reset forms if needed
+      if (pageId === 'booking') {
+        document.getElementById('bookingForm').reset();
+        updateSteps(1);
+      }
+    }
+
+    function updateSteps(step) {
+      document.getElementById('step1').className = `progress-step ${step === 1 ? 'active' : 'done'}`;
+      document.getElementById('step2').className = `progress-step ${step === 2 ? 'active' : ''}`;
+    }
+
+    // ─── CUSTOM CURSOR ──────────────────────────────────────────────────────────
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top = e.clientY + 'px';
+      ring.style.left = e.clientX + 'px';
+      ring.style.top = e.clientY + 'px';
+    });
+
+    // ─── SCROLL REVEAL ──────────────────────────────────────────────────────────
+    const observerOptions = { threshold: 0.1 };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ─── TOAST ──────────────────────────────────────────────────────────────────
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.textContent = msg;
+      toast.style.background = type === 'success' ? 'var(--green)' : 'var(--red)';
+      toast.style.borderColor = type === 'success' ? 'var(--green-dark)' : 'var(--red-dark)';
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 4000);
+    }
+
+    // ─── CONVEX INTEGRATION ─────────────────────────────────────────────────────
+
+    async function submitBooking(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const originalText = btn.textContent;
+      btn.textContent = 'PROCESSING...';
+      btn.disabled = true;
+
+      const data = {
+        name: document.getElementById('clientName').value,
+        phone: document.getElementById('clientPhone').value,
+        email: document.getElementById('clientEmail').value,
+        matter_type: document.getElementById('matterType').value,
+        preferred_date: document.getElementById('bookingDate').value,
+        preferred_time: document.getElementById('bookingTime').value,
+        description: document.getElementById('briefDesc').value,
+        whatsapp_consent: document.getElementById('whatsappConsent').checked,
+        popia_consent: true
+      };
+
+      try {
+        // Call Convex API
+        if (window.lexisLawApi && typeof window.lexisLawApi.createBooking === 'function') {
+          const result = await window.lexisLawApi.createBooking(data);
+          if (result && result.success) {
+            document.getElementById('displayRef').textContent = result.reference;
+            showPage('confirmation');
+            showToast('Booking Request Received!');
+          } else {
+            throw new Error("Booking failed on server");
+          }
+        } else {
+          // Fallback for demo if API not loaded
+          console.warn("API not found or invalid, using demo mode");
+          document.getElementById('displayRef').textContent = "REF-" + Math.floor(10000 + Math.random() * 90000);
+          showPage('confirmation');
+          showToast('Demo Mode: Request Submitted');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error sending request. Please try again.', 'error');
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
+      }
+    }
+
+    async function lookupMatter() {
+      const ref = document.getElementById('trackerInput').value.trim().toUpperCase();
+      const resultDiv = document.getElementById('trackerResult');
+      const errorDiv = document.getElementById('trackerError');
+
+      if (!ref) return;
+
+      resultDiv.classList.remove('show');
+      errorDiv.classList.remove('show');
+
+      try {
+        if (window.lexisLawApi) {
+          const matter = await window.lexisLawApi.getMatterByReference(ref);
+          if (matter) {
+            // Map data to UI
+            document.getElementById('resRef').textContent = matter.reference;
+            document.getElementById('resStatusLabel').textContent = matter.statusLabel;
+            document.getElementById('resClient').textContent = matter.name;
+            document.getElementById('resMatter').textContent = matter.matter;
+            document.getElementById('resAttorney').textContent = matter.attorney;
+            document.getElementById('resDate').textContent = matter.date;
+            document.getElementById('resNext').textContent = matter.next;
+
+            // Timeline update
+            updateTimeline(matter.status);
+
+            // WhatsApp link
+            const waNum = matter.wa ? matter.wa.replace('+', '') : '27114550988';
+            document.getElementById('waLink').href = `https://wa.me/${waNum}?text=Hello, I am inquiring about my matter ${matter.reference}`;
+
+            resultDiv.classList.add('show');
+          } else {
+            errorDiv.classList.add('show');
+          }
+        } else {
+          // Demo fallback
+          if (ref.includes('00421')) { resultDiv.classList.add('show'); updateTimeline(1); }
+          else { errorDiv.classList.add('show'); }
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error looking up matter.', 'error');
+      }
+    }
+
+    function updateTimeline(statusIndex) {
+      const steps = ['pending', 'in_progress', 'awaiting_docs', 'hearing', 'resolved'];
+      const progressMap = [5, 25, 50, 75, 100];
+
+      document.getElementById('progressLine').style.width = `${progressMap[statusIndex]}%`;
+
+      steps.forEach((s, i) => {
+        const el = document.getElementById(`step_${s}`);
+        if (i <= statusIndex) el.classList.add('active');
+        else el.classList.remove('active');
+      });
+    }
+
+    // Handle URL hash for navigation
+    window.addEventListener('load', () => {
+      const hash = window.location.hash;
+      if (hash === '#tracker') showPage('tracker');
+      if (hash === '#booking') showPage('booking');
+    });
+  </script>
+
+</body>
+
+</html>

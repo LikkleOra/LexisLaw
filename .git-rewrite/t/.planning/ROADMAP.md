@@ -11,9 +11,6 @@ Transform LexisLaw into a fully digital legal services platform with online book
 - [x] Matter tracker with mock data
 - [x] WhatsApp confirmation simulation
 
-**Phase 0 - Infrastructure & Git Repair:**
-- [ ] INFRA-01: Fix git push blocker and establish .gitignore
-
 **Phase 1 - Foundation:**
 - [ ] F-01: Backend API with database (bookings, matters, clients)
 - [ ] F-02: Real WhatsApp integration via API
@@ -33,13 +30,6 @@ Transform LexisLaw into a fully digital legal services platform with online book
 - [ ] F-12: Analytics dashboard
 
 ---
-
-## Plans
-
-### Phase 0: Infrastructure & Git Repair
-**Goal:** Restore ability to push to GitHub by cleaning repository history.
-**Plans:** 1 plan
-- [ ] 03-01-PLAN.md — Fix git push failure and .gitignore
 
 ## Roadmap Summary
 

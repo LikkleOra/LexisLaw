@@ -1,0 +1,36 @@
+The full site is built. Here's what's inside:
+4 fully functional pages:
+🏠 Landing Page
+
+Animated ticker with practice areas
+Hero with stats (16+ years, 2K cases, 98% satisfaction)
+8 service cards with hover effects and brutalist offset shadows
+About section with team members
+Contact section with WhatsApp direct link
+CTA banner
+
+📅 Booking Page
+
+3-step progress flow: Details → Matter Info → Review & Confirm
+Full form: name, WhatsApp number, matter type, attorney preference, date/time picker, description
+Review screen before submission
+WhatsApp opt-in consent + POPIA checkbox
+Sidebar with "What Happens Next" steps
+Generates a real reference number on submit
+
+✅ Confirmation Page
+
+Animated confirmation with generated reference number (e.g. REF-04821)
+WhatsApp confirmation notification toast
+Links to tracker and home
+
+🔍 Matter Tracker
+
+Reference number lookup
+Demo cases: REF-00421, REF-00387, REF-00512
+Colour-coded status stepper (Pending → In Progress → Awaiting Docs → Hearing Set → Resolved)
+Detail grid with attorney, dates, notes
+"Message Attorney on WhatsApp" button with pre-filled message
+WhatsApp notification toggle
+
+Design: Custom cursor, scroll reveal animations, Bebas Neue display font, IBM Plex Mono for labels, Elevated Brutalism with offset box-shadows, red/green/grey on black palette throughout.

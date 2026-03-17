@@ -25,7 +25,7 @@ export default function RootLayout({
           />
         </head>
         <body>
-          <header className="flex justify-end gap-4 p-4">
+          <header className="flex justify-end gap-2 md:gap-4 p-2 md:p-4">
             <AuthButtons />
           </header>
           {children}

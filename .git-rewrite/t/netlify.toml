@@ -1,0 +1,17 @@
+# Netlify Configuration for LexisLaw Project
+
+[build]
+  # Directory where your static frontend files are located
+  publish = "src"
+
+[[redirects]]
+  # For client-side routing (SPA fallback)
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  # Redirect for the admin dashboard
+  from = "/admin"
+  to = "/admin/dashboard.html"
+  status = 200

@@ -3,7 +3,7 @@
 // The frontend opens a WhatsApp link with a pre-filled message after a booking is saved.
 
 // Admin WhatsApp number — South Africa format (no + sign)
-export const ADMIN_WHATSAPP_NUMBER = "27734334784";
+export const ADMIN_WHATSAPP_NUMBER = "27785962689";
 
 /**
  * Normalizes a phone number to the WhatsApp format (digits only, with country code).
