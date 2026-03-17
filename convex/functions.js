@@ -138,8 +138,8 @@ export const getDocuments = query({
 // ═══════════════════════════════════════════════════════════════════════════
 
 // Admin phone number for notifications
-const ADMIN_PHONE = "+27785962689";
-const ADMIN_WHATSAPP = "whatsapp:+27785962689";
+const ADMIN_PHONE = "+27734334784";
+const ADMIN_WHATSAPP = "whatsapp:+27734334784";
 
 // Create a new booking
 export const createBooking = mutation({
@@ -239,7 +239,7 @@ Time: ${args.preferred_time}
 Description: ${args.description || "None provided"}`;
 
       // Schedule admin notification
-      const adminPhone = "+27785962689"; // Admin phone from original file
+      const adminPhone = "+27734334784"; // Updated admin phone
       await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
         to: adminPhone,
         message: adminMessage,

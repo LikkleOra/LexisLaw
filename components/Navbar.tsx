@@ -2,35 +2,44 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Menu, X, ArrowRight, Scale } from 'lucide-react';
 
 export default function Navbar() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Prevent scrolling when menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [mobileMenuOpen]);
+
   const navLinks = [
     { href: '/#services', label: 'SERVICES' },
     { href: '/#about', label: 'ABOUT' },
-    { href: '/#contact', label: 'CONTACT' },
     { href: '/tracker', label: 'TRACKER' },
     { href: '/admin', label: 'ADMIN' },
   ];
 
   return (
-    <nav className="sticky top-0 z-50 bg-black border-b-2 border-red">
-      <div className="flex items-center justify-between px-4 md:px-10 h-14 md:h-16">
+    <nav className="sticky top-0 z-[100] bg-black border-b-2 border-red">
+      <div className="flex items-center justify-between px-6 md:px-12 h-16 md:h-20">
         {/* Logo */}
-        <Link href="/" className="font-display text-xl md:text-3xl tracking-widest text-white no-underline flex items-center gap-0.5">
-          MOKOENA<span className="text-red">LEGAL</span>
+        <Link href="/" className="font-display text-2xl md:text-3xl tracking-widest text-white no-underline flex items-center group">
+          MOKOENA<span className="text-red transition-transform group-hover:scale-110">LEGAL</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden lg:flex gap-0">
+        <div className="hidden lg:flex gap-2">
           {navLinks.map((link) => (
             <Link 
               key={link.href} 
               href={link.href} 
-              className="nav-link"
+              className={`nav-link ${pathname === link.href ? 'text-white border-red/50 bg-red/5' : ''}`}
             >
               {link.label}
             </Link>
@@ -38,48 +47,66 @@ export default function Navbar() {
         </div>
 
         {/* Desktop CTA */}
-        <Link href="/booking" className="hidden lg:block nav-cta">
-          BOOK NOW
+        <Link href="/booking" className="hidden lg:flex nav-cta items-center gap-2">
+          CONSULTATION <ArrowRight className="w-4 h-4" />
         </Link>
 
         {/* Mobile Menu Button */}
         <button 
-          className="lg:hidden p-2 text-white"
+          className="lg:hidden p-2 text-white z-[110] relative"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           aria-label="Toggle menu"
         >
-          <div className="w-6 h-5 flex flex-col justify-between">
-            <span className={`w-full h-0.5 bg-white transition-transform ${mobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
-            <span className={`w-full h-0.5 bg-white transition-opacity ${mobileMenuOpen ? 'opacity-0' : ''}`}></span>
-            <span className={`w-full h-0.5 bg-white transition-transform ${mobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
-          </div>
+          {mobileMenuOpen ? (
+            <X className="w-8 h-8 text-red transition-all duration-300 rotate-0 hover:rotate-90" />
+          ) : (
+            <div className="space-y-1.5 p-1">
+              <span className="block w-8 h-0.5 bg-white"></span>
+              <span className="block w-5 h-0.5 bg-red ml-auto"></span>
+              <span className="block w-8 h-0.5 bg-white"></span>
+            </div>
+          )}
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-black border-t border-border">
-          <div className="flex flex-col p-4 gap-2">
-            {navLinks.map((link) => (
+      {/* Mobile Menu Overlay */}
+      <div className={`fixed inset-0 bg-black z-[105] flex flex-col transition-all duration-500 ease-in-out ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none translate-y-[-20px]'}`}>
+        <div className="flex-1 flex flex-col justify-center px-8 py-20">
+          <div className="font-mono text-[10px] tracking-[4px] text-red uppercase mb-8 border-b border-border-strong pb-4">NAVIGATION</div>
+          
+          <div className="space-y-6">
+            {navLinks.map((link, i) => (
               <Link 
                 key={link.href} 
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-grey hover:text-white py-2 px-3 text-sm font-mono tracking-widest uppercase"
+                className="block group"
+                style={{ transitionDelay: `${i * 100}ms` }}
               >
-                {link.label}
+                <div className="font-display text-4xl sm:text-5xl tracking-widest text-white transition-all group-hover:text-red flex items-center gap-4">
+                  <span className="text-sm font-mono text-grey group-hover:text-red-light">0{i + 1}</span>
+                  {link.label}
+                </div>
               </Link>
             ))}
+          </div>
+
+          <div className="mt-12 pt-12 border-t border-border-strong">
             <Link 
               href="/booking"
               onClick={() => setMobileMenuOpen(false)}
-              className="bg-red text-white text-center py-3 mt-2 font-mono text-sm font-bold tracking-widest uppercase"
+              className="w-full bg-red text-white text-center py-5 font-mono text-sm font-bold tracking-widest uppercase flex items-center justify-center gap-3 shadow-[8px_8px_0_rgba(230,51,41,0.2)] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all"
             >
-              Book Now
+              BOOK CONSULTATION <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
+          
+          <div className="mt-auto flex justify-between items-end">
+             <div className="font-display text-2xl text-card2 select-none tracking-tighter">LAW</div>
+             <Scale className="w-12 h-12 text-border-strong opacity-20" />
+          </div>
         </div>
-      )}
+      </div>
 
       <style jsx>{`
         .nav-link {
@@ -90,14 +117,14 @@ export default function Navbar() {
           text-transform: uppercase;
           color: #8A8A8A;
           text-decoration: none;
-          padding: 8px 18px;
+          padding: 10px 20px;
           border: 1px solid transparent;
-          transition: color 0.2s, border-color 0.2s, background 0.2s;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .nav-link:hover {
           color: #F5F5F5;
-          border-color: rgba(138, 138, 138, 0.5);
-          background: #1E1E1E;
+          border-color: rgba(230, 51, 41, 0.3);
+          background: rgba(230, 51, 41, 0.05);
         }
         .nav-cta {
           background: #E63329;
@@ -108,15 +135,15 @@ export default function Navbar() {
           letter-spacing: 2px;
           text-transform: uppercase;
           border: none;
-          padding: 10px 24px;
+          padding: 12px 28px;
           text-decoration: none;
-          box-shadow: 4px 4px 0 #9E1F18;
-          transition: background 0.2s, transform 0.1s;
+          box-shadow: 6px 6px 0 rgba(230, 51, 41, 0.2);
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .nav-cta:hover {
-          background: #9E1F18;
+          background: #C42B22;
           transform: translate(2px, 2px);
-          box-shadow: 2px 2px 0 #9E1F18;
+          box-shadow: 2px 2px 0 rgba(230, 51, 41, 0.2);
         }
       `}</style>
     </nav>
