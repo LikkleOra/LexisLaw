@@ -1,10 +1,7 @@
-// WhatsApp is handled client-side via wa.me Click-to-Chat links
-import { query } from "./_generated/server";
-import { mutation } from "./_generated/server";
+// WhatsApp and SMS integration via Convex Actions
+import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
-
-// Admin WhatsApp number (no + sign, with country code)
-const ADMIN_PHONE = "27785962689";
+import { api } from "./_generated/api";
 
 // ═══════════════════════════════════════════════════════════════════════════
 // QUERIES
@@ -200,21 +197,66 @@ export const createBooking = mutation({
       next_action: "Awaiting initial consultation",
     });
 
-    // Return data for the frontend to build WhatsApp Click-to-Chat links
-    const normalizedPhone = args.phone.replace(/\s/g, "").replace(/^0/, "27").replace(/^\+/, "");
+    // ═══════════════════════════════════════════════════════════════════════════
+    // NOTIFICATIONS (Scheduled via Actions)
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    if (args.whatsapp_consent) {
+      const clientMessage = `*LEXIS LAW — REQUEST RECEIVED* ⚖️
+
+Dear ${args.name},
+
+Your consultation request has been submitted successfully.
+
+Reference: *${reference}*
+Matter: ${args.matter_type}
+Preferred Date: ${formatDate(args.preferred_date)}
+Preferred Time: ${args.preferred_time}
+
+Our team will reach out to confirm your appointment shortly.
+
+_Justice Starts Here._`;
+
+      // Schedule client notification
+      await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
+        to: normalizedPhone,
+        message: clientMessage,
+        bookingRef: reference,
+        clientName: args.name,
+        type: "Confirmation",
+      });
+
+      const adminMessage = `*🔴 NEW BOOKING — LEXIS LAW*
+
+Reference: *${reference}*
+
+Client: ${args.name}
+Phone: ${normalizedPhone}
+Matter: ${args.matter_type}
+Date: ${formatDate(args.preferred_date)}
+Time: ${args.preferred_time}
+
+Description: ${args.description || "None provided"}`;
+
+      // Schedule admin notification
+      const adminPhone = "+27785962689"; // Admin phone from original file
+      await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
+        to: adminPhone,
+        message: adminMessage,
+        bookingRef: reference,
+        clientName: "ADMIN",
+        type: "Admin Notification",
+      });
+    }
+
     return {
       success: true,
       reference,
       booking_id: bookingId,
-      // Client-side WhatsApp data
-      client_phone: normalizedPhone,
-      admin_phone: ADMIN_PHONE,
       name: args.name,
       matter_type: args.matter_type,
       preferred_date: formatDate(args.preferred_date),
       preferred_time: args.preferred_time,
-      description: args.description,
-      email: args.email,
     };
   },
 });
@@ -266,12 +308,39 @@ export const updateMatterStatus = mutation({
       .collect();
 
     if (matters.length === 0) throw new Error("Matter not found");
+    const matter = matters[0];
 
-    await ctx.db.patch(matters[0]._id, {
+    await ctx.db.patch(matter._id, {
       status: statusString,
       next_action: args.next_action,
       attorney_id: args.attorney_id,
     });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // NOTIFICATIONS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    const client = await ctx.db.get(matter.client_id);
+    if (client && client.whatsapp_consent) {
+      const message = `*LEXIS LAW UPDATE* ⚖️
+
+Ref: *${args.reference}*
+Status: ${statusString.replace("_", " ").toUpperCase()}
+
+${args.next_action || "Your matter has been updated."}
+
+Track progress: https://lexislaw.co.za/tracker
+
+_Justice Starts Here._`;
+
+      await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
+        to: client.phone,
+        message,
+        bookingRef: args.reference,
+        clientName: client.name,
+        type: "Status Update",
+      });
+    }
 
     return { success: true };
   },
