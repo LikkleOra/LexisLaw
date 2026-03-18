@@ -1,365 +1,199 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { api } from '@/lib/api';
-import { Lock } from 'lucide-react';
+import React, { useState } from 'react';
+import Sidebar from '@/components/admin/Sidebar';
+import Card from '@/components/ui/Card';
+import Badge from '@/components/ui/Badge';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import { 
+  LucideTrendingUp, 
+  LucideUsers, 
+  LucideCalendar, 
+  LucideFileText, 
+  LucideMoreVertical,
+  LucideArrowUpRight
+} from 'lucide-react';
 
-const DEMO_PASSWORD = 'lexislaw2026';
-
-export default function Admin() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export default function AdminPage() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
-  const [loginError, setLoginError] = useState(false);
   const [currentView, setCurrentView] = useState('bookings');
-  
-  // Data states
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [matters, setMatters] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
-  
-  // Modal state
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedMatter, setSelectedMatter] = useState<any>(null);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === DEMO_PASSWORD) {
-      setIsLoggedIn(true);
-      setLoginError(false);
-      loadData();
+    if (password === 'lexislaw2026') {
+      setIsAuthenticated(true);
     } else {
-      setLoginError(true);
+      alert('Incorrect authorization code.');
     }
   };
 
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const [bookingsData, mattersData] = await Promise.all([
-        api.getBookings(),
-        api.getMatters(),
-      ]);
-      setBookings(bookingsData || []);
-      setMatters(mattersData || []);
-    } catch (error) {
-      console.error('Failed to load data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const openModal = (booking: any) => {
-    setSelectedMatter(booking);
-    setModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalOpen(false);
-    setSelectedMatter(null);
-  };
-
-  const handleStatusUpdate = async () => {
-    if (!selectedMatter) return;
-    
-    const newStatus = (document.getElementById('modalStatus') as HTMLSelectElement)?.value;
-    const nextAction = (document.getElementById('modalNextAction') as HTMLInputElement)?.value;
-    
-    try {
-      const statusMap: Record<string, number> = {
-        pending: 0,
-        in_progress: 1,
-        awaiting_docs: 2,
-        hearing: 3,
-        resolved: 4,
-      };
-      
-      await api.updateMatterStatus(
-        selectedMatter.reference,
-        statusMap[newStatus] || 0,
-        nextAction || 'No action'
-      );
-      
-      await loadData();
-      closeModal();
-    } catch (error) {
-      console.error('Update failed:', error);
-    }
-  };
-
-  const formatStatus = (status: string) => {
-    return status?.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || status;
-  };
-
-  const getStatusClass = (status: string) => {
-    const classes: Record<string, string> = {
-      pending: 'status-pending',
-      confirmed: 'status-in-progress',
-      in_progress: 'status-in-progress',
-      awaiting_docs: 'status-awaiting-docs',
-      hearing: 'status-hearing',
-      resolved: 'status-resolved',
-    };
-    return classes[status] || 'status-pending';
-  };
-
-  // Restricted Access Screen (Temporary)
-  if (!isLoggedIn) {
+  if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-5">
-        <div className="w-full max-w-[500px] bg-card border-2 border-red p-12 text-center relative shadow-[10px_10px_0_rgba(230,51,41,0.1)]">
-          <div className="absolute top-0 left-0 w-full h-1 bg-red"></div>
-          <div className="font-display text-[48px] tracking-widest mb-4">
-            ADMIN<span className="text-red">ACCESS</span>
+      <main className="min-h-screen bg-lexis-black flex items-center justify-center p-6">
+        <Card shadow className="w-full max-w-md p-12 bg-[#121212] border-white/10 space-y-12 animate-slam-in">
+          <div className="text-center space-y-4">
+             <div className="w-16 h-16 bg-lexis-red flex items-center justify-center text-white font-display text-2xl font-bold shadow-brutal-red mx-auto">L</div>
+             <h2 className="text-4xl font-display tracking-tight text-white uppercase">Access Secured</h2>
+             <p className="font-mono text-xs text-lexis-grey uppercase tracking-widest leading-relaxed">
+               Authorized personnel only. Enter decryption code to access the LexisLaw administrative console.
+             </p>
           </div>
-          <div className="w-16 h-16 bg-red-glow border border-red flex items-center justify-center text-2xl mx-auto mb-6"><Lock className="w-8 h-8 text-red" /></div>
-          <h2 className="font-display text-2xl text-white mb-4 tracking-widest uppercase">System Under Maintenance</h2>
-          <p className="text-grey-light text-sm leading-7 mb-8">
-            The administrative dashboard is currently being optimized and is temporarily inaccessible. 
-            Access will be restored once the system has been properly configured.
-          </p>
-          
-          <Link 
-            href="/" 
-            className="inline-block bg-white text-black font-mono text-xs font-bold tracking-widest uppercase border-2 border-white px-8 py-3.5 hover:bg-transparent hover:text-white transition-all"
-          >
-            Return to Lexis Law
-          </Link>
-        </div>
-      </div>
+          <form onSubmit={handleLogin} className="space-y-8">
+            <Input 
+              type="password" 
+              label="Authorization Code" 
+              placeholder="••••••••" 
+              value={password} 
+              onChange={(e) => setPassword(e.target.value)}
+              className="text-center tracking-[0.5em]"
+              required
+            />
+            <Button type="submit" variant="primary" className="w-full" size="lg">
+              Unlock Console
+            </Button>
+          </form>
+        </Card>
+      </main>
     );
   }
+
   return (
-    <div className="min-h-screen bg-black text-white flex">
-      {/* Sidebar */}
-      <aside className="w-[280px] bg-black2 border-r-2 border-border p-10 flex flex-col sticky top-0 h-screen">
-        <div className="font-display text-[32px] tracking-widest mb-15">MOKOENA<span className="text-red">LEGAL</span></div>
-        
-        <nav className="flex-1">
-          {[
-            { id: 'bookings', label: 'Bookings', count: bookings.filter(b => b.status === 'pending').length },
-            { id: 'matters', label: 'Matters' },
-            { id: 'clients', label: 'Clients' },
-            { id: 'documents', label: 'Documents' },
-            { id: 'sms', label: 'SMS Logs' },
-          ].map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setCurrentView(item.id)}
-              className={`w-full text-left font-mono text-xs font-bold tracking-widest uppercase py-5 border-l-4 transition-colors ${
-                currentView === item.id
-                  ? 'text-red border-red bg-red/5'
-                  : 'text-grey border-transparent hover:text-white hover:bg-white/5'
-              }`}
-            >
-              {item.label}
-              {item.count !== undefined && item.count > 0 && (
-                <span className="ml-2 bg-red text-white px-2 py-0.5 text-[10px]">{item.count}</span>
-              )}
-            </button>
-          ))}
-        </nav>
-        
-        <button
-          onClick={() => setIsLoggedIn(false)}
-          className="font-mono text-xs text-grey hover:text-white transition mt-auto"
-        >
-          ← Logout
-        </button>
-      </aside>
-
-      {/* Main Content */}
-      <main className="flex-1 p-15 bg-black">
-        {/* Bookings View */}
-        {currentView === 'bookings' && (
-          <div>
-            <div className="flex items-center justify-between mb-12">
-              <h1 className="font-display text-[48px] tracking-widest">BOOKINGS <span className="text-red">MANAGEMENT</span></h1>
-              <button onClick={loadData} className="btn-secondary text-xs px-5 py-3">
-                Refresh ↻
-              </button>
-            </div>
-
-            {/* Stats */}
-            <div className="grid grid-cols-4 gap-6 mb-12">
-              {[
-                { label: 'Total Bookings', value: bookings.length },
-                { label: 'Pending', value: bookings.filter(b => b.status === 'pending').length, highlight: true },
-                { label: 'Confirmed', value: bookings.filter(b => b.status === 'confirmed').length, green: true },
-                { label: 'Today', value: bookings.filter(b => b.preferred_date === new Date().toISOString().split('T')[0]).length },
-              ].map((stat, i) => (
-                <div key={i} className={`bg-black2 border-2 border-border p-8 relative overflow-hidden ${stat.highlight ? 'before:bg-red before:absolute before:top-0 before:left-0 before:w-1 before:h-full' : stat.green ? 'before:bg-green before:absolute before:top-0 before:left-0 before:w-1 before:h-full' : ''}`}>
-                  <div className="font-mono text-xs text-grey uppercase tracking-widest mb-3">{stat.label}</div>
-                  <div className="font-display text-[40px] leading-none text-white">{stat.value}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Table */}
-            <div className="bg-black2 border-2 border-border overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-black">
-                    {['Reference', 'Client', 'Matter Type', 'Date', 'Status', 'Actions'].map((h) => (
-                      <th key={h} className="text-left p-4 font-mono text-xs text-grey uppercase tracking-widest border-b-2 border-border">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {bookings.map((booking) => (
-                    <tr key={booking._id} className="border-b border-border">
-                      <td className="p-5"><strong>{booking.reference}</strong></td>
-                      <td className="p-5">
-                        <div>{booking.client_name}</div>
-                        <div className="text-grey text-xs">{booking.client_phone}</div>
-                      </td>
-                      <td className="p-5">{booking.matter_type}</td>
-                      <td className="p-5">
-                        <div>{booking.preferred_date}</div>
-                        <div className="text-grey text-xs">{booking.preferred_time}</div>
-                      </td>
-                      <td className="p-5">
-                        <span className={`status-badge ${getStatusClass(booking.status)}`}>
-                          {formatStatus(booking.status)}
-                        </span>
-                      </td>
-                      <td className="p-5">
-                        <button
-                          onClick={() => openModal(booking)}
-                          className="border border-border text-white px-3 py-2 font-mono text-[10px] hover:border-red hover:text-red transition"
-                        >
-                          Update
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {bookings.length === 0 && (
-                    <tr>
-                      <td colSpan={6} className="p-10 text-center text-grey">No bookings found</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+    <main className="min-h-screen bg-lexis-black flex selection:bg-lexis-red selection:text-white">
+      <Sidebar currentView={currentView} onViewChange={setCurrentView} />
+      
+      <div className="flex-1 ml-72 p-12">
+        {/* Header */}
+        <div className="flex justify-between items-end mb-16 border-b-2 border-white/5 pb-12">
+          <div className="space-y-4">
+            <span className="font-mono text-lexis-red text-[10px] uppercase tracking-[0.3em] font-bold">LexisLaw Management Console</span>
+            <h1 className="text-6xl font-display tracking-tighter uppercase">
+              {currentView} <span className="text-white/10">CONTROL.</span>
+            </h1>
           </div>
-        )}
-
-        {/* Matters View */}
-        {currentView === 'matters' && (
-          <div>
-            <h1 className="font-display text-[48px] tracking-widest mb-12">MATTER <span className="text-red">TRACKING</span></h1>
-            
-            <div className="bg-black2 border-2 border-border overflow-hidden">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-black">
-                    {['Reference', 'Client', 'Attorney', 'Status', 'Next Action', 'Actions'].map((h) => (
-                      <th key={h} className="text-left p-4 font-mono text-xs text-grey uppercase tracking-widest border-b-2 border-border">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {matters.map((matter) => (
-                    <tr key={matter._id} className="border-b border-border">
-                      <td className="p-5"><strong>{matter.reference}</strong></td>
-                      <td className="p-5">
-                        <div>{matter.name}</div>
-                        <div className="text-grey text-xs">{matter.matter}</div>
-                      </td>
-                      <td className="p-5 text-grey">{matter.attorney || 'Unassigned'}</td>
-                      <td className="p-5">
-                        <span className={`status-badge ${getStatusClass(matter.statusLabel?.toLowerCase().replace(' ', '_'))}`}>
-                          {matter.statusLabel}
-                        </span>
-                      </td>
-                      <td className="p-5 text-grey text-sm">{matter.next}</td>
-                      <td className="p-5">
-                        <button
-                          onClick={() => openModal(matter)}
-                          className="border border-border text-white px-3 py-2 font-mono text-[10px] hover:border-red hover:text-red transition"
-                        >
-                          Update
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                  {matters.length === 0 && (
-                    <tr>
-                      <td colSpan={6} className="p-10 text-center text-grey">No matters found</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        )}
-
-        {/* Clients View */}
-        {currentView === 'clients' && (
-          <div>
-            <h1 className="font-display text-[48px] tracking-widest mb-12">CLIENT <span className="text-red">DATABASE</span></h1>
-            <p className="text-grey">Client management coming soon...</p>
-          </div>
-        )}
-
-        {/* Documents View */}
-        {currentView === 'documents' && (
-          <div>
-            <h1 className="font-display text-[48px] tracking-widest mb-12">DOCUMENT <span className="text-red">MANAGEMENT</span></h1>
-            <p className="text-grey">Document management coming soon...</p>
-          </div>
-        )}
-
-        {/* SMS Logs View */}
-        {currentView === 'sms' && (
-          <div>
-            <h1 className="font-display text-[48px] tracking-widest mb-12">SMS <span className="text-red">LOGS</span></h1>
-            <p className="text-grey">SMS logs coming soon...</p>
-          </div>
-        )}
-      </main>
-
-      {/* Modal */}
-      {modalOpen && selectedMatter && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[100000]" onClick={closeModal}>
-          <div className="bg-black2 border-2 border-border w-[500px] p-12" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between pb-6 border-b border-border mb-6">
-              <h3 className="font-body text-sm font-bold tracking-widest uppercase">Update Matter Status</h3>
-              <button onClick={closeModal} className="text-grey text-2xl hover:text-white">&times;</button>
-            </div>
-            
-            <div className="mb-5">
-              <label className="font-mono text-xs text-grey uppercase tracking-widest block mb-2">Current Status</label>
-              <div className="text-white">{selectedMatter.status || 'Pending'}</div>
-            </div>
-
-            <div className="mb-5">
-              <label className="font-mono text-xs text-grey uppercase tracking-widest block mb-2">New Status</label>
-              <select id="modalStatus" className="form-select">
-                <option value="pending">Pending</option>
-                <option value="in_progress">In Progress</option>
-                <option value="awaiting_docs">Awaiting Documents</option>
-                <option value="hearing">Hearing Scheduled</option>
-                <option value="resolved">Resolved</option>
-              </select>
-            </div>
-
-            <div className="mb-6">
-              <label className="font-mono text-xs text-grey uppercase tracking-widest block mb-2">Next Action</label>
-              <input id="modalNextAction" type="text" className="form-input" placeholder="e.g. Awaiting client documents" />
-            </div>
-
-            <div className="flex gap-3 justify-end">
-              <button onClick={closeModal} className="border border-border text-white px-5 py-3 font-mono text-xs tracking-widest uppercase hover:border-white transition">
-                Cancel
-              </button>
-              <button onClick={handleStatusUpdate} className="bg-red text-white border-2 border-red px-5 py-3 font-mono text-xs tracking-widest uppercase hover:bg-red-dark transition">
-                Save Changes
-              </button>
-            </div>
+          <div className="flex gap-4">
+            <Button variant="secondary" size="sm">Export Data</Button>
+            <Button variant="primary" size="sm">New Entry</Button>
           </div>
         </div>
-      )}
-    </div>
+
+        {/* Stats Row */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {[
+            { label: 'Total Revenue', value: 'R142.5k', icon: LucideTrendingUp, color: 'text-lexis-green' },
+            { label: 'Active Clients', value: '184', icon: LucideUsers, color: 'text-white' },
+            { label: 'Pending Bookings', value: '05', icon: LucideCalendar, color: 'text-lexis-red' },
+            { label: 'Closed Cases', value: '24', icon: LucideFileText, color: 'text-white' },
+          ].map((stat, idx) => (
+            <Card key={idx} className="bg-[#121212] border-white/5 p-8 border-l-4 border-l-lexis-red shadow-brutal hover:translate-x-1 hover:-translate-y-1 transition-all group">
+              <div className="flex justify-between items-start mb-6">
+                 <div className="w-10 h-10 bg-white/5 flex items-center justify-center border border-white/10 text-lexis-red">
+                    <stat.icon size={20} />
+                 </div>
+                 <LucideArrowUpRight className="text-white/20 group-hover:text-lexis-red transition-colors" size={16} />
+              </div>
+              <div className="space-y-1">
+                 <div className={`text-3xl font-display ${stat.color}`}>{stat.value}</div>
+                 <div className="font-mono text-[9px] text-lexis-grey uppercase tracking-[0.2em]">{stat.label}</div>
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Main Content Area */}
+        {currentView === 'bookings' && (
+          <Card className="bg-[#121212] border-white/10 overflow-hidden" padding="none" shadow>
+            <div className="p-8 border-b border-white/5 flex justify-between items-center">
+               <h3 className="font-display text-xl tracking-tight text-white uppercase">Recent Consultations</h3>
+               <span className="font-mono text-[10px] uppercase tracking-widest text-lexis-grey">Showing last 10 entries</span>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left font-mono text-xs">
+                <thead>
+                  <tr className="bg-black/40 border-b border-white/5">
+                    <th className="p-6 uppercase tracking-widest text-lexis-grey font-bold">Reference</th>
+                    <th className="p-6 uppercase tracking-widest text-lexis-grey font-bold">Client Name</th>
+                    <th className="p-6 uppercase tracking-widest text-lexis-grey font-bold">Matter Type</th>
+                    <th className="p-6 uppercase tracking-widest text-lexis-grey font-bold">Preferred Date</th>
+                    <th className="p-6 uppercase tracking-widest text-lexis-grey font-bold">Status</th>
+                    <th className="p-6 uppercase tracking-widest text-lexis-grey font-bold">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {[
+                    { ref: 'REF-82103', name: 'Thabo Mbeki', type: 'Civil Litigation', date: '2026-03-18', status: 'pending' },
+                    { ref: 'REF-74291', name: 'Lerato Kunene', type: 'Family Law', date: '2026-03-19', status: 'confirmed' },
+                    { ref: 'REF-61023', name: 'James Wilson', type: 'Corporate Law', date: '2026-03-20', status: 'pending' },
+                    { ref: 'REF-52834', name: 'Nomvula Zulu', type: 'Real Estate', date: '2026-03-21', status: 'confirmed' },
+                    { ref: 'REF-41920', name: 'Kevin Peterson', type: 'Intellectual Property', date: '2026-03-22', status: 'pending' },
+                  ].map((row, idx) => (
+                    <tr key={idx} className="hover:bg-white/[0.02] transition-colors group">
+                      <td className="p-6 text-lexis-red font-bold">{row.ref}</td>
+                      <td className="p-6 text-white">{row.name}</td>
+                      <td className="p-6 text-lexis-grey uppercase">{row.type}</td>
+                      <td className="p-6 text-lexis-grey">{row.date}</td>
+                      <td className="p-6">
+                        <Badge variant={row.status === 'confirmed' ? 'verified' : 'pending'} size="sm">
+                          {row.status}
+                        </Badge>
+                      </td>
+                      <td className="p-6">
+                        <button className="text-white/20 hover:text-lexis-red transition-colors">
+                          <LucideMoreVertical size={20} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        )}
+
+        {currentView === 'matters' && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {[
+              { ref: 'REF-12345', name: 'John Doe', type: 'Civil Litigation', progress: 1, attorney: 'Adv. Jabu Mokoena' },
+              { ref: 'REF-56789', name: 'Sarah Smith', type: 'Corporate Law', progress: 3, attorney: 'Adv. Thabo Nkosi' },
+              { ref: 'REF-99123', name: 'Michael Khoza', type: 'Criminal Defence', progress: 2, attorney: 'Adv. Jabu Mokoena' },
+              { ref: 'REF-88234', name: 'Elena Petrova', type: 'Family Law', progress: 4, attorney: 'Adv. Thabo Nkosi' },
+            ].map((matter, idx) => (
+              <Card key={idx} shadow className="bg-[#121212] border-white/10 p-8 space-y-6 group hover:border-lexis-red transition-all">
+                <div className="flex justify-between items-start">
+                   <div className="space-y-1">
+                      <span className="font-mono text-[9px] uppercase tracking-widest text-lexis-grey">Active Case</span>
+                      <h4 className="text-2xl font-display tracking-tight text-white group-hover:text-lexis-red transition-colors">{matter.ref}</h4>
+                   </div>
+                   <Badge variant={matter.progress === 4 ? 'verified' : 'progress'} size="sm">
+                     Stage {matter.progress}/4
+                   </Badge>
+                </div>
+                <div className="grid grid-cols-2 gap-4 border-t border-b border-white/5 py-4 font-mono text-[10px] uppercase tracking-widest text-lexis-grey">
+                   <div>
+                      <div className="mb-1">Client</div>
+                      <div className="text-white font-bold">{matter.name}</div>
+                   </div>
+                   <div>
+                      <div className="mb-1">Attorney</div>
+                      <div className="text-white font-bold">{matter.attorney}</div>
+                   </div>
+                </div>
+                <div className="w-full h-1 bg-white/5 overflow-hidden">
+                   <div 
+                     className="h-full bg-lexis-red transition-all duration-1000" 
+                     style={{ width: `${(matter.progress / 4) * 100}%` }}
+                   />
+                </div>
+                <div className="flex justify-between items-center pt-2">
+                   <span className="font-mono text-[9px] text-lexis-grey uppercase tracking-widest">Update status</span>
+                   <Button variant="secondary" size="sm" className="h-8 py-0 px-4 text-[10px]">Manage</Button>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    </main>
   );
 }

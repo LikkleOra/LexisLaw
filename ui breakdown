@@ -1,0 +1,53 @@
+1. Design System & Visual Identity
+The entire interface is governed by a strict set of design tokens defined in src/index.css using Tailwind CSS 4.
+Color Palette:
+Lexis Black (#0A0A0A): Used for primary text, borders, and high-contrast backgrounds.
+Lexis Red (#E63946): The primary action color, used for CTAs, progress bars, and critical highlights.
+Lexis Green (#2A9D8F): Used for success states, "Verified" badges, and secondary accents.
+Lexis Grey (#F1F1F1): The primary background color, providing a clean, sophisticated canvas.
+Lexis Dark Grey (#333333): Used for secondary text and card backgrounds in dark sections.
+Typography:
+Primary (Sans): Space Grotesk. A geometric sans-serif that feels modern and authoritative.
+Secondary (Mono): JetBrains Mono. Used for reference numbers, dates, and technical data to signal precision.
+Styling: Heavy use of uppercase, tracking-tighter for headings, and italic for section sub-headers.
+Brutalist Components:
+Borders: Consistent 2px solid black borders on all interactive elements.
+Shadows: Hard-offset shadows (e.g., shadow-[4px_4px_0px_0px_rgba(10,10,10,1)]) that don't use blur, creating a "pop" effect.
+Interactions: Hover states typically involve shifting the element (e.g., hover:-translate-x-1) and increasing the shadow depth to simulate physical movement.
+2. Frontend Architecture
+The application is a Single Page Application (SPA) built with React 19 and TypeScript.
+State Management:
+Uses React's useState for view switching (landing, booking, tracker).
+AnimatePresence from Motion handles smooth transitions between these views.
+Component Structure:
+Navbar: A sticky header with a responsive mobile drawer. It uses a "brutalist" logo block (Red background, white icon, offset shadow).
+Hero: Features massive typography (8xl) and a grayscale image with a "slam-in" animation.
+ServicesGrid: A dark-themed section using a bento-grid layout to showcase firm expertise.
+BookingFlow: A state-driven multi-step form with a custom progress bar.
+MatterTracker: A complex data-viewing component with nested accordion sections.
+LegalAssistant: A fixed-position AI chat widget.
+3. Feature Breakdown: Matter Tracker
+The Matter Tracker is the most data-dense part of the UI:
+Search Interface: A large, bold input field that triggers a lookup against MOCK_MATTERS.
+Progress Stepper: A custom-built horizontal stepper that uses a red fill to indicate the current stage of the legal process.
+Expandable Sections (Accordions):
+Case History: Uses a vertical timeline pattern with "nodes" and connecting lines.
+Involved Parties: Uses a grid of mini-cards for quick scanning.
+Relevant Documents: Features a list view with status-specific badges (e.g., Green for "Verified", Red-tinted for "Pending").
+4. AI Integration (Legal Assistant)
+The Legal Assistant is a sophisticated frontend implementation of the Gemini API:
+SDK: Uses @google/genai to communicate directly with gemini-3-flash-preview.
+System Prompting: The AI is strictly instructed to act as a "LexisLaw Digital Assistant," maintaining a professional tone and providing legal disclaimers.
+UI/UX:
+Streaming-like Feel: Uses a loading bubble animation while waiting for the API response.
+Message Bubbles: Styled as mini brutalist cards with offset shadows.
+Persistence: The chat history is maintained in the component state during the session.
+5. Animations & Motion
+Powered by Motion (framer-motion):
+Entrance Animations: Sections use whileInView with a slight y offset to "rise" into place as the user scrolls.
+View Transitions: AnimatePresence ensures that when you switch from the Landing page to the Tracker, the old content fades out while the new content slides in.
+Layout Animations: The accordions in the Matter Tracker use layout props to smoothly resize the container when sections are expanded or collapsed.
+6. Technical Specifications
+Icons: Lucide React (Gavel, Briefcase, Search, etc.) for a consistent, thin-stroke aesthetic.
+Responsiveness: Mobile-first approach using Tailwind's md: and lg: breakpoints. The Hero section shifts from a single column on mobile to a 50/50 split on desktop.
+Type Safety: Every data object (Service, Matter, Party, Document) is strictly typed in src/types.ts to prevent runtime errors.

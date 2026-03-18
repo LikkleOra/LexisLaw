@@ -1,0 +1,95 @@
+The Netlify deploy errored, with the following guidance provided:
+
+Diagnosis
+- Relevant error lines: [line 21](#L21), [line 24](#L24), [line 25](#L25), [line 30](#L30), [line 34](#L34), [line 36](#L36), [lines 40–42](#L40-L42), and the final failure [line 48–49](#L48-L49).
+- Error type: npm ERESOLVE — a peer dependency conflict during npm install.
+- Cause: Your project depends on next@14.2.35 (see [line 25](#L25)), while @clerk/nextjs@7.0.4 requires Next.js v15 or v16 (see [line 30](#L30)). npm cannot resolve that peer requirement, so install fails ([lines 40–42](#L40-L42)).
+
+Solution
+1. Verify current versions are committed
+   - Confirm package.json in the repo contains the Next and Clerk packages and has been committed: https://github.com/LikkleOra/LexisLaw/blob/master/package.json
+   - If package.json or any change is missing locally, commit it before pushing.
+
+2. Recommended fix (preferred): upgrade Next to a Clerk-compatible version
+   - @clerk/nextjs@7.0.4 requires Next >= v15.2.8 or v16.x. Upgrade Next to a matching release (for example 16.1.7).
+   - Steps:
+     - Locally run:
+       ```bash
+       npm install next@^16.1.7 --save
+       npm install
+       npm run build
+       ```
+     - If local build succeeds, commit the updated package.json and package-lock.json and push to the repo. Netlify will then re-run the build.
+
+   - Notes:
+     - Upgrading Next may require code changes for breaking changes between Next 14 → 15/16. Test locally and address any migration issues before deploying.
+
+3. Alternative fix (if you cannot upgrade Next): use a Clerk version that supports Next 14
+   - Find a @clerk/nextjs release compatible with Next 14 (check Clerk’s docs/changelog), then update package.json to that older @clerk/nextjs version and run npm install locally.
+   - Example (illustrative — verify correct compatible version before applying):
+     ```bash
+     npm install @clerk/nextjs@<compatible-version> --save
+     npm install
+     npm run build
+     ```
+   - Commit and push package.json/package-lock.json when successful.
+
+4. Temporary/workaround (not recommended for long term)
+   - Allow npm to ignore peer conflicts by using legacy peer deps. This may lead to runtime issues:
+     - Change the Netlify install step to run with --legacy-peer-deps, e.g. set your build command or environment so that npm runs with:
+       ```bash
+       npm install --legacy-peer-deps
+       npm run build
+       ```
+     - Or set the environment variable NPM_FLAGS="--legacy-peer-deps" in Netlify build settings.
+   - Use this only to unblock deployment while you prepare a proper version alignment.
+
+Summary checklist
+- Verify package.json is present and committed (link above).
+- Preferred: upgrade Next to a version that satisfies @clerk/nextjs (e.g. ^16.1.7), test locally, commit and push.
+- Or: pick a Clerk version compatible with Next 14, test locally, commit and push.
+- Avoid long-term use of --legacy-peer-deps except as a last-resort temporary workaround.
+
+The relevant error logs are:
+
+Line 10: Custom build command detected. Proceeding with the specified command: 'npm run build'
+Line 11: Installing dependencies
+Line 12: mise [36m~/.config/mise/config.toml[0m tools: [34mpython[0m@3.14.3
+Line 13: mise [36m~/.config/mise/config.toml[0m tools: [34mruby[0m@3.4.8
+Line 14: mise [36m~/.config/mise/config.toml[0m tools: [34mgo[0m@1.26.1
+Line 15: v22.22.1 is already installed.
+Line 16: Now using node v22.22.1 (npm v10.9.4)
+Line 17: Enabling Node.js Corepack
+Line 18: No npm workspaces detected
+Line 19: Installing npm packages using npm version 10.9.4
+Line 20: Failed during stage 'Install dependencies': dependency_installation script returned non-zero exit code: 1
+Line 21: npm error code ERESOLVE
+Line 22: npm error ERESOLVE could not resolve
+Line 23: npm error
+Line 24: npm error While resolving: @clerk/nextjs@7.0.4
+Line 25: npm error Found: next@14.2.35
+Line 26: npm error node_modules/next
+Line 27: npm error   next@"^14.2.0" from the root project
+Line 28: npm error
+Line 29: npm error Could not resolve dependency:
+Line 30: npm error peer next@"^15.2.8 || ^15.3.8 || ^15.4.10 || ^15.5.9 || ^15.6.0-0 || ^16.0.10 || ^16.1.0-0" from @clerk/nextjs@7.0.4
+Line 31: npm error node_modules/@clerk/nextjs
+Line 32: npm error   @clerk/nextjs@"^7.0.1" from the root project
+Line 33: npm error
+Line 34: npm error Conflicting peer dependency: next@16.1.7
+Line 35: npm error node_modules/next
+Line 36: npm error   peer next@"^15.2.8 || ^15.3.8 || ^15.4.10 || ^15.5.9 || ^15.6.0-0 || ^16.0.10 || ^16.1.0-0" from @clerk/nextjs@7.0.4
+Line 37: npm error   node_modules/@clerk/nextjs
+Line 38: npm error     @clerk/nextjs@"^7.0.1" from the root project
+Line 39: npm error
+Line 40: npm error Fix the upstream dependency conflict, or retry
+Line 41: npm error this command with --force or --legacy-peer-deps
+Line 42: npm error to accept an incorrect (and potentially broken) dependency resolution.
+Line 43: npm error
+Line 44: npm error
+Line 45: npm error For a full report see:
+Line 46: npm error /opt/buildhome/.npm/_logs/2026-03-17T18_42_07_009Z-eresolve-report.txt
+Line 47: npm error A complete log of this run can be found in: /opt/buildhome/.npm/_logs/2026-03-17T18_42_07_009Z-debug-0.log
+Line 48: Error during npm install
+Line 49: Failing build: Failed to install dependencies
+Line 50: Finished processing build request in 7.899s
