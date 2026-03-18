@@ -4,12 +4,14 @@ declare module '@clerk/nextjs' {
   export function ClerkProvider({ children }: { children: ReactNode }): JSX.Element;
   
   export function SignInButton(props?: { 
+    children?: ReactNode;
     mode?: 'modal' | 'redirect';
     forceRedirectUrl?: string;
     fallbackRedirectUrl?: string;
   }): JSX.Element;
   
   export function SignUpButton(props?: { 
+    children?: ReactNode;
     mode?: 'modal' | 'redirect';
     forceRedirectUrl?: string;
     fallbackRedirectUrl?: string;

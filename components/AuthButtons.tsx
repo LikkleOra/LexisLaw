@@ -12,7 +12,7 @@ export function AuthButtons() {
   }
 
   if (userId) {
-    return <UserButton afterSignOutUrl="/" />;
+    return <UserButton />;
   }
 
   return (
