@@ -1,5 +1,6 @@
 'use client';
 
+<<<<<<< HEAD
 import React from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/sections/Hero';
@@ -9,6 +10,60 @@ import Footer from '@/components/layout/Footer';
 import LegalAssistant from '@/components/assistant/LegalAssistant';
 
 export default function Home() {
+=======
+import { useState, type FormEvent } from 'react';
+import Link from 'next/link';
+import Navbar from '@/components/Navbar';
+import Ticker from '@/components/Ticker';
+import Footer from '@/components/Footer';
+import { api } from '@/lib/api';
+import { Scale, MessageCircle, Smartphone, Users, Building2, Home as HomeIcon } from 'lucide-react';
+
+export default function Home() {
+  const [bookingStep, setBookingStep] = useState(1);
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    matter_type: '',
+    preferred_date: '',
+    preferred_time: '',
+    description: '',
+    whatsapp_consent: false,
+    popia_consent: false,
+  });
+  const [bookingResult, setBookingResult] = useState<any>(null);
+
+  const matterTypes = [
+    'Family Law — Divorce',
+    'Family Law — Custody',
+    'Criminal Defence',
+    'Civil Litigation',
+    'Property Law',
+    'Commercial Law',
+    'Employment Law',
+    'Debt Collection',
+    'Other',
+  ];
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      const result = await api.createBooking(formData);
+      setBookingResult(result);
+      setBookingStep(3);
+    } catch (error) {
+      console.error('Booking failed:', error);
+    }
+  };
+
+  const startBooking = () => {
+    setBookingStep(2);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+>>>>>>> 4b5befbc162b5ed6c9520e4f3a2ec717e09b36fa
   return (
     <main className="bg-lexis-black min-h-screen selection:bg-lexis-red selection:text-white">
       <Navbar />
