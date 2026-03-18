@@ -10,28 +10,23 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^7.0.1",
-<<<<<<< HEAD
     "@google/generative-ai": "^0.24.1",
     "clsx": "^2.1.1",
-=======
-    "autoprefixer": "^10.4.0",
->>>>>>> 4b5befbc162b5ed6c9520e4f3a2ec717e09b36fa
     "convex": "^1.32.0",
     "lucide-react": "^0.577.0",
     "next": "^16.1.7",
     "postcss": "^8.4.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-<<<<<<< HEAD
-    "tailwind-merge": "^3.5.0"
-=======
+    "tailwind-merge": "^3.5.0",
     "tailwindcss": "^3.4.0"
->>>>>>> 4b5befbc162b5ed6c9520e4f3a2ec717e09b36fa
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^5.0.0",
     "@types/node": "^20.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.0",
     "typescript": "^5.0.0"
   }
 }

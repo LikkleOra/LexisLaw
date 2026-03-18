@@ -1,7 +1,6 @@
 'use client';
 
-<<<<<<< HEAD
-import React, { useState } from 'react';
+import React, { useState, type FormEvent } from 'react';
 import Sidebar from '@/components/admin/Sidebar';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -15,12 +14,6 @@ import {
   LucideMoreVertical,
   LucideArrowUpRight
 } from 'lucide-react';
-=======
-import { useState, type FormEvent } from 'react';
-import Link from 'next/link';
-import { api } from '@/lib/api';
-import { Lock } from 'lucide-react';
->>>>>>> 4b5befbc162b5ed6c9520e4f3a2ec717e09b36fa
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
