@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Ticker from '@/components/Ticker';
@@ -35,7 +35,7 @@ export default function Home() {
     'Other',
   ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     try {

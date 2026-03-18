@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { Lock } from 'lucide-react';
@@ -22,7 +22,7 @@ export default function Admin() {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedMatter, setSelectedMatter] = useState<any>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: FormEvent) => {
     e.preventDefault();
     if (password === DEMO_PASSWORD) {
       setIsLoggedIn(true);
