@@ -5,34 +5,18 @@ import Card from '../ui/Card';
 import { 
   LucideBriefcase, 
   LucideGavel, 
-  LucideShield, 
   LucideBuilding2, 
-  LucideUsers, 
-  LucideScale,
+  LucideGlobe,
   LucideArrowUpRight
 } from 'lucide-react';
 import Link from 'next/link';
 
 const services = [
   {
-    title: 'Corporate Law',
-    description: 'Expert guidance on mergers, acquisitions, and corporate governance for modern enterprises.',
-    icon: LucideBriefcase,
-    color: 'border-l-lexis-red',
-    href: '#'
-  },
-  {
     title: 'Civil Litigation',
     description: 'Aggressive representation in complex disputes, ensuring your rights are protected in court.',
     icon: LucideGavel,
     color: 'border-l-lexis-green',
-    href: '#'
-  },
-  {
-    title: 'Intellectual Property',
-    description: 'Securing your innovations and creative works through robust patent and trademark strategies.',
-    icon: LucideShield,
-    color: 'border-l-lexis-red',
     href: '#'
   },
   {
@@ -43,17 +27,10 @@ const services = [
     href: '#'
   },
   {
-    title: 'Family Law',
-    description: 'Empathetic yet firm representation in divorce, custody, and estate planning matters.',
-    icon: LucideUsers,
+    title: 'Migration Law',
+    description: 'Expert counsel for immigration, visas, and cross-border mobility requirements.',
+    icon: LucideGlobe,
     color: 'border-l-lexis-red',
-    href: '#'
-  },
-  {
-    title: 'Criminal Defence',
-    description: 'Strategic defence strategies for high-stakes criminal cases with a focus on justice.',
-    icon: LucideScale,
-    color: 'border-l-lexis-green',
     href: '#'
   }
 ];
