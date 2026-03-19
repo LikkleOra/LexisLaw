@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
             </div>
           </Link>
           <p className="text-lexis-grey text-sm font-mono leading-relaxed">
-            A premier legal institution dedicated to providing uncompromising representation and strategic counsel for the modern era.
+            A premier legal institution established in 2001. Over 15 years of providing uncompromising representation and strategic counsel.
           </p>
           <div className="flex items-center gap-3 bg-lexis-green/10 text-lexis-green px-4 py-2 border-l-2 border-lexis-green w-fit">
             <LucideShield size={16} />
@@ -33,11 +33,9 @@ const Footer: React.FC = () => {
         <div className="space-y-8">
           <h4 className="font-display text-xl tracking-tight text-white border-b border-white/10 pb-4">Services</h4>
           <ul className="space-y-4 font-mono text-sm text-lexis-grey">
-            <li><Link href="#services" className="hover:text-lexis-red">Family Law</Link></li>
-            <li><Link href="#services" className="hover:text-lexis-red">Criminal Defence</Link></li>
-            <li><Link href="#services" className="hover:text-lexis-red">Commercial Law</Link></li>
-            <li><Link href="#services" className="hover:text-lexis-red">Property Law</Link></li>
-            <li><Link href="#services" className="hover:text-lexis-red">Civil Litigation</Link></li>
+            <li><Link href="/#services" className="hover:text-lexis-red">Migration Law</Link></li>
+            <li><Link href="/#services" className="hover:text-lexis-red">Real Estate</Link></li>
+            <li><Link href="/#services" className="hover:text-lexis-red">Civil Litigation</Link></li>
           </ul>
         </div>
 
@@ -45,8 +43,8 @@ const Footer: React.FC = () => {
         <div className="space-y-8">
           <h4 className="font-display text-xl tracking-tight text-white border-b border-white/10 pb-4">Quick Links</h4>
           <ul className="space-y-4 font-mono text-sm text-lexis-grey">
-            <li><Link href="#about" className="hover:text-lexis-red">About Our Firm</Link></li>
-            <li><Link href="#booking" className="hover:text-lexis-red">Book Consultation</Link></li>
+            <li><Link href="/#about" className="hover:text-lexis-red">About Our Firm</Link></li>
+            <li><Link href="/#booking" className="hover:text-lexis-red">Book Consultation</Link></li>
             <li><Link href="/tracker" className="hover:text-lexis-red">Track Matter</Link></li>
             <li><Link href="/admin" className="hover:text-lexis-red">Admin Portal</Link></li>
             <li><Link href="#" className="hover:text-lexis-red">Privacy Policy</Link></li>
@@ -59,15 +57,15 @@ const Footer: React.FC = () => {
           <ul className="space-y-6 font-mono text-sm text-lexis-grey">
             <li className="flex items-start gap-3">
               <LucideMapPin className="text-lexis-red shrink-0" size={20} />
-              <span>1200 Legal Plaza, Floor 42<br/>New York, NY 10001</span>
+              <span>South Africa, Johannesburg</span>
             </li>
             <li className="flex items-center gap-3">
               <LucidePhone className="text-lexis-red" size={20} />
-              <span>+1 (555) 900-LEXIS</span>
+              <span>073 433 4784</span>
             </li>
             <li className="flex items-center gap-3">
               <LucideMail className="text-lexis-red" size={20} />
-              <span>contact@lexislaw.com</span>
+              <span>jabu.legal@gmail.com</span>
             </li>
           </ul>
         </div>

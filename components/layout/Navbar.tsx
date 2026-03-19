@@ -18,8 +18,8 @@ const Navbar: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { name: 'Services', href: '#services' },
-    { name: 'About', href: '#about' },
+    { name: 'Services', href: '/#services' },
+    { name: 'About', href: '/#about' },
     { name: 'Tracker', href: '/tracker' },
     { name: 'Admin', href: '/admin' },
   ];
@@ -52,7 +52,7 @@ const Navbar: React.FC = () => {
               {link.name}
             </Link>
           ))}
-          <Button variant="primary" size="sm" onClick={() => (window.location.href = '#booking')}>
+          <Button variant="primary" size="sm" onClick={() => (window.location.href = '/#booking')}>
             Book Consultation
           </Button>
         </div>
@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
             className="mt-4"
             onClick={() => {
               setIsOpen(false);
-              window.location.href = '#booking';
+              window.location.href = '/#booking';
             }}
           >
             Book Consultation

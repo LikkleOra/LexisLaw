@@ -32,9 +32,32 @@ const BookingFlow: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // API call placeholder
-    console.log('Booking submitted:', formData);
-    nextStep();
+    
+    const serviceName = matterOptions.find(m => m.value === formData.matterType)?.label || formData.matterType;
+    const msg = `
+*MOKOENA LEGAL SERVICES BOOKING* ⚖️
+
+*Service:* ${serviceName}
+*Date:* ${formData.date}
+*Time:* ${formData.time}
+*Client:* ${formData.name}
+*Phone:* ${formData.phone}
+*Email:* ${formData.email}
+
+*Description:* ${formData.description || 'Not provided'}
+
+_Sent from Website Booking System_
+`.trim();
+
+    try {
+      // Automatic WhatsApp Redirection
+      const whatsappUrl = `https://wa.me/27734334784?text=${encodeURIComponent(msg)}`;
+      window.open(whatsappUrl, '_blank');
+      nextStep();
+    } catch (error) {
+      console.error('Redirection failed:', error);
+      alert('Something went wrong redirecting to WhatsApp. Please contact 073 433 4784.');
+    }
   };
 
   const steps = [
