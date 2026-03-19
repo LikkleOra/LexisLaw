@@ -20,7 +20,7 @@ const Badge: React.FC<BadgeProps> = ({
   const baseStyles = 'inline-flex items-center font-mono uppercase tracking-widest transition-all duration-200';
   
   const variants = {
-    pending: 'bg-lexis-grey/20 text-lexis-grey',
+    pending: 'bg-lexis-grey/20 text-[#333333]',
     progress: 'bg-yellow-500/20 text-yellow-500',
     verified: 'bg-lexis-green/20 text-lexis-green',
     warning: 'bg-orange-500/20 text-orange-500',

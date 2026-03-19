@@ -47,16 +47,16 @@ const Tracker: React.FC = () => {
   };
 
   return (
-    <section className="py-32 px-6 bg-lexis-black">
+    <section className="py-32 px-6 bg-white">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <span className="font-mono text-lexis-red text-xs uppercase tracking-[0.3em] font-bold">Matter Intelligence</span>
           <h2 className="text-5xl md:text-7xl font-display tracking-tighter">
-            TRACK YOUR <span className="text-white/20">PROGRESS.</span>
+            TRACK YOUR <span className="text-black/20">PROGRESS.</span>
           </h2>
         </div>
 
-        <Card shadow className="bg-[#121212] border-white/10 p-8 md:p-12 mb-12">
+        <Card shadow className="bg-[#f4f4f4] border-black/10 p-8 md:p-12 mb-12">
           <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-6">
             <div className="flex-1">
               <Input 
@@ -88,7 +88,7 @@ const Tracker: React.FC = () => {
         )}
 
         {!matter && !loading && !error && (
-          <div className="text-center py-20 border-2 border-dashed border-white/10 opacity-30">
+          <div className="text-center py-20 border-2 border-dashed border-black/10 opacity-30">
             <LucideFileText className="mx-auto mb-4" size={48} />
             <p className="font-mono text-xs uppercase tracking-widest">Enter reference number to begin</p>
           </div>

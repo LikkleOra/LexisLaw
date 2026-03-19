@@ -19,7 +19,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
     return (
       <div className="w-full space-y-2">
         {label && (
-          <label className="block font-mono text-xs uppercase tracking-widest text-lexis-grey">
+          <label className="block font-mono text-xs uppercase tracking-widest text-[#333333]">
             {label}
           </label>
         )}
@@ -27,7 +27,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
           <select
             ref={ref}
             className={cn(
-              'w-full bg-card border-2 border-[#333333] text-white px-4 py-3 outline-none transition-all duration-200 font-mono text-sm appearance-none',
+              'w-full bg-card border-2 border-[#333333] text-black px-4 py-3 outline-none transition-all duration-200 font-mono text-sm appearance-none',
               'focus:border-lexis-red focus:shadow-brutal-red',
               error && 'border-lexis-red',
               className
@@ -46,7 +46,7 @@ const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             ))}
           </select>
-          <LucideChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-lexis-grey pointer-events-none" />
+          <LucideChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#333333] pointer-events-none" />
         </div>
         {error && (
           <p className="font-mono text-[10px] text-lexis-red uppercase tracking-tight">

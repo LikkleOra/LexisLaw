@@ -67,7 +67,7 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-primary-black text-white selection:bg-accent-red selection:text-white">
+    <div className="min-h-screen bg-primary-black text-black selection:bg-accent-red selection:text-black">
       <Navbar />
 
       <main className="max-w-[1000px] mx-auto px-6 md:px-12 py-24 min-h-[80vh]">
@@ -100,7 +100,7 @@ export default function BookingPage() {
                   onClick={() => { updateField('matter_type', type); handleNext(); }}
                   className={`p-6 text-left border hover:border-accent-red hover:bg-secondary-grey transition-all duration-200 group flex items-center justify-between ${formData.matter_type === type ? 'border-accent-red bg-secondary-grey' : 'border-border-strong bg-primary-black'}`}
                 >
-                  <span className={`font-display text-xl ${formData.matter_type === type ? 'text-white' : 'text-text-muted group-hover:text-white'}`}>
+                  <span className={`font-display text-xl ${formData.matter_type === type ? 'text-black' : 'text-text-muted group-hover:text-black'}`}>
                     {type}
                   </span>
                   {formData.matter_type === type && <Check className="text-accent-red w-6 h-6" />}
@@ -227,7 +227,7 @@ export default function BookingPage() {
               <div className="space-y-6 pt-4 border-t border-border-strong">
                 <label className="flex items-start gap-4 cursor-pointer group">
                   <div className={`w-6 h-6 border-2 flex items-center justify-center transition-colors ${formData.whatsapp_consent ? 'bg-accent-red border-accent-red' : 'border-text-muted'}`}>
-                    {formData.whatsapp_consent && <Check className="w-4 h-4 text-white" />}
+                    {formData.whatsapp_consent && <Check className="w-4 h-4 text-black" />}
                   </div>
                   <input
                     type="checkbox"
@@ -235,14 +235,14 @@ export default function BookingPage() {
                     checked={formData.whatsapp_consent}
                     onChange={(e) => updateField('whatsapp_consent', e.target.checked)}
                   />
-                  <span className="text-text-muted group-hover:text-white transition-colors text-sm">
+                  <span className="text-text-muted group-hover:text-black transition-colors text-sm">
                     Receive case updates and appointment reminders via WhatsApp
                   </span>
                 </label>
                 
                 <label className="flex items-start gap-4 cursor-pointer group">
                   <div className={`w-6 h-6 border-2 flex items-center justify-center transition-colors ${formData.popia_consent ? 'bg-accent-red border-accent-red' : 'border-text-muted'}`}>
-                    {formData.popia_consent && <Check className="w-4 h-4 text-white" />}
+                    {formData.popia_consent && <Check className="w-4 h-4 text-black" />}
                   </div>
                   <input
                     type="checkbox"
@@ -251,7 +251,7 @@ export default function BookingPage() {
                     checked={formData.popia_consent}
                     onChange={(e) => updateField('popia_consent', e.target.checked)}
                   />
-                  <span className="text-text-muted group-hover:text-white transition-colors text-sm">
+                  <span className="text-text-muted group-hover:text-black transition-colors text-sm">
                     I consent to the processing of my personal data in terms of POPIA *
                   </span>
                 </label>
@@ -277,7 +277,7 @@ export default function BookingPage() {
         {step === 4 && bookingResult && (
           <div className="animate-fade-in-up text-center max-w-2xl mx-auto py-12">
             <div className="w-24 h-24 bg-accent-red mx-auto mb-8 flex items-center justify-center">
-              <Check className="w-12 h-12 text-white" />
+              <Check className="w-12 h-12 text-black" />
             </div>
             
             <h1 className="font-display text-5xl md:text-6xl mb-6 leading-none">
@@ -293,11 +293,11 @@ export default function BookingPage() {
               <div className="grid grid-cols-2 gap-6">
                 <div>
                   <div className="font-mono text-xs text-text-muted uppercase mb-1">Reference</div>
-                  <div className="font-display text-2xl text-white">{bookingResult.reference}</div>
+                  <div className="font-display text-2xl text-black">{bookingResult.reference}</div>
                 </div>
                 <div>
                   <div className="font-mono text-xs text-text-muted uppercase mb-1">Date</div>
-                  <div className="font-display text-2xl text-white">{formData.preferred_date}</div>
+                  <div className="font-display text-2xl text-black">{formData.preferred_date}</div>
                 </div>
               </div>
             </div>
