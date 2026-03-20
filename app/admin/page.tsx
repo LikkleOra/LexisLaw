@@ -50,7 +50,7 @@ export default function AdminPage() {
   if (!isAuthenticated) {
     return (
       <main className="min-h-screen bg-white flex items-center justify-center p-6">
-        <Card shadow className="w-full max-w-md p-12 bg-[#f4f4f4] border-black/10 space-y-12 animate-slam-in">
+        <Card shadow className="w-full max-w-md p-12 bg-[#f8f8f8] border-black/20 space-y-12 animate-slam-in">
           <div className="text-center space-y-4">
              <div className="w-16 h-16 bg-lexis-red flex items-center justify-center text-black font-display text-2xl font-bold shadow-brutal-red mx-auto">L</div>
              <h2 className="text-4xl font-display tracking-tight text-black uppercase">Access Secured</h2>
@@ -87,7 +87,7 @@ export default function AdminPage() {
           <div className="space-y-4">
             <span className="font-mono text-lexis-red text-[10px] uppercase tracking-[0.3em] font-bold">Mokoena Legal Management Console</span>
             <h1 className="text-6xl font-display tracking-tighter uppercase">
-              {currentView} <span className="text-black/10">CONTROL.</span>
+              {currentView} <span className="text-black/30">CONTROL.</span>
             </h1>
           </div>
           <div className="flex gap-4">
@@ -104,7 +104,7 @@ export default function AdminPage() {
             { label: 'New Bookings', value: bookings?.filter(b => b.status === 'pending').length || '0', icon: LucideCalendar, color: 'text-lexis-red' },
             { label: 'Closed Cases', value: matters?.filter(m => m.status === 4).length || '0', icon: LucideFileText, color: 'text-black' },
           ].map((stat, idx) => (
-            <Card key={idx} className="bg-white border-black/10 p-8 border-l-4 border-l-lexis-red shadow-brutal hover:translate-x-1 hover:-translate-y-1 transition-all group">
+            <Card key={idx} className="bg-white border-black/20 p-8 border-l-4 border-l-lexis-red shadow-brutal hover:translate-x-1 hover:-translate-y-1 transition-all group">
               <div className="flex justify-between items-start mb-6">
                  <div className="w-10 h-10 bg-black/5 flex items-center justify-center border border-black/10 text-lexis-red">
                     <stat.icon size={20} />

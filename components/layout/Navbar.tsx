@@ -27,7 +27,7 @@ const Navbar: React.FC = () => {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white border-b-2 border-black/5 py-4' : 'bg-transparent py-6'
+        scrolled ? 'bg-white border-b-2 border-black/10 py-4' : 'bg-transparent py-6'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">

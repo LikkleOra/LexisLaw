@@ -21,11 +21,11 @@ export default function Home() {
       <section id="about" className="py-32 px-6 bg-white border-t-2 border-black/5 overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
           <div className="space-y-12 relative">
-            <div className="absolute -top-20 -left-20 text-[200px] font-display text-black/5 select-none pointer-events-none">FIRM</div>
+            <div className="absolute -top-20 -left-20 text-[200px] font-display text-black/[0.03] select-none pointer-events-none">FIRM</div>
             <div className="space-y-4">
               <span className="font-mono text-lexis-red text-xs uppercase tracking-[0.3em] font-bold">Uncompromising Standard</span>
               <h2 className="text-6xl md:text-8xl font-display tracking-tighter leading-none">
-                OUR<br/><span className="text-black/20">HERITAGE.</span>
+                OUR<br/><span className="text-black/10">HERITAGE.</span>
               </h2>
             </div>
             <p className="text-black text-lg font-mono leading-relaxed max-w-xl">
@@ -59,7 +59,9 @@ export default function Home() {
         </div>
       </section>
 
-      <BookingFlow />
+      <Suspense fallback={<div className="p-20 text-center font-mono text-black">INITIALIZING BOOKING SYSTEM...</div>}>
+        <BookingFlow />
+      </Suspense>
       <Footer />
       
       {/* AI Assistant Widget */}

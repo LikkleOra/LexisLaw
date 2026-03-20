@@ -63,6 +63,10 @@ const Hero: React.FC = () => {
         <div className="lg:col-span-5 relative hidden lg:block">
           <div className="relative z-10 border-2 border-black/10 p-4 bg-white shadow-brutal-lg">
              <div className="aspect-[4/5] bg-black relative overflow-hidden grayscale contrast-125 border-2 border-black">
+                {/* JUST-I-CE background text - more visible */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                   <div className="text-[200px] font-display text-white select-none">JUSTICE</div>
+                </div>
                 {/* Lady Justice Image */}
                 <img 
                   src="/images/lady-justice.png" 

@@ -7,6 +7,8 @@ export const metadata: Metadata = {
   description: 'Providing expert legal counsel for individuals and businesses. Modern solutions for complex legal challenges in South Africa.',
 };
 
+import { ConvexClientProvider } from '@/components/providers/ConvexClientProvider';
+
 export default function RootLayout({
   children,
 }: {
@@ -15,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <ConvexClientProvider>
+          {children}
+        </ConvexClientProvider>
       </body>
     </html>
   );

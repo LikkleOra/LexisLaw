@@ -31,9 +31,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
   ];
 
   return (
-    <div className="fixed left-0 top-0 h-full w-72 bg-[#f4f4f4] border-r-2 border-black/5 flex flex-col z-[100]">
+    <div className="fixed left-0 top-0 h-full w-72 bg-[#f8f8f8] border-r-2 border-black/10 flex flex-col z-[100]">
       {/* Sidebar Header */}
-      <div className="p-8 border-b border-black/5">
+      <div className="p-8 border-b border-black/10">
         <Link href="/" className="flex items-center gap-2 group">
           <div className="w-8 h-8 bg-lexis-red flex items-center justify-center text-black font-display text-sm font-bold shadow-brutal-red group-hover:shadow-brutal transition-all">
             L
@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
       </nav>
 
       {/* Sidebar Footer */}
-      <div className="p-6 border-t border-black/5 bg-black/40">
+      <div className="p-6 border-t border-black/10 bg-black/5">
         <div className="flex items-center gap-4 p-4 border border-black/5 mb-4">
           <div className="w-10 h-10 bg-[#f1f1f1] flex items-center justify-center font-display text-black">AM</div>
           <div className="flex flex-col">

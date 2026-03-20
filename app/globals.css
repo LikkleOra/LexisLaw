@@ -11,22 +11,12 @@
   --lexis-green: #2A9D8F;
   --lexis-grey: #F1F1F1;
   --lexis-dark-grey: #333333;
-  --border-strong: rgba(136, 136, 136, 0.5);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  scroll-behavior: smooth;
+  --border-strong: rgba(0, 0, 0, 0.1);
 }
 
 body {
-  background: var(--lexis-black);
-  color: white;
+  background: white;
+  color: var(--lexis-black);
   font-family: 'Space Grotesk', sans-serif;
   font-size: 16px;
   line-height: 1.6;
@@ -128,7 +118,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-input,
 .form-select,
 .form-textarea {
-  @apply w-full bg-[#1A1A1A] border-2 border-[#333333] text-white px-4 py-3 outline-none transition-all duration-200 font-mono text-sm;
+  @apply w-full bg-white border-2 border-black/10 text-black px-4 py-3 outline-none transition-all duration-200 font-mono text-sm;
   border-radius: 0;
 }
 
@@ -145,6 +135,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-secondary {
-  @apply bg-transparent text-white font-display font-bold px-8 py-4 uppercase tracking-widest border-2 border-white cursor-pointer transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal active:translate-x-0 active:translate-y-0 active:shadow-none;
+  @apply bg-transparent text-black font-display font-bold px-8 py-4 uppercase tracking-widest border-2 border-black cursor-pointer transition-all duration-200 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-brutal active:translate-x-0 active:translate-y-0 active:shadow-none;
   border-radius: 0;
 }

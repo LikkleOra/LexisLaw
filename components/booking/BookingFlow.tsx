@@ -73,18 +73,18 @@ _Sent from Website Booking System_
   ];
 
   return (
-    <section id="booking" className="py-32 px-6 bg-lexis-black border-t-2 border-black/5">
+    <section id="booking" className="py-32 px-6 bg-white border-t-2 border-black/10">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-16 space-y-4">
           <span className="font-mono text-lexis-red text-xs uppercase tracking-[0.3em] font-bold">Secure Your Consultation</span>
-          <h2 className="text-5xl md:text-7xl font-display tracking-tighter">
-            START YOUR <span className="text-white/20">STRATEGY.</span>
+          <h2 className="text-5xl md:text-7xl font-display tracking-tighter text-black">
+            START YOUR <span className="text-black/30">STRATEGY.</span>
           </h2>
         </div>
 
         {/* Progress Bar */}
         <div className="mb-12 flex justify-between items-center relative">
-          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-lexis-black/10 -translate-y-1/2 -z-10" />
+          <div className="absolute top-1/2 left-0 w-full h-0.5 bg-black/5 -translate-y-1/2 -z-10" />
           <div 
             className="absolute top-1/2 left-0 h-0.5 bg-lexis-red -translate-y-1/2 -z-10 transition-all duration-500" 
             style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
@@ -93,7 +93,7 @@ _Sent from Website Booking System_
             <div key={s.id} className="flex flex-col items-center gap-3">
               <div 
                 className={`w-12 h-12 flex items-center justify-center border-2 transition-all duration-300 ${
-                  step >= s.id ? 'bg-lexis-red border-lexis-red text-white shadow-brutal-red' : 'bg-white border-black/10 text-black/30'
+                  step >= s.id ? 'bg-lexis-red border-lexis-red text-white shadow-brutal-red' : 'bg-[#f8f8f8] border-black/10 text-black/40'
                 }`}
               >
                 <s.icon size={20} />
@@ -105,7 +105,7 @@ _Sent from Website Booking System_
           ))}
         </div>
 
-        <Card shadow className="bg-[#f4f4f4] border-black/10 p-8 md:p-12">
+        <Card shadow className="bg-[#f8f8f8] border-black/20 p-8 md:p-12">
           {step < 4 ? (
             <form onSubmit={step === 3 ? handleSubmit : (e) => { e.preventDefault(); nextStep(); }} className="space-y-8">
               {step === 1 && (
@@ -148,9 +148,9 @@ _Sent from Website Booking System_
                     required
                   />
                   <div className="space-y-2">
-                    <label className="block font-mono text-xs uppercase tracking-widest text-[#333333]">Brief Description</label>
+                    <label className="block font-mono text-xs uppercase tracking-widest text-black/60 font-bold">Brief Description</label>
                     <textarea 
-                      className="w-full bg-card border-2 border-[#333333] text-white px-4 py-3 outline-none transition-all duration-200 font-mono text-sm focus:border-lexis-red focus:shadow-brutal-red min-h-[120px]"
+                      className="w-full bg-white border-2 border-black/10 text-black px-4 py-3 outline-none transition-all duration-200 font-mono text-sm focus:border-lexis-red focus:shadow-brutal-red min-h-[120px]"
                       placeholder="Describe your situation briefly..."
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
@@ -180,7 +180,7 @@ _Sent from Website Booking System_
                           className={`py-3 px-4 font-mono text-xs border-2 transition-all ${
                             formData.time === time 
                               ? 'bg-lexis-red border-lexis-red text-white shadow-brutal-red' 
-                              : 'bg-lexis-black/5 border-black/5 text-[#333333] hover:border-black/20'
+                              : 'bg-white border-black/10 text-black/60 hover:border-black/30 font-bold'
                           }`}
                         >
                           {time}

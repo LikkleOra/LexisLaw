@@ -22,7 +22,7 @@ const MatterDetails: React.FC<MatterDetailsProps> = ({ matter }) => {
   ];
 
   return (
-    <Card shadow className="bg-[#f4f4f4] border-lexis-green border-l-4 p-8 md:p-12 space-y-12">
+    <Card shadow className="bg-[#f8f8f8] border-lexis-green border-l-4 p-8 md:p-12 space-y-12">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div className="space-y-2">
@@ -46,7 +46,7 @@ const MatterDetails: React.FC<MatterDetailsProps> = ({ matter }) => {
       </div>
 
       {/* Progress */}
-      <div className="bg-black/40 border border-black/5 p-8">
+      <div className="bg-white border border-black/10 p-8 shadow-inner">
         <span className="font-mono text-[10px] uppercase tracking-widest text-[#333333] block mb-4">Milestone Progress</span>
         <ProgressStepper currentStep={matter.status} />
       </div>

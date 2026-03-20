@@ -66,10 +66,10 @@ const Services: React.FC = () => {
                       <service.icon size={32} />
                     </div>
                     <div className="space-y-4">
-                      <h3 className="text-2xl md:text-3xl font-display tracking-tight text-white group-hover:text-lexis-red transition-colors">
+                      <h3 className="text-2xl md:text-3xl font-display tracking-tight text-white transition-colors">
                         {service.title}
                       </h3>
-                      <p className="font-mono text-xs text-white/70 leading-relaxed group-hover:text-white transition-colors">
+                      <p className="font-mono text-xs text-white/90 leading-relaxed transition-colors">
                         {service.description}
                       </p>
                     </div>
