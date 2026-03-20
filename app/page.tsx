@@ -1,10 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/sections/Hero';
 import Services from '@/components/sections/Services';
-import BookingFlow from '@/components/booking/BookingFlow';
+const BookingFlow = React.lazy(() => import('@/components/booking/BookingFlow'));
 import Footer from '@/components/layout/Footer';
 import LegalAssistant from '@/components/assistant/LegalAssistant';
 
@@ -28,17 +28,17 @@ export default function Home() {
                 OUR<br/><span className="text-black/20">HERITAGE.</span>
               </h2>
             </div>
-            <p className="text-[#333333] text-lg font-mono leading-relaxed max-w-xl">
+            <p className="text-black text-lg font-mono leading-relaxed max-w-xl">
               Since 1998, Mokoena Legal has stood at the forefront of the South African legal landscape. We bridge the gap between traditional legal excellence and the fast-paced requirements of the modern world.
             </p>
             <div className="flex gap-12 border-t border-black/10 pt-12">
                <div className="space-y-2">
                   <div className="font-display text-3xl">INTEGRITY.</div>
-                  <div className="font-mono text-[10px] uppercase text-[#333333] tracking-widest">Core Value 01</div>
+                  <div className="font-mono text-[10px] uppercase text-lexis-red font-bold tracking-widest">Core Value 01</div>
                </div>
                <div className="space-y-2">
                   <div className="font-display text-3xl">PRECISION.</div>
-                  <div className="font-mono text-[10px] uppercase text-[#333333] tracking-widest">Core Value 02</div>
+                  <div className="font-mono text-[10px] uppercase text-lexis-red font-bold tracking-widest">Core Value 02</div>
                </div>
             </div>
           </div>

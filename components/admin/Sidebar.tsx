@@ -39,14 +39,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
             L
           </div>
           <div className="font-display text-xl tracking-tighter">
-            LEXIS<span className="text-lexis-red">ADMIN</span>
+            MOKOENA<span className="text-lexis-red">ADMIN</span>
           </div>
         </Link>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 p-6 space-y-2">
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[#333333] mb-4 block px-2">Management</span>
+        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-black mb-4 block px-2 font-bold">Management</span>
         {navItems.map((item) => (
           <button
             key={item.id}
@@ -55,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
               "w-full flex items-center justify-between p-4 font-mono text-xs uppercase tracking-widest transition-all",
               currentView === item.id 
                 ? "bg-lexis-red/10 text-lexis-red border-l-4 border-lexis-red" 
-                : "text-[#333333] hover:bg-lexis-black/5 hover:text-black border-l-4 border-transparent"
+                : "text-black hover:bg-black/5 hover:text-black border-l-4 border-transparent"
             )}
           >
             <div className="flex items-center gap-4">
@@ -80,7 +80,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
             <span className="font-mono text-[9px] text-lexis-red uppercase tracking-widest font-bold">Mokoena Legal HQ</span>
           </div>
         </div>
-        <button className="w-full flex items-center gap-4 p-4 font-mono text-xs uppercase tracking-widest text-[#333333] hover:text-lexis-red transition-colors">
+        <button className="w-full flex items-center gap-4 p-4 font-mono text-xs uppercase tracking-widest text-black hover:text-lexis-red transition-colors font-bold">
           <LucideLogOut size={18} />
           Sign Out
         </button>

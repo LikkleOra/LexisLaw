@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
 import Select from '../ui/Select';
@@ -8,6 +9,7 @@ import Card from '../ui/Card';
 import { LucideCalendar, LucideUser, LucideBriefcase, LucideCheckCircle2, LucideChevronLeft, LucideChevronRight } from 'lucide-react';
 
 const BookingFlow: React.FC = () => {
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -18,6 +20,13 @@ const BookingFlow: React.FC = () => {
     time: '',
     description: '',
   });
+
+  useEffect(() => {
+    const serviceParam = searchParams.get('service');
+    if (serviceParam && matterOptions.some(m => m.value === serviceParam)) {
+      setFormData(prev => ({ ...prev, matterType: serviceParam }));
+    }
+  }, [searchParams]);
 
   const matterOptions = [
     { value: 'civil', label: 'Civil Litigation' },
@@ -49,15 +58,11 @@ const BookingFlow: React.FC = () => {
 _Sent from Website Booking System_
 `.trim();
 
-    try {
-      // Automatic WhatsApp Redirection
-      const whatsappUrl = `https://wa.me/27734334784?text=${encodeURIComponent(msg)}`;
-      window.open(whatsappUrl, '_blank');
-      nextStep();
-    } catch (error) {
-      console.error('Redirection failed:', error);
-      alert('Something went wrong redirecting to WhatsApp. Please contact 073 433 4784.');
-    }
+    const whatsappUrl = `https://wa.me/27734334784?text=${encodeURIComponent(msg)}`;
+    
+    // Direct trigger for better reliability
+    window.location.href = whatsappUrl;
+    nextStep();
   };
 
   const steps = [
@@ -88,12 +93,12 @@ _Sent from Website Booking System_
             <div key={s.id} className="flex flex-col items-center gap-3">
               <div 
                 className={`w-12 h-12 flex items-center justify-center border-2 transition-all duration-300 ${
-                  step >= s.id ? 'bg-lexis-red border-lexis-red text-white shadow-brutal-red' : 'bg-lexis-black border-black/10 text-white/30'
+                  step >= s.id ? 'bg-lexis-red border-lexis-red text-white shadow-brutal-red' : 'bg-white border-black/10 text-black/30'
                 }`}
               >
                 <s.icon size={20} />
               </div>
-              <span className={`font-mono text-[10px] uppercase tracking-widest ${step >= s.id ? 'text-white' : 'text-white/30'}`}>
+              <span className={`font-mono text-[10px] uppercase tracking-widest ${step >= s.id ? 'text-black' : 'text-black/30'}`}>
                 {s.name}
               </span>
             </div>
@@ -207,14 +212,14 @@ _Sent from Website Booking System_
                 <LucideCheckCircle2 size={48} />
               </div>
               <div className="space-y-4">
-                <h3 className="text-4xl font-display tracking-tight">BOOKING INITIATED.</h3>
-                <p className="font-mono text-sm text-[#333333] max-w-md mx-auto leading-relaxed">
+                <h3 className="text-4xl font-display tracking-tight text-black">BOOKING INITIATED.</h3>
+                <p className="font-mono text-sm text-black max-w-md mx-auto leading-relaxed">
                   Your strategy session request has been received. Your reference number is <span className="text-lexis-red font-bold">REF-{Math.floor(Math.random() * 90000) + 10000}</span>.
                 </p>
                 <div className="mt-6 p-4 border border-lexis-red/30 bg-lexis-red/5">
                   <p className="font-mono text-sm text-lexis-red font-bold uppercase mb-2">Important Next Step:</p>
-                  <p className="font-mono text-xs text-[#333333] leading-relaxed">
-                    Please WhatsApp our admin immediately at <span className="text-black font-bold">073 433 4784</span> with your reference number to confirm your consultation booking.
+                  <p className="font-mono text-xs text-black leading-relaxed">
+                    If WhatsApp didn't open, please message our admin at <span className="text-black font-bold underline cursor-pointer" onClick={() => window.open(`https://wa.me/27734334784?text=REF-${Math.floor(Math.random() * 90000) + 10000}`)}>073 433 4784</span> to confirm.
                   </p>
                 </div>
               </div>

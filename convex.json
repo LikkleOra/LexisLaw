@@ -1,5 +1,4 @@
 {
-  "node": "20",
   "generateCommonJSApi": true,
   "functions": "convex/"
 }

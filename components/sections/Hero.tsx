@@ -27,7 +27,7 @@ const Hero: React.FC = () => {
 
           {/* Description */}
           <div className="max-w-xl border-l-2 border-lexis-green pl-8 py-2 animate-fade-in-up">
-            <p className="text-[#333333] text-lg font-mono leading-relaxed">
+            <p className="text-black text-lg font-mono leading-relaxed">
               We don't just practice law. We architect outcomes. Mokoena Legal provides elite legal strategy for those who demand excellence and clarity.
             </p>
           </div>
@@ -46,15 +46,15 @@ const Hero: React.FC = () => {
           <div className="grid grid-cols-3 gap-8 pt-12 border-t border-black/10 animate-fade-in-up">
             <div>
               <div className="font-display text-4xl text-black">15+</div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-[#333333]">Years Experience</div>
+              <div className="font-mono text-[10px] uppercase tracking-widest text-lexis-red font-bold">Years Experience</div>
             </div>
             <div>
               <div className="font-display text-4xl text-black">500+</div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-[#333333]">Cases Won</div>
+              <div className="font-mono text-[10px] uppercase tracking-widest text-lexis-red font-bold">Cases Won</div>
             </div>
             <div>
               <div className="font-display text-4xl text-black">24/7</div>
-              <div className="font-mono text-[10px] uppercase tracking-widest text-[#333333]">Support</div>
+              <div className="font-mono text-[10px] uppercase tracking-widest text-lexis-red font-bold">Support</div>
             </div>
           </div>
         </div>
@@ -62,15 +62,19 @@ const Hero: React.FC = () => {
         {/* Hero Image Section */}
         <div className="lg:col-span-5 relative hidden lg:block">
           <div className="relative z-10 border-2 border-black/10 p-4 bg-white shadow-brutal-lg">
-             <div className="aspect-[4/5] bg-[#f1f1f1] relative overflow-hidden grayscale contrast-125">
-                {/* Placeholder for Lady Justice Image */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-30">
-                   <div className="text-[200px] font-display text-black select-none">JUSTICE</div>
-                </div>
-                {/* EST 1998 Badge */}
+             <div className="aspect-[4/5] bg-black relative overflow-hidden grayscale contrast-125 border-2 border-black">
+                {/* Lady Justice Image */}
+                <img 
+                  src="/images/lady-justice.png" 
+                  alt="Lady of Justice" 
+                  className="absolute inset-0 w-full h-full object-cover opacity-80"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                
+                {/* EST 2001 Badge */}
                 <div className="absolute top-1/2 left-0 -translate-y-1/2 -rotate-90 origin-left">
                    <div className="bg-lexis-red text-black px-8 py-4 font-display text-4xl shadow-brutal-red">
-                      EST. 1998
+                      EST. 2001
                    </div>
                 </div>
              </div>

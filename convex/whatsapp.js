@@ -1,4 +1,4 @@
-// LexisLaw WhatsApp Integration
+// Mokoena Legal WhatsApp Integration
 // Uses the free WhatsApp Click-to-Chat API (wa.me) — no API keys required.
 // The frontend opens a WhatsApp link with a pre-filled message after a booking is saved.
 
@@ -29,7 +29,7 @@ export function buildWhatsAppUrl(phone, message) {
  * Builds the booking confirmation message for the LAW FIRM ADMIN.
  */
 export function buildAdminNotificationMessage({ name, phone, email, matter_type, preferred_date, preferred_time, description, reference }) {
-  return `*🔴 NEW BOOKING — LEXIS LAW*
+  return `*🔴 NEW BOOKING — MOKOENA LEGAL*
 
 Reference: *${reference}*
 
@@ -50,7 +50,7 @@ https://lexislaw.co.za/admin`;
  * Builds the booking confirmation message for the CLIENT.
  */
 export function buildClientConfirmationMessage({ name, reference, matter_type, preferred_date, preferred_time }) {
-  return `*LEXIS LAW — REQUEST RECEIVED* ⚖️
+  return `*MOKOENA LEGAL — REQUEST RECEIVED* ⚖️
 
 Dear ${name},
 
@@ -64,5 +64,5 @@ Preferred Time: ${preferred_time}
 Our team will reach out to confirm your appointment shortly.
 
 _Justice Starts Here._
-https://lexislaw.co.za`;
+https://mokoenalegal.co.za`;
 }

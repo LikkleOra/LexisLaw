@@ -1,49 +1,43 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Input from '../ui/Input';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
 import { LucideSearch, LucideFileText, LucideAlertCircle } from 'lucide-react';
 import ProgressStepper from './ProgressStepper';
 import MatterDetails from './MatterDetails';
+import { useQuery } from 'convex/react';
 import { Matter } from '@/types';
 
 const Tracker: React.FC = () => {
   const [reference, setReference] = useState('');
+  const [searchTrigger, setSearchTrigger] = useState('');
+  
+  const matter = useQuery("functions:getMatterByReference" as any, 
+    searchTrigger ? { reference: searchTrigger } : "skip"
+  ) as Matter | null | undefined;
+  
   const [loading, setLoading] = useState(false);
-  const [matter, setMatter] = useState<Matter | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reference) return;
-
-    setLoading(true);
-    setError(null);
-    setMatter(null);
-
-    // Mock search logic
-    setTimeout(() => {
-      if (reference.toUpperCase() === 'REF-12345') {
-        setMatter({
-          _id: '1',
-          reference: 'REF-12345',
-          name: 'John Doe',
-          phone: '+27 12 345 6789',
-          matter: 'Civil Litigation',
-          date: '2026-03-20',
-          attorney: 'Adv. Jabu Mokoena',
-          status: 1,
-          statusLabel: 'In Progress',
-          updated: '2026-03-18',
-          next: 'Court Appearance',
-        });
-      } else {
+  // Sync loading state with query
+  useEffect(() => {
+    if (searchTrigger && matter === undefined) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+      if (searchTrigger && matter === null) {
         setError('Matter reference not found. Please verify and try again.');
       }
-      setLoading(false);
-    }, 1500);
+    }
+  }, [matter, searchTrigger]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reference) return;
+    setError(null);
+    setSearchTrigger(reference.toUpperCase().trim());
   };
 
   return (

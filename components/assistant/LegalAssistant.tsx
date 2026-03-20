@@ -95,7 +95,7 @@ const LegalAssistant: React.FC = () => {
                   className={`max-w-[85%] p-4 font-mono text-xs leading-relaxed ${
                     msg.role === 'user' 
                       ? 'bg-lexis-red text-black border-2 border-lexis-red shadow-brutal-red' 
-                      : 'bg-card border-2 border-black/5 text-[#333333]'
+                      : 'bg-white border-2 border-black text-black'
                   }`}
                 >
                   {msg.content}
@@ -106,7 +106,7 @@ const LegalAssistant: React.FC = () => {
               </div>
             ))}
             {isLoading && (
-              <div className="flex items-center gap-3 text-[#333333] font-mono text-[10px] uppercase tracking-widest">
+              <div className="flex items-center gap-3 text-black font-mono text-[10px] uppercase tracking-widest font-bold">
                 <LucideLoader2 className="animate-spin" size={14} /> Assistant is thinking...
               </div>
             )}
@@ -120,7 +120,7 @@ const LegalAssistant: React.FC = () => {
                 placeholder="Type your inquiry..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                className="flex-1 bg-card border-2 border-[#333333] text-black px-4 py-3 outline-none transition-all duration-200 font-mono text-xs focus:border-lexis-red"
+                className="flex-1 bg-white border-2 border-black text-black px-4 py-3 outline-none transition-all duration-200 font-mono text-xs focus:border-lexis-red"
                 style={{ borderRadius: 0 }}
               />
               <button 
