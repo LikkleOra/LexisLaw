@@ -17,21 +17,21 @@ const services = [
     description: 'Aggressive representation in complex disputes, ensuring your rights are protected in court.',
     icon: LucideGavel,
     color: 'border-l-lexis-green',
-    href: '/#booking?service=civil'
+    href: '/?service=civil#booking'
   },
   {
     title: 'Real Estate',
     description: 'Comprehensive legal support for commercial and residential property transactions.',
     icon: LucideBuilding2,
     color: 'border-l-lexis-green',
-    href: '/#booking?service=property'
+    href: '/?service=property#booking'
   },
   {
     title: 'Migration Law',
     description: 'Expert counsel for immigration, visas, and cross-border mobility requirements.',
     icon: LucideGlobe,
     color: 'border-l-lexis-red',
-    href: '/#booking?service=migration'
+    href: '/?service=migration#booking'
   }
 ];
 

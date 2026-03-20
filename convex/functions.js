@@ -177,18 +177,30 @@ export const createBooking = mutation({
       });
     }
 
+    // Generate reference
+    const reference = generateReference();
+    const now = new Date().toISOString();
+
     // Create booking
     const bookingId = await ctx.db.insert("bookings", {
       client_id: clientId,
+      ref: reference,
+      name: args.name,
+      phone: normalizedPhone,
+      email: args.email || "",
+      matter: args.matter_type,
+      date: args.preferred_date,
+      time: args.preferred_time,
       matter_type: args.matter_type,
       preferred_date: args.preferred_date,
       preferred_time: args.preferred_time,
       description: args.description,
       status: "pending",
+      created: now,
+      updated: now,
     });
 
-    // Generate reference and create matter
-    const reference = generateReference();
+    // Create matter
     const matterId = await ctx.db.insert("matters", {
       booking_id: bookingId,
       client_id: clientId,

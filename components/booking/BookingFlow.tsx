@@ -28,6 +28,10 @@ const BookingFlow: React.FC = () => {
     const serviceParam = searchParams.get('service');
     if (serviceParam && matterOptions.some(m => m.value === serviceParam)) {
       setFormData(prev => ({ ...prev, matterType: serviceParam }));
+      // Manual scroll fallback
+      setTimeout(() => {
+        document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     }
   }, [searchParams]);
 

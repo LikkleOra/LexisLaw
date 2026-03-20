@@ -4,7 +4,7 @@ import React, { Suspense } from 'react';
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/sections/Hero';
 import Services from '@/components/sections/Services';
-const BookingFlow = React.lazy(() => import('@/components/booking/BookingFlow'));
+import BookingFlow from '@/components/booking/BookingFlow';
 import Footer from '@/components/layout/Footer';
 import LegalAssistant from '@/components/assistant/LegalAssistant';
 
