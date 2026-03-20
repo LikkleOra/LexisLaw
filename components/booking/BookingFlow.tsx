@@ -81,12 +81,16 @@ _Sent from Website Booking System_
 
       const whatsappUrl = `https://wa.me/27734334784?text=${encodeURIComponent(msg)}`;
       
-      // 3. Redirect and move to success step
-      window.location.href = whatsappUrl;
+      // 3. Move to success step FIRST
       nextStep();
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("There was an error processing your booking. Please try again.");
+      
+      // 4. Redirect after a short delay
+      setTimeout(() => {
+        window.open(whatsappUrl, '_blank');
+      }, 500);
+    } catch (error: any) {
+      console.error("Booking error details:", error);
+      alert(`There was an error processing your booking: ${error.message || 'Unknown Error'}. Please try again.`);
     }
   };
 

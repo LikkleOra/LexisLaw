@@ -200,76 +200,62 @@ export const createBooking = mutation({
       updated: now,
     });
 
-    // Create matter
-    const matterId = await ctx.db.insert("matters", {
-      booking_id: bookingId,
-      client_id: clientId,
-      reference,
-      status: "pending",
-      next_action: "Awaiting initial consultation",
-    });
-
-    // ═══════════════════════════════════════════════════════════════════════════
-    // NOTIFICATIONS (Scheduled via Actions)
-    // ═══════════════════════════════════════════════════════════════════════════
-
-    if (args.whatsapp_consent) {
-      const clientMessage = `*LEXIS LAW — REQUEST RECEIVED* ⚖️
-
-Dear ${args.name},
-
-Your consultation request has been submitted successfully.
-
-Reference: *${reference}*
-Matter: ${args.matter_type}
-Preferred Date: ${formatDate(args.preferred_date)}
-Preferred Time: ${args.preferred_time}
-
-Our team will reach out to confirm your appointment shortly.
-
-_Justice Starts Here._`;
-
-      // Schedule client notification
-      await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
-        to: normalizedPhone,
-        message: clientMessage,
-        bookingRef: reference,
-        clientName: args.name,
-        type: "Confirmation",
+    try {
+      // Create matter
+      const matterId = await ctx.db.insert("matters", {
+        booking_id: bookingId,
+        client_id: clientId,
+        reference,
+        status: "pending",
+        next_action: "Awaiting initial consultation",
       });
 
-      const adminMessage = `*🔴 NEW BOOKING — LEXIS LAW*
+      // ═══════════════════════════════════════════════════════════════════════════
+      // NOTIFICATIONS (Scheduled via Actions)
+      // ═══════════════════════════════════════════════════════════════════════════
 
-Reference: *${reference}*
+      if (args.whatsapp_consent) {
+        try {
+          const clientMessage = `*LEXIS LAW — REQUEST RECEIVED* ⚖️\n\nDear ${args.name},\n\nYour consultation request has been submitted successfully.\n\nReference: *${reference}*\nMatter: ${args.matter_type}\nPreferred Date: ${formatDate(args.preferred_date)}\nPreferred Time: ${args.preferred_time}\n\nOur team will reach out to confirm your appointment shortly.\n\n_Justice Starts Here._`;
 
-Client: ${args.name}
-Phone: ${normalizedPhone}
-Matter: ${args.matter_type}
-Date: ${formatDate(args.preferred_date)}
-Time: ${args.preferred_time}
+          // Schedule client notification
+          await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
+            to: normalizedPhone,
+            message: clientMessage,
+            bookingRef: reference,
+            clientName: args.name,
+            type: "Confirmation",
+          });
 
-Description: ${args.description || "None provided"}`;
+          const adminMessage = `*🔴 NEW BOOKING — LEXIS LAW*\n\nReference: *${reference}*\n\nClient: ${args.name}\nPhone: ${normalizedPhone}\nMatter: ${args.matter_type}\nDate: ${formatDate(args.preferred_date)}\nTime: ${args.preferred_time}\n\nDescription: ${args.description || "None provided"}`;
 
-      // Schedule admin notification
-      const adminPhone = "+27734334784"; // Updated admin phone
-      await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
-        to: adminPhone,
-        message: adminMessage,
-        bookingRef: reference,
-        clientName: "ADMIN",
-        type: "Admin Notification",
-      });
+          // Schedule admin notification
+          const adminPhone = "+27734334784"; // Updated admin phone
+          await ctx.scheduler.runAfter(0, api.actions.sendWhatsAppAction, {
+            to: adminPhone,
+            message: adminMessage,
+            bookingRef: reference,
+            clientName: "ADMIN",
+            type: "Admin Notification",
+          });
+        } catch (notifErr) {
+          console.warn("Notification scheduling failed (non-critical):", notifErr.message);
+        }
+      }
+
+      return {
+        success: true,
+        reference,
+        booking_id: bookingId,
+        name: args.name,
+        matter_type: args.matter_type,
+        preferred_date: formatDate(args.preferred_date),
+        preferred_time: args.preferred_time,
+      };
+    } catch (err) {
+      console.error("Booking mutation critical error:", err.message);
+      throw new Error(`Booking failed: ${err.message}`);
     }
-
-    return {
-      success: true,
-      reference,
-      booking_id: bookingId,
-      name: args.name,
-      matter_type: args.matter_type,
-      preferred_date: formatDate(args.preferred_date),
-      preferred_time: args.preferred_time,
-    };
   },
 });
 
@@ -471,8 +457,13 @@ function generateReference() {
 
 function formatDate(timestampOrDate) {
   if (!timestampOrDate) return "—";
-  const date = typeof timestampOrDate === "number" ? new Date(timestampOrDate) : new Date(timestampOrDate);
-  return date.toLocaleDateString("en-ZA", { day: "numeric", month: "long", year: "numeric" });
+  try {
+    const date = typeof timestampOrDate === "number" ? new Date(timestampOrDate) : new Date(timestampOrDate);
+    if (isNaN(date.getTime())) return timestampOrDate; // Return raw if invalid
+    return date.toLocaleDateString("en-ZA", { day: "numeric", month: "long", year: "numeric" });
+  } catch (e) {
+    return String(timestampOrDate);
+  }
 }
 
 function getStatusNumber(status) {
