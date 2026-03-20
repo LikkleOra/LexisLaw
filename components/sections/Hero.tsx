@@ -71,9 +71,9 @@ const Hero: React.FC = () => {
                 <img 
                   src="/images/lady-justice.png" 
                   alt="Lady of Justice" 
-                  className="absolute inset-0 w-full h-full object-cover opacity-80"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-60" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 
                 {/* EST 2001 Badge */}
                 <div className="absolute top-1/2 left-0 -translate-y-1/2 -rotate-90 origin-left">
