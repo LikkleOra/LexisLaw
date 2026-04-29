@@ -7,16 +7,23 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import { useQuery, useMutation } from 'convex/react';
-import { 
-  LucideTrendingUp, 
-  LucideUsers, 
-  LucideCalendar, 
-  LucideFileText, 
+import {
+  LucideTrendingUp,
+  LucideUsers,
+  LucideCalendar,
+  LucideFileText,
   LucideMoreVertical,
   LucideArrowUpRight,
   LucideCheckCircle2,
   LucideClock
 } from 'lucide-react';
+
+// AI Collections Agent Components
+import AgentActivityFeed from '@/components/admin/agent/AgentActivityFeed';
+import EscalationQueue from '@/components/admin/agent/EscalationQueue';
+import PaymentOverview from '@/components/admin/agent/PaymentOverview';
+import InvoiceManagement from '@/components/admin/agent/InvoiceManagement';
+import CancellationRequests from '@/components/admin/agent/CancellationRequests';
 
 export default function AdminPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -192,8 +199,8 @@ export default function AdminPage() {
                    </div>
                 </div>
                 <div className="w-full h-2 bg-black/5 border border-black/5">
-                   <div 
-                     className="h-full bg-lexis-green transition-all duration-1000" 
+                   <div
+                     className="h-full bg-lexis-green transition-all duration-1000"
                      style={{ width: `${(matter.status / 4) * 100}%` }}
                    />
                 </div>
@@ -202,18 +209,18 @@ export default function AdminPage() {
                       <span>NEXT: {matter.next || 'AWAITING ACTION'}</span>
                    </div>
                    <div className="grid grid-cols-2 gap-2">
-                     <Button 
-                       variant="secondary" 
-                       size="sm" 
+                     <Button
+                       variant="secondary"
+                       size="sm"
                        className="h-8 text-[10px]"
                        onClick={() => handleStatusUpdate(matter.reference, Math.max(0, matter.status - 1))}
                        disabled={matter.status === 0}
                      >
                        REDUCE
                      </Button>
-                     <Button 
-                       variant="primary" 
-                       size="sm" 
+                     <Button
+                       variant="primary"
+                       size="sm"
                        className="h-8 text-[10px]"
                        onClick={() => handleStatusUpdate(matter.reference, Math.min(4, matter.status + 1))}
                        disabled={matter.status === 4}
@@ -231,6 +238,17 @@ export default function AdminPage() {
             )}
           </div>
         )}
+
+        {/* AI Collections Agent Views */}
+        {currentView === 'agent-activity' && <AgentActivityFeed />}
+
+        {currentView === 'escalations' && <EscalationQueue />}
+
+        {currentView === 'payments' && <PaymentOverview />}
+
+        {currentView === 'invoices' && <InvoiceManagement />}
+
+        {currentView === 'cancellations' && <CancellationRequests />}
       </div>
     </main>
   );

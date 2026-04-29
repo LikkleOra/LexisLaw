@@ -2,13 +2,17 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { 
-  LucideLayoutDashboard, 
-  LucideCalendar, 
-  LucideFileText, 
-  LucideUsers, 
+import {
+  LucideLayoutDashboard,
+  LucideCalendar,
+  LucideFileText,
+  LucideUsers,
   LucideLogOut,
-  LucideShield
+  LucideShield,
+  LucideBot,
+  LucideAlertTriangle,
+  LucideDollarSign,
+  LucideX
 } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -30,6 +34,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
     { id: 'documents', name: 'Legal Documents', icon: LucideShield },
   ];
 
+  const agentNavItems = [
+    { id: 'agent-activity', name: 'Agent Activity', icon: LucideBot },
+    { id: 'escalations', name: 'Escalation Queue', icon: LucideAlertTriangle },
+    { id: 'payments', name: 'Payment Overview', icon: LucideDollarSign },
+    { id: 'invoices', name: 'Invoice Management', icon: LucideFileText },
+    { id: 'cancellations', name: 'Cancellations', icon: LucideX },
+  ];
+
   return (
     <div className="fixed left-0 top-0 h-full w-72 bg-[#f8f8f8] border-r-2 border-black/10 flex flex-col z-[100]">
       {/* Sidebar Header */}
@@ -45,30 +57,55 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, onViewChange }) => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-6 space-y-2">
-        <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-black mb-4 block px-2 font-bold">Management</span>
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => onViewChange(item.id)}
-            className={cn(
-              "w-full flex items-center justify-between p-4 font-mono text-xs uppercase tracking-widest transition-all",
-              currentView === item.id 
-                ? "bg-lexis-red/10 text-lexis-red border-l-4 border-lexis-red" 
-                : "text-black hover:bg-black/5 hover:text-black border-l-4 border-transparent"
-            )}
-          >
-            <div className="flex items-center gap-4">
-              <item.icon size={18} />
-              {item.name}
-            </div>
-            {item.badge && (
-              <span className="bg-lexis-red text-black text-[9px] px-2 py-0.5 font-bold shadow-brutal">
-                {item.badge}
-              </span>
-            )}
-          </button>
-        ))}
+      <nav className="flex-1 p-6 space-y-6 overflow-y-auto">
+        {/* Main Management */}
+        <div className="space-y-2">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-black mb-4 block px-2 font-bold">Management</span>
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onViewChange(item.id)}
+              className={cn(
+                "w-full flex items-center justify-between p-4 font-mono text-xs uppercase tracking-widest transition-all",
+                currentView === item.id
+                  ? "bg-lexis-red/10 text-lexis-red border-l-4 border-lexis-red"
+                  : "text-black hover:bg-black/5 hover:text-black border-l-4 border-transparent"
+              )}
+            >
+              <div className="flex items-center gap-4">
+                <item.icon size={18} />
+                {item.name}
+              </div>
+              {item.badge && (
+                <span className="bg-lexis-red text-black text-[9px] px-2 py-0.5 font-bold shadow-brutal">
+                  {item.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {/* AI Collections Agent */}
+        <div className="space-y-2 border-t border-black/10 pt-4">
+          <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-lexis-red mb-4 block px-2 font-bold">AI Collections Agent</span>
+          {agentNavItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onViewChange(item.id)}
+              className={cn(
+                "w-full flex items-center justify-between p-4 font-mono text-xs uppercase tracking-widest transition-all",
+                currentView === item.id
+                  ? "bg-lexis-red/10 text-lexis-red border-l-4 border-lexis-red"
+                  : "text-black hover:bg-black/5 hover:text-black border-l-4 border-transparent"
+              )}
+            >
+              <div className="flex items-center gap-4">
+                <item.icon size={18} />
+                {item.name}
+              </div>
+            </button>
+          ))}
+        </div>
       </nav>
 
       {/* Sidebar Footer */}

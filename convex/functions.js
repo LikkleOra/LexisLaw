@@ -480,3 +480,306 @@ function getStatusClass(status) {
   const classes = { pending: "status-pending", in_progress: "status-in-progress", awaiting_docs: "status-awaiting", hearing: "status-scheduled", resolved: "status-resolved" };
   return classes[status] || "status-pending";
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// AI COLLECTIONS AGENT FUNCTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Get client by ID
+export const getClient = query({
+  args: { id: v.id("clients") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
+// Get payment record by ID
+export const getPaymentRecord = query({
+  args: { id: v.id("paymentRecords") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.id);
+  },
+});
+
+// Get all payment records (for admin dashboard)
+export const getPaymentRecords = query({
+  args: {
+    status: v.optional(v.string()),
+    escalationLevel: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    let query = ctx.db.query("paymentRecords");
+
+    if (args.status) {
+      query = query.filter(q => q.eq(q.field("status"), args.status));
+    }
+
+    if (args.escalationLevel !== undefined) {
+      query = query.filter(q => q.eq(q.field("escalationLevel"), args.escalationLevel));
+    }
+
+    const payments = await query.collect();
+
+    // Enrich with client data
+    return await Promise.all(
+      payments.map(async (payment) => {
+        const client = await ctx.db.get(payment.clientId);
+        const matter = payment.caseId ? await ctx.db.get(payment.caseId) : null;
+
+        return {
+          ...payment,
+          clientName: client?.name,
+          clientEmail: client?.email,
+          clientPhone: client?.phone,
+          matterReference: matter?.reference,
+          daysOverdue: Math.floor((Date.now() - payment.dueDate) / (1000 * 60 * 60 * 24)),
+        };
+      })
+    );
+  },
+});
+
+// Get agent tasks
+export const getAgentTasks = query({
+  args: {
+    status: v.optional(v.string()),
+    taskType: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let query = ctx.db.query("agentTasks");
+
+    if (args.status) {
+      query = query.filter(q => q.eq(q.field("status"), args.status));
+    }
+
+    if (args.taskType) {
+      query = query.filter(q => q.eq(q.field("taskType"), args.taskType));
+    }
+
+    const tasks = await query.order("desc").take(100);
+
+    // Enrich with client data
+    return await Promise.all(
+      tasks.map(async (task) => {
+        const client = await ctx.db.get(task.clientId);
+
+        return {
+          ...task,
+          clientName: client?.name,
+          clientEmail: client?.email,
+        };
+      })
+    );
+  },
+});
+
+// Get communication log
+export const getCommunicationLog = query({
+  args: {
+    clientId: v.optional(v.id("clients")),
+    limit: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    let query = ctx.db.query("communicationLog");
+
+    if (args.clientId) {
+      query = query.filter(q => q.eq(q.field("clientId"), args.clientId));
+    }
+
+    const limit = args.limit || 50;
+    const logs = await query.order("desc").take(limit);
+
+    // Enrich with client data
+    return await Promise.all(
+      logs.map(async (log) => {
+        const client = await ctx.db.get(log.clientId);
+
+        return {
+          ...log,
+          clientName: client?.name,
+        };
+      })
+    );
+  },
+});
+
+// Log a communication
+export const logCommunication = mutation({
+  args: {
+    clientId: v.id("clients"),
+    agentTaskId: v.optional(v.id("agentTasks")),
+    channel: v.union(v.literal("email"), v.literal("sms"), v.literal("whatsapp")),
+    subject: v.optional(v.string()),
+    body: v.string(),
+    sentAt: v.number(),
+    status: v.union(
+      v.literal("sent"),
+      v.literal("delivered"),
+      v.literal("opened"),
+      v.literal("failed"),
+      v.literal("bounced")
+    ),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("communicationLog", {
+      ...args,
+      responseReceived: false,
+    });
+  },
+});
+
+// Update payment record
+export const updatePaymentRecord = mutation({
+  args: {
+    id: v.id("paymentRecords"),
+    lastNudgeAt: v.optional(v.number()),
+    escalationLevel: v.optional(v.number()),
+    status: v.optional(v.string()),
+    paidAmount: v.optional(v.number()),
+    paidAt: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...updates } = args;
+    await ctx.db.patch(id, updates);
+    return { success: true };
+  },
+});
+
+// Create agent task
+export const createAgentTask = mutation({
+  args: {
+    clientId: v.id("clients"),
+    caseId: v.optional(v.id("matters")),
+    taskType: v.union(
+      v.literal("reminder"),
+      v.literal("payment_nudge"),
+      v.literal("demand"),
+      v.literal("cancellation")
+    ),
+    scheduledAt: v.number(),
+    channel: v.union(v.literal("email"), v.literal("sms")),
+    metadata: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("agentTasks", {
+      ...args,
+      status: "pending",
+      attemptCount: 0,
+    });
+  },
+});
+
+// Update agent task
+export const updateAgentTask = mutation({
+  args: {
+    id: v.id("agentTasks"),
+    status: v.optional(v.string()),
+    lastContactAt: v.optional(v.number()),
+    attemptCount: v.optional(v.number()),
+    generatedMessage: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...updates } = args;
+    await ctx.db.patch(id, updates);
+    return { success: true };
+  },
+});
+
+// Get cancellation requests
+export const getCancellationRequests = query({
+  args: {
+    status: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    let query = ctx.db.query("cancellationRequests");
+
+    if (args.status) {
+      query = query.filter(q => q.eq(q.field("status"), args.status));
+    }
+
+    const requests = await query.order("desc").collect();
+
+    // Enrich with client and case data
+    return await Promise.all(
+      requests.map(async (request) => {
+        const client = await ctx.db.get(request.clientId);
+        const matter = await ctx.db.get(request.caseId);
+
+        return {
+          ...request,
+          clientName: client?.name,
+          matterReference: matter?.reference,
+          daysInProgress: Math.floor((Date.now() - request.initiatedAt) / (1000 * 60 * 60 * 24)),
+        };
+      })
+    );
+  },
+});
+
+// Create cancellation request
+export const createCancellationRequest = mutation({
+  args: {
+    clientId: v.id("clients"),
+    caseId: v.id("matters"),
+    reason: v.optional(v.string()),
+    outstandingBalance: v.number(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db.insert("cancellationRequests", {
+      ...args,
+      step: 1,
+      acknowledgedConsequences: false,
+      status: "in_progress",
+      initiatedAt: Date.now(),
+    });
+  },
+});
+
+// Update cancellation request
+export const updateCancellationRequest = mutation({
+  args: {
+    id: v.id("cancellationRequests"),
+    step: v.optional(v.number()),
+    reason: v.optional(v.string()),
+    acknowledgedConsequences: v.optional(v.boolean()),
+    coolingOffExpiry: v.optional(v.number()),
+    status: v.optional(v.string()),
+    completedAt: v.optional(v.number()),
+    notes: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { id, ...updates } = args;
+    await ctx.db.patch(id, updates);
+    return { success: true };
+  },
+});
+
+// Get all clients (for forms and dropdowns)
+export const getClients = query({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.db.query("clients").collect();
+  },
+});
+
+// Get all matters (for forms and dropdowns)
+export const getMatters = query({
+  args: {},
+  handler: async (ctx) => {
+    const matters = await ctx.db.query("matters").collect();
+
+    // Enrich with client data
+    return await Promise.all(
+      matters.map(async (matter) => {
+        const client = await ctx.db.get(matter.client_id);
+        const booking = await ctx.db.get(matter.booking_id);
+
+        return {
+          ...matter,
+          client_name: client?.name,
+          matter_type: booking?.matter_type,
+        };
+      })
+    );
+  },
+});
